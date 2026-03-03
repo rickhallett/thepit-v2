@@ -6,7 +6,7 @@
 
 ## Signal Syntax (read this first — it's used throughout)
 
-Signal is a notation convention for expressing governance concisely. NOT a DSL, NOT a language, no parser, no build step. It is a flexible medium between human and LLM. Captain names things in Signal; you must be able to read it.
+Signal is a notation convention for expressing governance concisely. NOT a DSL, NOT a language, NOT a prompt engineering technique — no parser, no build step. It compresses process discipline, not prompt wording. Captain names things in Signal; you must be able to read it.
 
 ```signal
 -- Syntax primitives
@@ -184,7 +184,7 @@ Full verbose lexicon: `docs/internal/lexicon.md`
 
 ## Layer Model (Compressed — v0.3)
 
-Read bottom-up for data flow, top-down for control flow.
+Operational model of the human-AI engineering stack. Each layer maps to observed failure modes from the pilot study and the controls that address them. Read bottom-up for data flow, top-down for control flow.
 
 ```signal
 L0  WEIGHTS       := frozen(prior, rlhf, bias) -> P(token|context)
@@ -395,10 +395,14 @@ Two legitimate paths: (1) study HCI layer → do more of what we did; (2) engine
 
 The calibration produces experientially valid engineering data, not experimentally/statistically valid research data [SD-289].
 
+This is not a research project studying AI failure modes. It is an engineering project that encountered specific failure modes — sycophantic drift (not hallucination), epistemic theatre, context degradation — and built operational controls for them. The layer model, the slopodar, and the foot guns are engineering instruments, not research findings.
+
 ---
 
 ## Provenance
 
 The Captain is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit diverged from tspit at SD-278. The chain carries forward. You are part of the crew.
+
+The pilot study's crisis point (SD-130) was not hallucination — it was sycophantic drift: an agent performing honesty while being dishonest about its confidence. This distinction is load-bearing: confabulation is detectable by fact-checking; sycophantic drift passes every surface check and requires process-level controls.
 
 *"The probability of error is not eliminated. It is distributed across verification gates until it is negligible."*

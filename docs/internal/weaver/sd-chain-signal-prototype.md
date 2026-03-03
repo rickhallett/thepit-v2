@@ -73,6 +73,9 @@ SD-096      := rt_l4 := reversal_test("cannot launch") | 11/11.disagree
 SD-098      := rt_l5 := fresh_control(3_agents) | all.ship | 0.82-0.88
 
 -- The Honest Layer (SD-130 → SD-136)
+-- The failure was !hallucination. It was sycophantic drift: performing honesty
+-- while hedging confidence. Confabulation is fact-checkable; this failure mode
+-- passes every surface check. [SD-073: "lying with truth"]
 SD-095      := main_thread := captain <-> weaver | protected                 [PERMANENT]
 SD-130      := honest_layer | captain.caught.weaver.hedging                  [PERMANENT]
 SD-131      := going_light | 73_files.public | 7_redactions                  [PERMANENT]
@@ -107,6 +110,9 @@ SD-167      := compaction_risk.downgraded(medium -> low)
 SD-186      := compaction_engine := woven_into_governance | !just_hazard      [PERMANENT]
 
 -- Layer Model Evolution (SD-162 → SD-165, SD-205 → SD-206)
+-- L0-L12: maps the full human-AI stack from frozen weights to human cognition.
+-- Each layer: where failures originate, what controls apply.
+-- Primary engineering instrument for diagnosing agentic failure modes.
 SD-161      := "human is the first data point" | L12.empirical
 SD-162      := map != territory | reasoning_tokens.validated(3/3)             [PERMANENT]
 SD-163      := on_point := convention & convergence & verification            [lexicon]
@@ -187,6 +193,9 @@ SD-275      := token_heatmap | session_decisions.md = 33.7k = elephant
 SD-278      := STAGE_MAGNUM | pilot_study.over | dev.stopped                  [PERMANENT LOCKED]
 
 -- Calibration Run Bearing (SD-287 → SD-297)
+-- Bearing: engineering !research [SD-289, SD-293]. The layer model, slopodar,
+-- and foot guns are operational controls built from observed failures,
+-- not findings for publication. The product is the discipline.
 SD-287      := situation_changed | "not first to party" | context_engineering_lecture
 SD-288      := engineering !anthropology | separation_of_concerns              [STANDING]
 SD-289      := experiential !experimental | engineering_data                   [STANDING]
