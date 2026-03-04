@@ -11,7 +11,7 @@ Usage:
   pitcommit verify [--tier TIER]
   pitcommit status
   pitcommit tier [--set TIER]
-  pitcommit walkthrough [--tree HASH]
+  sudo pitcommit walkthrough [--tree HASH]
   pitcommit invalidate
   pitcommit trailer
 
@@ -461,16 +461,66 @@ def cmd_tier(args):
 
 
 def cmd_walkthrough(args):
-    """Handle: pitcommit walkthrough [--tree HASH]"""
+    """Handle: sudo python3 scripts/pitcommit.py walkthrough [--tree HASH]
+
+    Requires actual sudo (SUDO_USER must be set). This is the Captain's
+    attestation — the one step that says a human reviewed the changes.
+    An agent cannot provide the sudo password; this is the enforcement.
+
+    Usage: sudo python3 scripts/pitcommit.py walkthrough
+    """
     flags, _ = _parse_flags(args, {"--tree"})
     tree_hash = flags.get("--tree") or get_tree_hash()
+
+    sudo_user = os.environ.get("SUDO_USER")
+    if not sudo_user:
+        print("Walkthrough requires sudo (Captain's attestation).", file=sys.stderr)
+        print("", file=sys.stderr)
+        print("  Usage: sudo python3 scripts/pitcommit.py walkthrough", file=sys.stderr)
+        print("", file=sys.stderr)
+        print("  An agent cannot provide the sudo password.", file=sys.stderr)
+        sys.exit(1)
 
     if not tree_hash:
         print("Cannot compute tree hash", file=sys.stderr)
         sys.exit(1)
 
-    write_attestation("walkthrough", tree_hash, "pass", {"checker": "captain"})
+    # Show what's being attested so the Captain sees it.
+    print(f"Tree: {tree_hash[:12]}")
+    print(f"Captain: {sudo_user}")
+    print()
+    result = subprocess.run(
+        ["git", "diff", "--cached", "--stat"],
+        capture_output=True,
+        text=True,
+    )
+    staged = result.stdout.strip()
+    if staged:
+        print("Staged changes:")
+        print(staged)
+    else:
+        result = subprocess.run(
+            ["git", "diff", "--stat", "HEAD~1..HEAD"],
+            capture_output=True,
+            text=True,
+        )
+        print("Last commit:")
+        print(result.stdout.strip())
+
+    print()
+    write_attestation("walkthrough", tree_hash, "pass", {"checker": sudo_user})
     print(f"Walkthrough attested @ {tree_hash[:8]}")
+
+    # Fix file ownership — sudo creates files as root.
+    walkthrough_path = GAUNTLET_DIR / "walkthrough.json"
+    if walkthrough_path.exists() and os.geteuid() == 0:
+        import pwd
+
+        try:
+            pw = pwd.getpwnam(sudo_user)
+            os.chown(walkthrough_path, pw.pw_uid, pw.pw_gid)
+        except (KeyError, OSError):
+            pass  # Best effort — non-critical if chown fails.
 
 
 def cmd_invalidate(_args):
