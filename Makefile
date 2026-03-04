@@ -278,8 +278,105 @@ graph:
 	@echo "    └── 25 replay ←(15+22)"
 	@echo "        └── 26 deploy"
 
+# ── The Gauntlet — Adversarial Review Pipeline ──────────────
+#
+# DEV → DARKCAT{claude,openai,gemini} → SYNTH → PITKEEL → WALKTHROUGH → COMMIT
+# See: docs/internal/the-gauntlet.md
+#
+# Invocation:
+#   make darkcat           DC-1 (Claude)
+#   make darkcat-openai    DC-2 (OpenAI/Codex)
+#   make darkcat-gemini    DC-3 (Gemini)
+#   make darkcat-synth     Convergence synthesis
+#   make darkcat-all       All three DCs in parallel
+#   make gauntlet          Full pipeline: DCs + synth + pitkeel
+
+DARKCAT_PROMPT := scripts/darkcat.md
+DARKCAT_SYNTH_PROMPT := scripts/darkcat-synth.md
+DARKCAT_TIMEOUT := 180
+SHA := $(shell git rev-parse --short HEAD)
+
+# DC-1: Claude
+darkcat:
+	@echo "▶ DC-1 (Claude) — $(SHA)"
+	@timeout $(DARKCAT_TIMEOUT) claude -p "$$(cat $(DARKCAT_PROMPT))" \
+		--dangerously-skip-permissions \
+		2>&1 | tee $(LOGS)/dc-$(SHA)-claude.log
+	@echo "  → $(LOGS)/dc-$(SHA)-claude.log"
+
+# DC-2: OpenAI (Codex)
+darkcat-openai:
+	@echo "▶ DC-2 (OpenAI) — $(SHA)"
+	@timeout $(DARKCAT_TIMEOUT) codex exec --sandbox read-only \
+		"$$(cat $(DARKCAT_PROMPT))" \
+		2>&1 | tee $(LOGS)/dc-$(SHA)-openai.log
+	@echo "  → $(LOGS)/dc-$(SHA)-openai.log"
+
+# DC-3: Gemini
+darkcat-gemini:
+	@echo "▶ DC-3 (Gemini) — $(SHA)"
+	@timeout $(DARKCAT_TIMEOUT) gemini -p \
+		"$$(cat $(DARKCAT_PROMPT))" \
+		2>&1 | tee $(LOGS)/dc-$(SHA)-gemini.log
+	@echo "  → $(LOGS)/dc-$(SHA)-gemini.log"
+
+# All three DCs in parallel
+darkcat-all:
+	@echo "▶ Darkcat Triad — $(SHA)"
+	@$(MAKE) -j3 darkcat darkcat-openai darkcat-gemini
+	@echo "✓ All three DCs complete"
+
+# DC-SYNTH: Convergence synthesis (4th polecat, Captain's choice of harness)
+# Default: Claude. Override with SYNTH_HARNESS=codex or SYNTH_HARNESS=gemini
+SYNTH_HARNESS ?= claude
+darkcat-synth:
+	@echo "▶ DC-SYNTH ($(SYNTH_HARNESS)) — $(SHA)"
+	@if [ ! -f $(LOGS)/dc-$(SHA)-claude.log ] || \
+	    [ ! -f $(LOGS)/dc-$(SHA)-openai.log ] || \
+	    [ ! -f $(LOGS)/dc-$(SHA)-gemini.log ]; then \
+		echo "ERROR: missing DC logs for $(SHA). Run 'make darkcat-all' first."; exit 1; \
+	fi
+	@if [ "$(SYNTH_HARNESS)" = "claude" ]; then \
+		timeout $(DARKCAT_TIMEOUT) claude -p "$$(cat $(DARKCAT_SYNTH_PROMPT))" \
+			--dangerously-skip-permissions \
+			2>&1 | tee $(LOGS)/dc-$(SHA)-synth.log; \
+	elif [ "$(SYNTH_HARNESS)" = "codex" ]; then \
+		timeout $(DARKCAT_TIMEOUT) codex exec --sandbox read-only \
+			"$$(cat $(DARKCAT_SYNTH_PROMPT))" \
+			2>&1 | tee $(LOGS)/dc-$(SHA)-synth.log; \
+	elif [ "$(SYNTH_HARNESS)" = "gemini" ]; then \
+		timeout $(DARKCAT_TIMEOUT) gemini -p \
+			"$$(cat $(DARKCAT_SYNTH_PROMPT))" \
+			2>&1 | tee $(LOGS)/dc-$(SHA)-synth.log; \
+	else \
+		echo "ERROR: unknown SYNTH_HARNESS=$(SYNTH_HARNESS)"; exit 1; \
+	fi
+	@echo "  → $(LOGS)/dc-$(SHA)-synth.log"
+
+# Review a specific commit
+darkcat-ref:
+	@if [ -z "$(REF)" ]; then echo "Usage: make darkcat-ref REF=<commit>"; exit 1; fi
+	@echo "▶ darkcat — $(REF)"
+	@timeout $(DARKCAT_TIMEOUT) claude -p "$$(cat $(DARKCAT_PROMPT)) \n\nReview this specific commit: $(REF)" \
+		--dangerously-skip-permissions \
+		2>&1 | tee $(LOGS)/dc-$(REF)-claude.log
+
+# Full gauntlet: DCs + synth + pitkeel signals
+gauntlet: darkcat-all darkcat-synth
+	@echo ""
+	@echo "▶ Pitkeel signals"
+	@cd pitkeel && uv run python pitkeel.py
+	@echo ""
+	@echo "════════════════════════════════════════════"
+	@echo "  GAUNTLET COMPLETE — $(SHA)"
+	@echo "  DC logs:  $(LOGS)/dc-$(SHA)-{claude,openai,gemini}.log"
+	@echo "  Synth:    $(LOGS)/dc-$(SHA)-synth.log"
+	@echo ""
+	@echo "  Next: review synth verdict, walkthrough, then commit"
+	@echo "════════════════════════════════════════════"
+
 clean:
 	rm -rf $(DONE)
 	@echo "All task completion markers cleared."
 
-.PHONY: all status graph clean 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26
+.PHONY: all status graph clean darkcat darkcat-openai darkcat-gemini darkcat-all darkcat-synth darkcat-ref gauntlet 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26

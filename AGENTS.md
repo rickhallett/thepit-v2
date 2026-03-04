@@ -62,6 +62,8 @@ SO.uv          := python -> uv_exclusively !exceptions          [SD-310]
 SO.echo        := order -> echo(Signal) BEFORE acting | !excepted [SD-315]
 SO.rerun       := bad_output -> diagnose & reset & rerun !fix_in_place  [dumb_zone]
 SO.atomic_task := 1_action == 1_instruction_set == 1_agent              [all_dev]
+SO.commendation := extra_rations -> append(commendations.log, {date, agent, recipient, reason}) [durable]
+SO.event_log    := notable_event -> append(events.tsv, {date, time, type, agent, commit, ref, summary, backrefs})
 ```
 
 ---
@@ -193,6 +195,9 @@ DEF muster         := table(#, q, default, call) | O(1)/row            [SD-202]
 DEF fair_winds     := closing_signal | conditions_favourable
 DEF extra_rations  := captains_commendation | rare | logged
 DEF polecats       := claude_p.agents | one_shot | !interactive        [SD-296]
+DEF darkcat        := adversarial_review.polecat | read_only | stain(diff, slopodar + watchdog + footguns)
+DEF gauntlet       := dev(gate) -> darkcat{claude,openai,gemini} -> synth -> pitkeel -> walkthrough -> commit
+DEF DONE           := gate.green & darkcat{3}.complete & synth.pass & pitkeel.reviewed & walkthrough.checked
 DEF prime_context  := min(context) WHERE smart_zone.enabled             [SD-311]
 DEF learning_wild  := discovery(while_doing_work) >> work_itself
 DEF bump_slopodar  := append(slopodar.yaml, new_pattern)
@@ -346,6 +351,7 @@ SLOP not_wrong            := passes_all_checks & !right | "the metrics say it's 
 │       ├── session-decisions-index.yaml  -- Last 10 SDs + standing orders
 │       ├── boot-sequence.md        -- Legacy boot manifest (superseded by this file)
 │       ├── dead-reckoning.md       -- Blowout recovery protocol
+│       ├── events.tsv             -- Event log (date, time, type, agent, commit, ref, summary, backrefs)
 │       └── weaver/catch-log.tsv   -- Control firing events (date, control, what, outcome)
 ```
 
