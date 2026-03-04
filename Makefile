@@ -334,9 +334,9 @@ darkcat-gemini:
 
 # All three DCs in parallel
 darkcat-all:
-	@echo "▶ Darkcat Triad — $(TREE)"
 	@$(MAKE) -j3 darkcat darkcat-openai darkcat-gemini
-	@echo "✓ All three DCs complete"
+	@echo ""
+	@echo "  ✓ All three DCs complete"
 
 # DC-SYNTH: Convergence synthesis (4th polecat, Captain's choice of harness)
 # Default: Claude. Override with SYNTH_HARNESS=codex or SYNTH_HARNESS=gemini
@@ -405,26 +405,47 @@ gauntlet-pitkeel:
 	@cd "$(CURDIR)" && $(PITCOMMIT) attest pitkeel --tree $(TREE_FULL) --verdict pass
 
 gauntlet:
+	@echo ""
+	@echo "── Gauntlet ── $(TREE) [$(TIER)] ──"
+	@echo ""
 	@$(PITCOMMIT) tier --set $(TIER)
+	@if [ "$(TIER)" = "full" ]; then \
+		echo ""; echo "── 1/4 Gate ──"; echo ""; \
+	else \
+		echo ""; echo "── 1/2 Gate ──"; echo ""; \
+	fi
 	@$(MAKE) gauntlet-gate
 	@if [ "$(TIER)" = "full" ]; then \
+		echo ""; \
+		echo "── 2/4 Darkcat Triad ──"; \
+		echo ""; \
 		$(MAKE) darkcat-all; \
+		echo ""; \
+		echo "── 3/4 Synthesis ──"; \
+		echo ""; \
 		$(MAKE) darkcat-synth; \
 	fi
+	@if [ "$(TIER)" = "full" ]; then \
+		echo ""; echo "── 4/4 Pitkeel ──"; \
+	else \
+		echo ""; echo "── 2/2 Pitkeel ──"; \
+	fi
+	@echo ""
 	@$(MAKE) gauntlet-pitkeel
 	@echo ""
 	@echo "════════════════════════════════════════════"
 	@echo "  GAUNTLET COMPLETE — $(TREE) [$(TIER)]"
 	@echo "════════════════════════════════════════════"
+	@echo ""
 	@$(PITCOMMIT) status
+	@echo ""
 	@if [ "$(TIER)" = "full" ]; then \
-		echo ""; \
 		echo "  Next: python3 scripts/pitcommit.py walkthrough"; \
 		echo "  Then: git commit -m '...'"; \
 	else \
-		echo ""; \
 		echo "  Next: git commit -m '...'"; \
 	fi
+	@echo ""
 	@echo "════════════════════════════════════════════"
 
 # Install git hooks (run once after clone)

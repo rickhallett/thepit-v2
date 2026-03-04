@@ -1,0 +1,74 @@
+# Full Gauntlet Smoke Test — Phase Plan
+
+> First end-to-end exercise of `make gauntlet TIER=full`.
+> Payload: T-003 (Clerk middleware).
+> Each phase has an explicit pass criterion. Fail → stop and investigate.
+
+## Phases
+
+### Phase 1: Makefile target audit
+- **Action:** `make -n gauntlet` (dry run). Read every gauntlet target. Confirm synth exists. Confirm all 7 steps have targets. Confirm TREE var flows through.
+- **Pass:** Exit 0, all 7 step names visible in output.
+- **Status:** ✓ PASS — all 7 steps have targets, TREE flows through, dry run exit 0
+
+### Phase 2: Gate in isolation
+- **Action:** `make gauntlet-gate` on current clean tree.
+- **Pass:** `.gauntlet/gate.json` exists, verdict `pass`, tree hash matches `git write-tree`.
+- **Status:** ☐
+
+### Phase 3: DC-Claude in isolation
+- **Action:** `make darkcat-claude` against staged T-003 change.
+- **Pass:** `.logs/dc-*-claude.log` exists, verdict line present, `.gauntlet/dc-claude.json` attestation written, tree matches.
+- **Status:** ☐
+
+### Phase 4: DC-OpenAI in isolation
+- **Action:** `make darkcat-openai`.
+- **Pass:** Same as phase 3 for openai.
+- **Status:** ☐
+
+### Phase 5: DC-Gemini in isolation
+- **Action:** `make darkcat-gemini` (failed last time — validates `-y` flag fix).
+- **Pass:** Log + attestation valid. If fails: root cause before proceeding.
+- **Status:** ☐
+
+### Phase 6: Synth in isolation
+- **Action:** `make gauntlet-synth` (or equivalent). Requires DC logs from phases 3-5.
+- **Pass:** `.gauntlet/synth.json` exists with verdict. If target doesn't exist: build it.
+- **Status:** ☐
+
+### Phase 7: Pitkeel in isolation
+- **Action:** `make gauntlet-pitkeel`.
+- **Pass:** `.gauntlet/pitkeel.json` exists, verdict pass.
+- **Status:** ☐
+
+### Phase 8: Walkthrough
+- **Action:** `python3 scripts/pitcommit.py walkthrough`. Captain signs off.
+- **Pass:** `.gauntlet/walkthrough.json` exists.
+- **Status:** ☐
+
+### Phase 9: Full verify
+- **Action:** `python3 scripts/pitcommit.py verify --tier full`.
+- **Pass:** All 7 attestations present, all tree hashes match, exit 0, `✓ All attestations valid [full]`.
+- **Status:** ☐
+
+### Phase 10: Commit + trailer
+- **Action:** `git commit`. Pre-commit hook enforces full tier.
+- **Pass:** Commit lands. Trailer shows `gate+claude+openai+gemini+synth+pitkeel+walkthrough @ <tree> [full]` in `git log -1`.
+- **Status:** ☐
+
+## Dependencies
+
+```
+Phase 1 ──→ Phase 2 ──→ Phases 3,4,5 (parallel OK) ──→ Phase 6
+                         Phase 7 (independent)
+                         Phase 8 (independent, Captain required)
+All ──→ Phase 9 ──→ Phase 10
+```
+
+## Notes
+
+- Phases 3-5 are independent and can run in parallel
+- Phases 7-8 are independent of 3-6
+- Phase 6 depends on 3-5 (synth needs DC logs)
+- Phase 9 depends on all prior phases
+- T-003 is implemented before phase 3, gated at phase 2
