@@ -6,6 +6,8 @@
  *
  * When DATABASE_URL is not set: skips DB tests gracefully.
  * No structural/mock tests — we test the thing, not the description.
+ *
+ * @vitest-environment node
  */
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -20,9 +22,13 @@ describe.skipIf(!hasDb)("schema (live database)", () => {
   let pool: import("@neondatabase/serverless").Pool;
 
   beforeAll(async () => {
-    const { Pool } = await import("@neondatabase/serverless");
+    const { Pool, neonConfig } = await import("@neondatabase/serverless");
     const { drizzle } = await import("drizzle-orm/neon-serverless");
+    const ws = await import("ws");
     schema = await import("./schema");
+
+    // Neon serverless driver needs a WebSocket constructor in Node.
+    neonConfig.webSocketConstructor = ws.default;
 
     pool = new Pool({ connectionString: process.env.DATABASE_URL });
     db = drizzle(pool, { schema });
