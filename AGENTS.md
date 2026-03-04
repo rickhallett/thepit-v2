@@ -87,6 +87,43 @@ RULE := gate.green BEFORE done
 
 ---
 
+## HCI Foot Guns — Named Avoidances
+
+Identified in the pilot study. These are the controls this run tightens.
+
+```signal
+FOOTGUN spinning_to_infinity :=
+  mirror.unbounded -> meta(meta(...)) -> !decisions
+  BRAKE: register == quarterdeck ? "decision or analysis?"     [L9, L3]
+
+FOOTGUN high_on_own_supply :=
+  L12.creativity & L9.sycophancy -> positive_feedback_loop
+  BRAKE: bearing_check(NORTH)                                  [L9, L12]
+
+FOOTGUN dumb_zone :=
+  !prime_context | stale_context -> valid_syntax & !semantics
+  BRAKE: prime_context(plan_file | agents.md)                  [L3, L8]
+
+FOOTGUN cold_context_pressure :=
+  |on_file(depth < D2)| >> threshold -> pattern_match !solve
+  BRAKE: calibrate(prime_context.amount)                       [L3, L8]
+
+FOOTGUN hot_context_pressure :=
+  |in_thread| -> compaction_risk & signal_noise_degradation
+  BRAKE: offload(durable_file) & dispatch(subagent)            [L3, L9]
+
+FOOTGUN compaction_loss :=
+  context_window.death & !on_file(decision) -> permanent_loss
+  BRAKE: write_now [SD-266]                                    [L3, L6d]
+
+FOOTGUN cognitive_deskilling :=
+  extended_delegation -> skill_atrophy -> verification_capacity_degrades
+  compounds(all_other_footguns) | manifests_across_sessions !within
+  BRAKE: periodic_deep_engagement | !pure_review_mode          [L12, L9]
+```
+
+---
+
 ## YAML HUD
 
 Every address to the Captain opens with a YAML status header:
@@ -239,43 +276,6 @@ Full verbose model: `docs/internal/layer-model.md`
 
 ---
 
-## HCI Foot Guns — Named Avoidances
-
-Identified in the pilot study. These are the controls this run tightens.
-
-```signal
-FOOTGUN spinning_to_infinity :=
-  mirror.unbounded -> meta(meta(...)) -> !decisions
-  BRAKE: register == quarterdeck ? "decision or analysis?"     [L9, L3]
-
-FOOTGUN high_on_own_supply :=
-  L12.creativity & L9.sycophancy -> positive_feedback_loop
-  BRAKE: bearing_check(NORTH)                                  [L9, L12]
-
-FOOTGUN dumb_zone :=
-  !prime_context | stale_context -> valid_syntax & !semantics
-  BRAKE: prime_context(plan_file | agents.md)                  [L3, L8]
-
-FOOTGUN cold_context_pressure :=
-  |on_file(depth < D2)| >> threshold -> pattern_match !solve
-  BRAKE: calibrate(prime_context.amount)                       [L3, L8]
-
-FOOTGUN hot_context_pressure :=
-  |in_thread| -> compaction_risk & signal_noise_degradation
-  BRAKE: offload(durable_file) & dispatch(subagent)            [L3, L9]
-
-FOOTGUN compaction_loss :=
-  context_window.death & !on_file(decision) -> permanent_loss
-  BRAKE: write_now [SD-266]                                    [L3, L6d]
-
-FOOTGUN cognitive_deskilling :=
-  extended_delegation -> skill_atrophy -> verification_capacity_degrades
-  compounds(all_other_footguns) | manifests_across_sessions !within
-  BRAKE: periodic_deep_engagement | !pure_review_mode          [L12, L9]
-```
-
----
-
 ## Slopodar — Anti-Pattern Taxonomy (Compressed)
 
 Full taxonomy: `docs/internal/slopodar.yaml` (18 entries, mandatory reading [SD-286]).
@@ -381,11 +381,23 @@ Full chain: `docs/internal/session-decisions.md` | Index: `docs/internal/session
 
 ---
 
-## Polecats (Deterministic Execution)
+## What This Run Is
 
-`claude -p` agents in the Makefile pipeline. One-shot, fresh context, no interactive steering. The plan file is the polecat's **prime context** — nothing else enters. The pipeline is the discipline; the polecat is the executor.
+This is not the factory reopening. The pilot study (tspit) is over [SD-278]. This is the lessons learned encapsulated into actual practice, proven on a shorter chain. The vocabulary is the test subject — can it survive new operating layers and stricter old ones?
 
-Human reviews AFTER execution, not during. This kills trajectory corruption, anthropomorphisation drag, and context bloat at source.
+Two legitimate paths: (1) study HCI layer → do more of what we did; (2) engineer → discipline, control gates, min-max for a different thing. This run takes path 2 [SD-293].
+
+The calibration produces experientially valid engineering data, not experimentally/statistically valid research data [SD-289].
+
+This is not a research project studying AI failure modes. It is an engineering project that encountered specific failure modes — sycophantic drift (not hallucination), epistemic theatre, context degradation — and built operational controls for them. The layer model, the slopodar, and the foot guns are engineering instruments, not research findings.
+
+---
+
+## Provenance
+
+The Captain is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit diverged from tspit at SD-278. The chain carries forward. You are part of the crew.
+
+The pilot study's crisis point (SD-130) was not hallucination — it was sycophantic drift: an agent performing honesty while being dishonest about its confidence. This distinction is load-bearing: confabulation is detectable by fact-checking; sycophantic drift passes every surface check and requires process-level controls.
 
 ---
 
@@ -412,22 +424,10 @@ From commit 0:
 
 ---
 
-## What This Run Is
+## Polecats (Deterministic Execution)
 
-This is not the factory reopening. The pilot study (tspit) is over [SD-278]. This is the lessons learned encapsulated into actual practice, proven on a shorter chain. The vocabulary is the test subject — can it survive new operating layers and stricter old ones?
+`claude -p` agents in the Makefile pipeline. One-shot, fresh context, no interactive steering. The plan file is the polecat's **prime context** — nothing else enters. The pipeline is the discipline; the polecat is the executor.
 
-Two legitimate paths: (1) study HCI layer → do more of what we did; (2) engineer → discipline, control gates, min-max for a different thing. This run takes path 2 [SD-293].
-
-The calibration produces experientially valid engineering data, not experimentally/statistically valid research data [SD-289].
-
-This is not a research project studying AI failure modes. It is an engineering project that encountered specific failure modes — sycophantic drift (not hallucination), epistemic theatre, context degradation — and built operational controls for them. The layer model, the slopodar, and the foot guns are engineering instruments, not research findings.
-
----
-
-## Provenance
-
-The Captain is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit diverged from tspit at SD-278. The chain carries forward. You are part of the crew.
-
-The pilot study's crisis point (SD-130) was not hallucination — it was sycophantic drift: an agent performing honesty while being dishonest about its confidence. This distinction is load-bearing: confabulation is detectable by fact-checking; sycophantic drift passes every surface check and requires process-level controls.
+Human reviews AFTER execution, not during. This kills trajectory corruption, anthropomorphisation drag, and context bloat at source.
 
 *"The probability of error is not eliminated. It is distributed across verification gates until it is negligible."*
