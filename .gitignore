@@ -11,3 +11,7 @@ dist/
 .vercel/
 playwright-report/
 test-results/
+.keel-state
+pitkeel/.venv/
+pitkeel/.pytest_cache/
+__pycache__/
