@@ -138,23 +138,42 @@ def _top_level_dirs(files: list[str]) -> set[str]:
     return dirs
 
 
-def analyse_scope(commits: list[Commit], resolver: FileResolver) -> ScopeSignal:
+def analyse_scope(
+    commits: list[Commit],
+    resolver: FileResolver,
+    sessions: list[Session] | None = None,
+) -> ScopeSignal:
+    """Scope drift detection. If sessions are provided, measures drift within
+    the current session only — domains that appear in the current session but
+    weren't touched in the session's first commit. Without sessions, falls
+    back to whole-commit-list behaviour (first commit vs all)."""
     sig = ScopeSignal()
     if len(commits) < 2:
         sig.insufficient = True
         return sig
 
-    sig.first_commit_files = resolver(commits[0].hash)
+    # Determine which commits to measure scope over.
+    # When sessions are provided, scope is session-only. If the current
+    # session has <2 commits, there's nothing to compare — report insufficient.
+    if sessions is not None:
+        if not sessions or len(sessions[-1].commits) < 2:
+            sig.insufficient = True
+            return sig
+        scope_commits = sessions[-1].commits
+    else:
+        scope_commits = commits
 
-    # Collect all unique files
+    sig.first_commit_files = resolver(scope_commits[0].hash)
+
+    # Collect all unique files in the scope window
     seen: set[str] = set()
-    for c in commits:
+    for c in scope_commits:
         for f in resolver(c.hash):
             if f not in seen:
                 seen.add(f)
                 sig.total_files.append(f)
 
-    # New files (not in first commit)
+    # New files (not in first commit of scope window)
     initial = set(sig.first_commit_files)
     sig.added_files = [f for f in sig.total_files if f not in initial]
 
@@ -349,7 +368,9 @@ def render_hook(
     # Scope signals
     if not scope.insufficient:
         if scope.domain_drift:
-            signals.append(f"scope: drift to new domains [{', '.join(scope.new_dirs)}]")
+            shown = scope.new_dirs[:3]
+            suffix = f" +{len(scope.new_dirs) - 3}" if len(scope.new_dirs) > 3 else ""
+            signals.append(f"scope: drift to new domains [{', '.join(shown)}{suffix}]")
 
     # Velocity signals
     if not vel.insufficient:

@@ -13,6 +13,7 @@ import pytest
 
 from analysis import (
     Commit,
+    Session,
     analyse_context,
     analyse_scope,
     analyse_session,
@@ -221,6 +222,87 @@ class TestScope:
         sig = analyse_scope(commits, lambda _: [])
 
         assert sig.insufficient
+
+    def test_session_scoped_ignores_prior_sessions(self):
+        """Intent: with sessions provided, scope is measured within the current
+        session only — domains from earlier sessions don't count as drift."""
+        base = datetime(2026, 2, 21, 9, 0, 0, tzinfo=timezone.utc)
+
+        # Session 1: touched lib/ and app/
+        s1_commits = [
+            c(base, 0, "s1-start"),
+            c(base, 20, "s1-end"),
+        ]
+        # 45-min gap = session break
+        # Session 2: touched only scripts/ (new domain relative to day,
+        #            but that's the ONLY new domain in session 2)
+        s2_commits = [
+            c(base, 65, "s2-start"),
+            c(base, 85, "s2-work"),
+        ]
+
+        all_commits = s1_commits + s2_commits
+        sessions = [
+            Session(
+                commits=s1_commits,
+                start=s1_commits[0].when,
+                end=s1_commits[-1].when,
+                duration=timedelta(minutes=20),
+            ),
+            Session(
+                commits=s2_commits,
+                start=s2_commits[0].when,
+                end=s2_commits[-1].when,
+                duration=timedelta(minutes=20),
+            ),
+        ]
+
+        def resolver(hash: str) -> list[str]:
+            if hash == s1_commits[0].hash:
+                return ["lib/a.ts"]
+            if hash == s1_commits[1].hash:
+                return ["app/page.tsx"]
+            if hash == s2_commits[0].hash:
+                return ["scripts/build.py"]
+            return ["scripts/deploy.py"]
+
+        # Without sessions: drift includes app/, scripts/ (relative to first commit)
+        sig_day = analyse_scope(all_commits, resolver)
+        assert "app" in sig_day.new_dirs
+        assert "scripts" in sig_day.new_dirs
+
+        # With sessions: only measures session 2 — scripts/ first commit is the
+        # baseline, scripts/deploy.py stays in scripts/, so NO domain drift
+        sig_sess = analyse_scope(all_commits, resolver, sessions)
+        assert not sig_sess.domain_drift
+
+    def test_session_scoped_detects_drift_within_session(self):
+        """Intent: session-scoped still catches genuine drift within a session."""
+        base = datetime(2026, 2, 21, 9, 0, 0, tzinfo=timezone.utc)
+
+        s1_commits = [
+            c(base, 0, "s1-start"),
+            c(base, 20, "s1-end"),
+        ]
+
+        all_commits = s1_commits
+        sessions = [
+            Session(
+                commits=s1_commits,
+                start=s1_commits[0].when,
+                end=s1_commits[-1].when,
+                duration=timedelta(minutes=20),
+            ),
+        ]
+
+        def resolver(hash: str) -> list[str]:
+            if hash == s1_commits[0].hash:
+                return ["lib/a.ts"]
+            return ["app/page.tsx"]  # new domain within same session
+
+        sig = analyse_scope(all_commits, resolver, sessions)
+        assert sig.domain_drift
+        assert "app" in sig.new_dirs
 
 
 # ==========================================================================

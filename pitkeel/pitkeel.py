@@ -10,7 +10,7 @@
 # Usage:
 #   pitkeel              run all signal checks
 #   pitkeel session      session duration + break awareness
-#   pitkeel scope        scope drift from first commit
+#   pitkeel scope        scope drift within current session
 #   pitkeel velocity     commits per hour with acceleration
 #   pitkeel hook         hook-compatible output (no ANSI, for commit messages)
 #   pitkeel context      context file depth distribution
@@ -159,10 +159,13 @@ def render_scope_terminal(sig) -> None:
 
     if sig.domain_drift:
         print()
-        print(_warn("  ⚠ Work has expanded to new domains:"))
-        for d in sig.new_dirs:
+        shown = sig.new_dirs[:5]
+        remaining = len(sig.new_dirs) - len(shown)
+        print(_warn(f"  ⚠ Session expanded to {len(sig.new_dirs)} new domain(s):"))
+        for d in shown:
             print(f"    → {_accent(d)}")
-        print(_muted("    Are these changes serving the original intent?"))
+        if remaining > 0:
+            print(_muted(f"    … and {remaining} more"))
     elif sig.file_drift:
         print()
         print(_warn("  ⚠ Scope has more than doubled since the first commit."))
@@ -242,9 +245,12 @@ def cmd_all() -> None:
     commits = today_commits()
     now = datetime.now().astimezone()
 
-    render_session_terminal(analyse_session(commits, now))
+    sess_sig = analyse_session(commits, now)
+    render_session_terminal(sess_sig)
     print()
-    render_scope_terminal(analyse_scope(commits, lambda h: commit_files(h)))
+    render_scope_terminal(
+        analyse_scope(commits, lambda h: commit_files(h), sess_sig.sessions)
+    )
     print()
     render_velocity_terminal(analyse_velocity(commits))
     print()
@@ -261,7 +267,11 @@ def cmd_session() -> None:
 
 def cmd_scope() -> None:
     commits = today_commits()
-    render_scope_terminal(analyse_scope(commits, lambda h: commit_files(h)))
+    now = datetime.now().astimezone()
+    sess_sig = analyse_session(commits, now)
+    render_scope_terminal(
+        analyse_scope(commits, lambda h: commit_files(h), sess_sig.sessions)
+    )
 
 
 def cmd_velocity() -> None:
@@ -284,9 +294,10 @@ def cmd_hook() -> None:
     root = repo_root()
     commits = today_commits()
     now = datetime.now().astimezone()
+    sess_sig = analyse_session(commits, now)
     output = render_hook(
-        analyse_session(commits, now),
-        analyse_scope(commits, lambda h: commit_files(h)),
+        sess_sig,
+        analyse_scope(commits, lambda h: commit_files(h), sess_sig.sessions),
         analyse_velocity(commits),
         analyse_context(root),
     )
@@ -408,7 +419,7 @@ def usage() -> None:
     print(_muted("Usage:"))
     print("  pitkeel              run all signal checks")
     print("  pitkeel session      session duration + break awareness")
-    print("  pitkeel scope        scope drift from first commit")
+    print("  pitkeel scope        scope drift within current session")
     print("  pitkeel velocity     commits per hour")
     print("  pitkeel context      context file depth distribution")
     print("  pitkeel wellness     daily wellness checks (whoop.log, captain's log)")
