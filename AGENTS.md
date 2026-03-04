@@ -322,11 +322,12 @@ SLOP not_wrong            := passes_all_checks & !right | "the metrics say it's 
 ```
 / (repo root)
 ├── AGENTS.md                       -- THIS FILE (auto-loaded, canonical)
+├── CLAUDE.md                       -- Symlink -> AGENTS.md (harness compat)
 ├── SPEC.md                         -- Product spec, 12 tables, API contracts
 ├── EVAL.md                         -- Success/failure criteria, confounds
 ├── Makefile                        -- 26 polecat tasks (deterministic build)
 ├── .claude/agents/*.md             -- Agent identity files (auto-loaded per agent)
-├── .opencode/agents/*.md           -- Mirror of .claude/agents/ (legacy harness)
+├── .opencode/agents/*.md           -- Symlinks -> .claude/agents/ (prevent drift)
 ├── lib/                            -- Source code
 │   ├── {bouts,credits,auth,engagement,stripe,sharing,agents,common}/
 │   │   └── DOMAIN.md              -- Architectural boundaries per domain
@@ -344,7 +345,8 @@ SLOP not_wrong            := passes_all_checks & !right | "the metrics say it's 
 │       ├── session-decisions.md    -- FULL chain SD-001–SD-314 (archaeology only)
 │       ├── session-decisions-index.yaml  -- Last 10 SDs + standing orders
 │       ├── boot-sequence.md        -- Legacy boot manifest (superseded by this file)
-│       └── dead-reckoning.md       -- Blowout recovery protocol
+│       ├── dead-reckoning.md       -- Blowout recovery protocol
+│       └── weaver/catch-log.tsv   -- Control firing events (date, control, what, outcome)
 ```
 
 **BFS rule (SD-195):** Depth 1 = every session. Depth 2 = when topic is relevant. Depth 3+ = deliberate research only. `docs/internal/session-decisions.md` is depth 3 (archaeology) — read the index, not the full log.
@@ -393,6 +395,7 @@ From commit 0:
 
 - **Commit tags**: `[H:steer]`, `[H:correct]`, `[H:reset]`, `[H:obstacle]`, `[H:scope]`
 - **slopodar-v2.yaml**: Append-only anti-pattern taxonomy
+- **catch-log.tsv**: Control firing events — when a control catches something, log it (`docs/internal/weaver/catch-log.tsv`)
 - **metrics/**: Notebooks on analysis day only
 
 ---
