@@ -332,11 +332,14 @@ darkcat-gemini:
 	@grep -E '^(Findings:|Verdict:|##|###)' $(LOGS)/dc-$(TREE)-gemini.log || true
 	@$(PITCOMMIT) attest dc-gemini --tree $(TREE_FULL) --log $(LOGS)/dc-$(TREE)-gemini.log
 
-# All three DCs in parallel
+# Darkcat triad — currently dc-claude only.
+# DC-2 (openai) and DC-3 (gemini) deferred: gemini hangs in pipe mode (2 failure
+# modes observed, v0.32.1); 1 darkcat sufficient to prove workflow, cuts cost.
+# Restore with: $(MAKE) -j3 darkcat darkcat-openai darkcat-gemini
 darkcat-all:
-	@$(MAKE) -j3 darkcat darkcat-openai darkcat-gemini
+	@$(MAKE) darkcat
 	@echo ""
-	@echo "  ✓ All three DCs complete"
+	@echo "  ✓ Darkcat complete (claude only)"
 
 # DC-SYNTH: Convergence synthesis (4th polecat, Captain's choice of harness)
 # Default: Claude. Override with SYNTH_HARNESS=codex or SYNTH_HARNESS=gemini
@@ -410,23 +413,19 @@ gauntlet:
 	@echo ""
 	@$(PITCOMMIT) tier --set $(TIER)
 	@if [ "$(TIER)" = "full" ]; then \
-		echo ""; echo "── 1/4 Gate ──"; echo ""; \
+		echo ""; echo "── 1/3 Gate ──"; echo ""; \
 	else \
 		echo ""; echo "── 1/2 Gate ──"; echo ""; \
 	fi
 	@$(MAKE) gauntlet-gate
 	@if [ "$(TIER)" = "full" ]; then \
 		echo ""; \
-		echo "── 2/4 Darkcat Triad ──"; \
+		echo "── 2/3 Darkcat ──"; \
 		echo ""; \
 		$(MAKE) darkcat-all; \
-		echo ""; \
-		echo "── 3/4 Synthesis ──"; \
-		echo ""; \
-		$(MAKE) darkcat-synth; \
 	fi
 	@if [ "$(TIER)" = "full" ]; then \
-		echo ""; echo "── 4/4 Pitkeel ──"; \
+		echo ""; echo "── 3/3 Pitkeel ──"; \
 	else \
 		echo ""; echo "── 2/2 Pitkeel ──"; \
 	fi

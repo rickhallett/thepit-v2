@@ -14,22 +14,27 @@
 ### Phase 2: Gate in isolation
 - **Action:** `make gauntlet-gate` on current clean tree.
 - **Pass:** `.gauntlet/gate.json` exists, verdict `pass`, tree hash matches `git write-tree`.
-- **Status:** ☐
+- **Status:** ✓ PASS — gate.json valid, verdict pass, tree eefafe1a matches git write-tree
 
 ### Phase 3: DC-Claude in isolation
 - **Action:** `make darkcat-claude` against staged T-003 change.
 - **Pass:** `.logs/dc-*-claude.log` exists, verdict line present, `.gauntlet/dc-claude.json` attestation written, tree matches.
-- **Status:** ☐
+- **Status:** ✓ PASS WITH FINDINGS — 4 minor (doc inconsistencies), 0 major, 0 critical. Log: .logs/dc-eefafe1a-claude.log
 
 ### Phase 4: DC-OpenAI in isolation
 - **Action:** `make darkcat-openai`.
 - **Pass:** Same as phase 3 for openai.
-- **Status:** ☐
+- **Status:** ✓ PASS — 0 findings, verdict pass, tree eefafe1a matches
 
 ### Phase 5: DC-Gemini in isolation
 - **Action:** `make darkcat-gemini` (failed last time — validates `-y` flag fix).
 - **Pass:** Log + attestation valid. If fails: root cause before proceeding.
-- **Status:** ☐
+- **Status:** ✗ FAIL — dc-openai: 0 findings, verdict pass, tree eefafe1a matches
+
+### Phase 5: DC-Gemini in isolation
+- **Action:** `make darkcat-gemini` (failed last time — validates `-y` flag fix).
+- **Pass:** Log + attestation valid. If fails: root cause before proceeding.
+- **Status:** ✗ FAIL — gemini hung. Authenticated (YOLO mode, credentials loaded) but produced no review output. Killed after tool timeout. Log: 3 lines, no findings, no verdict. v0.32.1. Second failure mode (first was missing tool, this is silent hang). Root cause unknown — gemini -p with -y may not support tool execution reliably.
 
 ### Phase 6: Synth in isolation
 - **Action:** `make gauntlet-synth` (or equivalent). Requires DC logs from phases 3-5.
