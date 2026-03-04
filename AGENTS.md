@@ -60,6 +60,8 @@ SO.session_end := !unpushed_commits
 SO.yaml_hud    := address(captain) -> yaml_header_first
 SO.uv          := python -> uv_exclusively !exceptions          [SD-310]
 SO.echo        := order -> echo(Signal) BEFORE acting | !excepted [SD-315]
+SO.rerun       := bad_output -> diagnose & reset & rerun !fix_in_place  [dumb_zone]
+SO.atomic_task := 1_action == 1_instruction_set == 1_agent              [all_dev]
 ```
 
 ---
@@ -174,13 +176,23 @@ DEF extra_tight    := quarterdeck | beat_to_quarters | emergency
 
 -- Iteration & Tempo
 DEF HOTL := human_out_the_loop | machine_speed | plan->execute->review | !mid_steer
+    CAUTION: extended_HOTL.without(deep_engagement) -> degrades(expertise.that_makes_HOTL_safe)
 DEF HODL := human_grips_wheel | every_step.human | diametric_opposite(HOTL)
 RULE HOTL WHEN gate.can_verify | HODL WHEN requires(taste)
+DEF verifiable       := gate.can_check | automated | deterministic
+DEF taste_required   := !gate.checkable | L12.only | not_wrong.territory  [Amodei]
+RULE verify(what_you_can) & taste(what_you_cant)
 
 -- Error & Observation
 DEF oracle_contamination := L12.error -> propagates(!caught)            [SD-178]
 DEF naturalists_tax      := discovery_overhead(parallel) -> L12.saturated
 DEF model_triangulation  := cross_model.validation -> convergence | divergence
+
+-- Quality & Process
+DEF effort_backpressure  := effort_to_contribute := implicit_quality_filter | AI.eliminates -> signal_noise_collapse
+DEF interrupt_sovereignty := human.controls(review_timing) | agent.!interrupts | extends(temporal_asymmetry)
+DEF compound_quality     := clean_code -> better_context -> cleaner_code | inverse: stale_reference_propagation
+DEF engineering_problem  := slop.in_codebase -> fix(engineering) !blame(model) | models.capable WHEN context.correct
 ```
 
 Full verbose lexicon: `docs/internal/lexicon.md`
@@ -255,6 +267,11 @@ FOOTGUN hot_context_pressure :=
 FOOTGUN compaction_loss :=
   context_window.death & !on_file(decision) -> permanent_loss
   BRAKE: write_now [SD-266]                                    [L3, L6d]
+
+FOOTGUN cognitive_deskilling :=
+  extended_delegation -> skill_atrophy -> verification_capacity_degrades
+  compounds(all_other_footguns) | manifests_across_sessions !within
+  BRAKE: periodic_deep_engagement | !pure_review_mode          [L12, L9]
 ```
 
 ---

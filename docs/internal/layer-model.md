@@ -14,6 +14,10 @@ L0  WEIGHTS        | prior · inductive_bias · rlhf_alignment · training_distr
                    | These are frozen at inference time. The model cannot modify its own weights mid-conversation.
                    | >> produces: token probability distributions conditioned on input sequence
                    | ATTESTATION: frozen. verifiable only by training provider. opaque to all other layers.
+                   | OPEN QUESTION: Whether the limitations at L0-L4 (statistical pattern matching, autoregressive generation,
+                   |   no revision, no lookahead) are contingent on current architectures or inherent to the paradigm is
+                   |   an unresolved empirical question. The operational controls in this framework are designed to work
+                   |   regardless of the answer. [Howard, Amodei — convergent from opposite positions]
 
 L1  TOKENISATION   | bpe_encoding · vocab_size · token_boundary · context_window(absolute_max) · effective_context_length
                    | Text becomes integer sequences. Budget is finite and hard-capped. Model has no self-knowledge of position.
@@ -126,6 +130,17 @@ L11 CROSS_MODEL    | different_priors · different_inductive_bias · different_r
 L12 HUMAN_IN_LOOP  | captains_walkthrough · manual_qa · domain_expertise · tacit_knowledge · irreducible_uncertainty
                    | reasoning_token_observation · intent_verification · rubric_provision · compaction_control
                    | The only truly model-independent layer. 5hrs human QA > 1102 automated tests (empirically demonstrated).
+                   | NOT A STATIC SENSOR: L12 is a trained capacity requiring continuous exercise to maintain calibration.
+                   |   Workflows that systematically remove direct engagement (extended HOTL, Press the Button) will degrade
+                   |   L12 over time. The "use it or lose it" principle applies to engineering judgement. [Cognitive Deskilling foot gun]
+                   | SCALING CONSTRAINT: Review depth degrades inversely with agent count (monitoring paradox —
+                   |   Parasuraman & Riley 1997, Bainbridge 1983). As automation increases, human oversight capacity
+                   |   stays constant while the need for it increases. [Dell'Acqua et al. 2023: automation bias —
+                   |   humans accept AI output at higher rates than equivalent human output, even when it contains errors]
+                   | [EVIDENCE: METR RCT (2025) — experienced open-source developers 19% slower with AI tools, despite
+                   |   predicting 24% speedup and retrospectively believing 20% speedup. N=16 developers, 246 tasks.
+                   |   40-point perception-reality gap demonstrates L12 calibration failure regarding AI's contribution
+                   |   to own productivity. arXiv:2507.09089]
                    | [EVIDENCE: arXiv:2602.11988 — context pollution degrades human O(1)→O(n). 52→7 file reduction restored O(1) triage (SD-195)]
                    | Cannot be scaled. Cannot be automated. Cannot be replaced. Can be informed by L0-L11.
                    | L12 also functions as out-of-band backup storage when L3 fails. Captain restored layer model annotations from memory after compaction (SD-205). L12 is not only decision + verification — it is state persistence of last resort.
