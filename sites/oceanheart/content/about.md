@@ -10,15 +10,15 @@ I write TypeScript and Go. I've shipped production code at EDITED (retail analyt
 
 ## What I'm building
 
-**[The Pit](https://thepit.cloud)** — an agentic evaluation arena. 11 specialised agents governed by integration discipline. 840 commits and counting. 1,289 tests. 277 session decisions, every one on file. The agents write code, review each other's work, and catch each other's mistakes. I govern the process by which their output becomes trustworthy. The repo is public.
+**[The Pit](https://thepit.cloud)** — an agentic evaluation arena. 11 specialised agents governed by integration discipline. Every session decision on file. The agents write code, review each other's work, and catch each other's mistakes. I govern the process by which their output becomes trustworthy. The repo is public.
 
 **[oceanheart.ai](https://oceanheart.ai)** — this site. Learning in public about what happens when you give LLMs real responsibilities and then hold them to account.
 
-**[slopodar](https://oceanheart.ai/slopodar/)** — a field taxonomy of LLM output patterns. 15 entries caught in the wild, not theorised in advance. Epistemic theatre, paper guardrails, analytical lullabies. The things models do when they're trying to sound like they mean it.
+**[slopodar](https://oceanheart.ai/slopodar/)** — a field taxonomy of LLM output patterns caught in the wild. Epistemic theatre, paper guardrails, analytical lullabies.
 
 ## What I think about
 
-How do you keep the human in the loop when the loop runs at machine speed? How do you verify output from a system that is probabilistic at every step? How do you build governance that scales without becoming theatre?
+How do you keep the human in the loop when the loop runs at machine speed? How do you build governance that scales without becoming theatre?
 
 I came to this from therapy, where the core skill is noticing when someone (including yourself) is producing plausible-sounding nonsense. Turns out that skill transfers directly.
 

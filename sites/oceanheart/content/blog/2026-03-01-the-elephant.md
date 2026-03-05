@@ -39,7 +39,7 @@ sort descending
 tag boot files
 ```
 
-5 agent-minutes to build. 3 seconds to run. The fix — stop loading all 271 historical decisions on every wake — drops 30k tokens from the boot sequence.[^1]
+5 agent-minutes to build. 3 seconds to run. The fix (stop loading all 271 historical decisions on every wake) drops 30k tokens from the boot sequence.[^1]
 
 [Provenance](https://github.com/rickhallett/thepit/blob/master/docs/internal/weaver/token-heatmap.yaml) | [Script](https://github.com/rickhallett/thepit/blob/master/bin/token-heatmap.js)
 
