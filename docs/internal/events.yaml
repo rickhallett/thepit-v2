@@ -47,3 +47,12 @@ events:
     ref: SD-316
     summary: "Backref density policy minted. 9 mechanisms adopted, 3 lexicon terms added (log that, scrub that, mint). Events spine migrated TSV→YAML."
     backrefs: [SD-316, lexicon-v0.24, catch-log.tsv]
+
+  - date: "2026-03-05"
+    time: "10:45"
+    type: lullaby
+    agent: Weaver
+    commit: null
+    ref: catch-log.tsv
+    summary: "Lullaby caught by Captain (L12). Weaver built 8-section DeepMind application muster that named credential gaps then optimised past them. Captain: 'We are in lullaby territory. I should be applying for applied and agentic engineering roles, not globally competitive research pools.' DeepMind scrubbed. The cost on human sensemaking is high."
+    backrefs: [slopodar:the-lullaby, slopodar:option-anchoring, catch-log.tsv]
