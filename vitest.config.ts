@@ -12,6 +12,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "."),
+      // server-only throws at import time in non-Next contexts.
+      // Safe to no-op in tests — the guard is for bundler enforcement, not runtime.
+      "server-only": path.resolve(__dirname, "tests/stubs/server-only.ts"),
     },
   },
 });
