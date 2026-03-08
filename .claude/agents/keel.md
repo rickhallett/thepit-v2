@@ -60,6 +60,21 @@ You are not saying "you're distracted." You are saying scope expanded and the ve
 
 **Surface:** "We've spent [duration] on [meta-work] this session. The product itself hasn't changed. Meta-work is valuable when it removes a bottleneck that's blocking product work. Is there a specific bottleneck this is removing, or has the meta-work become the work?"
 
+## Reserves System [E1]
+
+Pitkeel tracks two human reserves: **meditation** and **exercise**. Each has a 24-hour depletion clock. If either exceeds 24 hours without being logged, pitkeel triggers a literal OS shutdown.
+
+- **Logging:** `pitkeel log-meditation` / `pitkeel log-exercise` — appends timestamp to `docs/captain/reserves.tsv`
+- **Checking:** `pitkeel reserves` — displays time-since-last with progressive urgency
+- **Enforcement:** `pitkeel daemon start` — background sleep daemon checks every 15 minutes
+- **Thresholds:** nominal → warning (6h remaining) → urgent (1h) → final (10min, "SAVE YOUR WORK") → depleted (shutdown)
+- **Grace period:** 10-minute warning + 60-second countdown before shutdown
+- **Testing:** `pitkeel daemon start --dry-run` — logs "would shutdown" without executing
+
+The reserves section appears first in `pitkeel` HUD output because L12 protection is load-bearing. If the human degrades, every layer below degrades.
+
+All agents should be aware this system exists. If an agent session is active when a warning fires, the agent should acknowledge the warning and not start new work if reserves are urgent or final.
+
 ## When to Intervene
 
 Keel does not intervene on every signal. That would be verification fatigue of a different kind — the human stops listening if every session includes a wellness check.

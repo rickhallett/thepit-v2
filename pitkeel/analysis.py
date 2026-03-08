@@ -253,8 +253,6 @@ def analyse_velocity(commits: list[Commit]) -> VelocitySignal:
 
 @dataclass
 class WellnessSignal:
-    whoop_present: bool = False
-    whoop_path: str = ""
     captains_log_present: bool = False
     captains_log_path: str = ""
     date: str = ""
@@ -268,14 +266,10 @@ def analyse_wellness(now: datetime, root: str) -> WellnessSignal:
 
     sig = WellnessSignal(
         date=date_str,
-        whoop_path=os.path.join(
-            root, "docs", "internal", "doctor", "captain", f"whoop-{date_str}.log"
-        ),
         captains_log_path=os.path.join(
             root, "docs", "internal", "captain", "captainslog", year, month, f"{day}.md"
         ),
     )
-    sig.whoop_present = os.path.exists(sig.whoop_path)
     sig.captains_log_present = os.path.exists(sig.captains_log_path)
     return sig
 
@@ -328,6 +322,133 @@ def analyse_context(root: str) -> ContextSignal:
         sig.d3_ratio = sig.d3_count / sig.total
 
     sig.d1_warning = sig.d1_ratio > 0.20
+    return sig
+
+
+# --------------------------------------------------------------------------
+# Reserves analysis
+# --------------------------------------------------------------------------
+
+
+@dataclass
+class ReserveEntry:
+    when: datetime
+    kind: str  # "meditation" or "exercise"
+
+
+@dataclass
+class ReserveStatus:
+    last: datetime | None = None
+    elapsed: timedelta = field(default_factory=timedelta)
+    remaining: timedelta = field(default_factory=lambda: timedelta(hours=24))
+    severity: str = "nominal"  # nominal, warning, urgent, final, depleted
+
+
+@dataclass
+class ReservesSignal:
+    meditation: ReserveStatus = field(default_factory=ReserveStatus)
+    exercise: ReserveStatus = field(default_factory=ReserveStatus)
+    any_depleted: bool = False
+    shutdown_required: bool = False
+
+
+RESERVES_LIMIT = timedelta(hours=24)
+RESERVES_WARN = timedelta(hours=18)  # 6h remaining
+RESERVES_URGENT = timedelta(hours=23)  # 1h remaining
+RESERVES_FINAL = timedelta(hours=23, minutes=50)  # 10min remaining
+
+
+def _reserve_status(last: datetime | None, now: datetime) -> ReserveStatus:
+    """Compute reserve status for a single reserve type."""
+    status = ReserveStatus()
+    if last is None:
+        # No record — treat as depleted
+        status.severity = "depleted"
+        status.remaining = timedelta(0)
+        return status
+
+    status.last = last
+    status.elapsed = now - last
+    status.remaining = max(RESERVES_LIMIT - status.elapsed, timedelta(0))
+
+    if status.elapsed >= RESERVES_LIMIT:
+        status.severity = "depleted"
+    elif status.elapsed >= RESERVES_FINAL:
+        status.severity = "final"
+    elif status.elapsed >= RESERVES_URGENT:
+        status.severity = "urgent"
+    elif status.elapsed >= RESERVES_WARN:
+        status.severity = "warning"
+    else:
+        status.severity = "nominal"
+
+    return status
+
+
+def analyse_reserves(entries: list[ReserveEntry], now: datetime) -> ReservesSignal:
+    """Analyse reserves state from logged entries.
+
+    Pure function: takes entries and current time, returns signal.
+    Does not read files or invoke side effects."""
+    sig = ReservesSignal()
+
+    # Find most recent entry of each type
+    last_meditation: datetime | None = None
+    last_exercise: datetime | None = None
+
+    for entry in entries:
+        if entry.kind == "meditation":
+            if last_meditation is None or entry.when > last_meditation:
+                last_meditation = entry.when
+        elif entry.kind == "exercise":
+            if last_exercise is None or entry.when > last_exercise:
+                last_exercise = entry.when
+
+    sig.meditation = _reserve_status(last_meditation, now)
+    sig.exercise = _reserve_status(last_exercise, now)
+    sig.any_depleted = (
+        sig.meditation.severity == "depleted" or sig.exercise.severity == "depleted"
+    )
+    sig.shutdown_required = sig.any_depleted
+
+    return sig
+
+
+# --------------------------------------------------------------------------
+# Session noise (ultradian cycle awareness)
+# --------------------------------------------------------------------------
+
+ULTRADIAN_CYCLE = timedelta(minutes=90)
+SESSION_ADVISORY = timedelta(hours=2)
+SESSION_DANGER = timedelta(hours=3)
+
+
+@dataclass
+class SessionNoiseSignal:
+    duration: timedelta = field(default_factory=timedelta)
+    level: str = "quiet"  # quiet, note, advisory, warning
+    message: str = ""
+
+
+def analyse_session_noise(session_duration: timedelta) -> SessionNoiseSignal:
+    """Progressive session noise based on ultradian cycles.
+
+    Supplements existing fatigue detection with earlier, more direct messages.
+    Pure function."""
+    sig = SessionNoiseSignal(duration=session_duration)
+
+    if session_duration >= SESSION_DANGER:
+        sig.level = "warning"
+        sig.message = "Danger threshold. Flow state masks fatigue."
+    elif session_duration >= SESSION_ADVISORY:
+        sig.level = "advisory"
+        sig.message = "Consider a break. Cognitive load accumulating."
+    elif session_duration >= ULTRADIAN_CYCLE:
+        sig.level = "note"
+        sig.message = "Ultradian cycle complete. Break optimal."
+    else:
+        sig.level = "quiet"
+
     return sig
 
 

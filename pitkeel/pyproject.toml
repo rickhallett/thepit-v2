@@ -2,12 +2,14 @@
 name = "pitkeel"
 version = "0.1.0"
 description = "Operational stability signals from git state"
-readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
 
 [project.scripts]
 pitkeel = "pitkeel:main"
+
+[tool.setuptools]
+py-modules = ["pitkeel", "analysis", "git_io", "keelstate", "daemon"]
 
 [tool.pytest.ini_options]
 testpaths = ["."]

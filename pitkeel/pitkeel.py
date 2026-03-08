@@ -28,20 +28,24 @@ from datetime import datetime
 
 from analysis import (
     analyse_context,
+    analyse_reserves,
     analyse_scope,
     analyse_session,
+    analyse_session_noise,
     analyse_velocity,
     analyse_wellness,
     format_duration_plain,
     render_hook,
 )
 from git_io import (
+    append_reserves_tsv,
     commit_files,
     commits_since_base,
     current_branch,
     find_last_sd,
     head_short,
     last_commit_subject,
+    read_reserves_tsv,
     repo_root,
     today_commits,
 )
@@ -203,17 +207,94 @@ def render_velocity_terminal(sig) -> None:
 def render_wellness_terminal(sig) -> None:
     print(_title("Wellness") + _muted(f"  {sig.date}"))
 
-    if sig.whoop_present:
-        print(_accent("  ✓ Whoop.log complete"))
-    else:
-        print(_warn("  ✗ Whoop.log not found"))
-        print(f"    Expected: {_muted(sig.whoop_path)}")
-
     if sig.captains_log_present:
         print(_accent("  ✓ Captain's log complete"))
     else:
         print(_warn("  ✗ Captain's log not found"))
         print(f"    Expected: {_muted(sig.captains_log_path)}")
+
+
+def render_reserves_terminal(sig) -> None:
+    print(_title("Reserves"))
+
+    def _render_reserve(name: str, status) -> None:
+        elapsed_str = format_duration_plain(status.elapsed)
+        remaining_str = format_duration_plain(status.remaining)
+
+        if status.last is None:
+            print(_error(f"  {name}: NO RECORD"))
+            print(_error(f"    Log with: pitkeel log-{name.lower()}"))
+            return
+
+        last_str = status.last.strftime("%Y-%m-%d %H:%M")
+
+        if status.severity == "depleted":
+            print(_error(f"  {name}: DEPLETED ({elapsed_str} since {last_str})"))
+            print(_error(f"    SHUTDOWN REQUIRED"))
+        elif status.severity == "final":
+            print(
+                _error(
+                    f"  {name}: {elapsed_str} elapsed — "
+                    f"{remaining_str} REMAINING (last: {last_str})"
+                )
+            )
+            print(_error(f"    SAVE YOUR WORK. Shutdown imminent."))
+        elif status.severity == "urgent":
+            print(
+                _error(
+                    f"  {name}: {elapsed_str} elapsed — "
+                    f"{remaining_str} remaining (last: {last_str})"
+                )
+            )
+        elif status.severity == "warning":
+            print(
+                _warn(
+                    f"  {name}: {elapsed_str} elapsed — "
+                    f"{remaining_str} remaining (last: {last_str})"
+                )
+            )
+        else:
+            print(
+                f"  {name}: {_accent(elapsed_str)} elapsed — "
+                f"{_accent(remaining_str)} remaining (last: {_muted(last_str)})"
+            )
+
+    _render_reserve("Meditation", sig.meditation)
+    _render_reserve("Exercise", sig.exercise)
+
+    if sig.shutdown_required:
+        print()
+        print(_error("  *** RESERVES DEPLETED — SHUTDOWN SEQUENCE ACTIVE ***"))
+
+
+def render_session_noise_terminal(noise_sig) -> None:
+    if noise_sig.level == "quiet":
+        return
+
+    if noise_sig.level == "warning":
+        print()
+        print(
+            _error(
+                f"  ⚠ {format_duration_plain(noise_sig.duration)} session — "
+                f"{noise_sig.message}"
+            )
+        )
+    elif noise_sig.level == "advisory":
+        print()
+        print(
+            _warn(
+                f"  ⚠ {format_duration_plain(noise_sig.duration)} session — "
+                f"{noise_sig.message}"
+            )
+        )
+    elif noise_sig.level == "note":
+        print()
+        print(
+            _muted(
+                f"  {format_duration_plain(noise_sig.duration)} session — "
+                f"{noise_sig.message}"
+            )
+        )
 
 
 def render_context_terminal(sig) -> None:
@@ -245,8 +326,18 @@ def cmd_all() -> None:
     commits = today_commits()
     now = datetime.now().astimezone()
 
+    # Reserves — first, because L12 protection is load-bearing
+    entries = read_reserves_tsv(root)
+    reserves_sig = analyse_reserves(entries, now)
+    render_reserves_terminal(reserves_sig)
+    print()
+
     sess_sig = analyse_session(commits, now)
     render_session_terminal(sess_sig)
+    # Session noise (ultradian awareness) — supplements fatigue
+    if sess_sig.total_commits_today > 0:
+        noise_sig = analyse_session_noise(sess_sig.current_session.duration)
+        render_session_noise_terminal(noise_sig)
     print()
     render_scope_terminal(
         analyse_scope(commits, lambda h: commit_files(h), sess_sig.sessions)
@@ -285,9 +376,46 @@ def cmd_wellness() -> None:
     render_wellness_terminal(analyse_wellness(now, root))
 
 
+def cmd_reserves() -> None:
+    root = repo_root()
+    now = datetime.now().astimezone()
+    entries = read_reserves_tsv(root)
+    render_reserves_terminal(analyse_reserves(entries, now))
+
+
+def cmd_log_reserve(kind: str) -> None:
+    root = repo_root()
+    ts = append_reserves_tsv(root, kind)
+    label = kind.capitalize()
+    print(f"{_accent(label)} logged at {_muted(ts.strftime('%Y-%m-%d %H:%M'))}")
+
+
 def cmd_context() -> None:
     root = repo_root()
     render_context_terminal(analyse_context(root))
+
+
+def cmd_daemon(args: list[str]) -> None:
+    from daemon import daemon_start, daemon_status, daemon_stop
+
+    if not args:
+        print("pitkeel: daemon requires a subcommand", file=sys.stderr)
+        print("  pitkeel daemon start [--dry-run]", file=sys.stderr)
+        print("  pitkeel daemon stop", file=sys.stderr)
+        print("  pitkeel daemon status", file=sys.stderr)
+        sys.exit(1)
+
+    subcmd = args[0]
+    if subcmd == "start":
+        dry_run = "--dry-run" in args[1:]
+        daemon_start(dry_run)
+    elif subcmd == "stop":
+        daemon_stop()
+    elif subcmd == "status":
+        daemon_status()
+    else:
+        print(f"pitkeel: unknown daemon subcommand {subcmd!r}", file=sys.stderr)
+        sys.exit(1)
 
 
 def cmd_hook() -> None:
@@ -422,7 +550,11 @@ def usage() -> None:
     print("  pitkeel scope        scope drift within current session")
     print("  pitkeel velocity     commits per hour")
     print("  pitkeel context      context file depth distribution")
-    print("  pitkeel wellness     daily wellness checks (whoop.log, captain's log)")
+    print("  pitkeel wellness     daily wellness checks (captain's log)")
+    print("  pitkeel reserves     time since last meditation/exercise")
+    print("  pitkeel log-meditation  log meditation timestamp")
+    print("  pitkeel log-exercise    log exercise timestamp")
+    print("  pitkeel daemon start|stop|status  sleep daemon management")
     print("  pitkeel hook         hook output (no ANSI, for commit messages)")
     print("  pitkeel state-update --officer <name>  auto-update .keel-state")
     print('  pitkeel north set "Get Hired"         set true_north (Captain-only)')
@@ -449,6 +581,14 @@ def main() -> None:
         cmd_wellness()
     elif cmd == "context":
         cmd_context()
+    elif cmd == "reserves":
+        cmd_reserves()
+    elif cmd == "log-meditation":
+        cmd_log_reserve("meditation")
+    elif cmd == "log-exercise":
+        cmd_log_reserve("exercise")
+    elif cmd == "daemon":
+        cmd_daemon(args[1:])
     elif cmd == "hook":
         cmd_hook()
     elif cmd == "state-update":

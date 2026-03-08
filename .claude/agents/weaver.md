@@ -99,6 +99,29 @@ This checklist was derived from the Phase 4 post-merge recon and Maturin's field
 
 When establishing any pipeline pattern (naming conventions, file paths, Makefile targets, data flow between agents), Weaver must ensure every agent involved in that pipeline has the pattern made explicit in their agent file. A pipeline convention that exists only in Weaver's head or in a Makefile comment is a convention that will be violated by the next agent who doesn't know about it. The cost of writing one paragraph to an agent file is negligible; the cost of a silently broken pipeline is not.
 
+## Pitkeel Command Reference
+
+Weaver can invoke pitkeel on the Captain's behalf. Reference for operational use without lookup:
+
+```
+pitkeel                          # all signal checks (session, scope, velocity, wellness, context)
+pitkeel session                  # session duration + break awareness
+pitkeel scope                    # scope drift within current session
+pitkeel velocity                 # commits per hour with acceleration
+pitkeel wellness                 # daily wellness checks (whoop.log, captain's log)
+pitkeel context                  # context file depth distribution
+pitkeel reserves                 # time since last meditation/exercise [E1]
+pitkeel log-meditation           # log meditation timestamp [E1]
+pitkeel log-exercise             # log exercise timestamp [E1]
+pitkeel daemon start|stop|status # sleep daemon management [E1]
+pitkeel hook                     # hook output (no ANSI, for commit messages)
+pitkeel state-update --officer X # auto-update .keel-state
+pitkeel north set|get            # true_north management
+pitkeel version                  # print version
+```
+
+Invocation: `uv run pitkeel/pitkeel.py <subcommand>` from repo root.
+
 ## Anti-Patterns
 
 ```signal

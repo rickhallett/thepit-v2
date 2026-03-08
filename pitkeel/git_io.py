@@ -1,15 +1,16 @@
-# git_io.py — Git subprocess layer for pitkeel.
+# git_io.py — Git subprocess and file IO layer for pitkeel.
 #
-# IO boundary: all subprocess calls live here. Analysis functions
-# never call these directly — they receive data as arguments.
+# IO boundary: all subprocess calls and file reads live here. Analysis
+# functions never call these directly — they receive data as arguments.
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 from datetime import datetime, timezone
 
-from analysis import Commit
+from analysis import Commit, ReserveEntry
 
 
 def _run(args: list[str], cwd: str | None = None) -> str | None:
@@ -94,6 +95,76 @@ def commits_since_base() -> int | None:
                 except ValueError:
                     pass
     return None
+
+
+def reserves_tsv_path(root: str) -> str:
+    """Return the path to the reserves TSV file."""
+    return os.path.join(root, "docs", "captain", "reserves.tsv")
+
+
+def read_reserves_tsv(root: str) -> list[ReserveEntry]:
+    """Read reserves.tsv and return parsed entries.
+
+    Returns empty list if file doesn't exist or has only a header."""
+    path = reserves_tsv_path(root)
+    if not os.path.exists(path):
+        return []
+
+    entries: list[ReserveEntry] = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("datetime"):
+                continue  # skip header and empty lines
+            parts = line.split("\t")
+            if len(parts) < 2:
+                continue
+            try:
+                when = datetime.fromisoformat(parts[0])
+                # Normalize naive timestamps to local timezone to prevent
+                # TypeError when subtracting from aware datetime [darkcat fix]
+                if when.tzinfo is None:
+                    when = when.astimezone()
+                kind = parts[1]
+                if kind in ("meditation", "exercise"):
+                    entries.append(ReserveEntry(when=when, kind=kind))
+            except ValueError:
+                continue
+
+    return entries
+
+
+VALID_RESERVE_KINDS = ("meditation", "exercise")
+
+
+def append_reserves_tsv(root: str, kind: str) -> datetime:
+    """Append a reserve entry to the TSV. Creates file with header if needed.
+
+    Uses atomic open-check-write pattern to avoid race condition where
+    two concurrent calls could both create the file and interleave headers.
+
+    Raises ValueError for unknown reserve types.
+    Returns the timestamp that was logged."""
+    if kind not in VALID_RESERVE_KINDS:
+        raise ValueError(
+            f"Unknown reserve type {kind!r}. "
+            f"Valid types: {', '.join(VALID_RESERVE_KINDS)}"
+        )
+    path = reserves_tsv_path(root)
+    now = datetime.now().astimezone()
+
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    # Open in append mode — atomic on POSIX for short writes.
+    # Check if file is empty/new and write header if needed.
+    with open(path, "a+") as f:
+        f.seek(0, 2)  # seek to end
+        if f.tell() == 0:
+            f.write("datetime\ttype\n")
+        f.write(f"{now.isoformat()}\t{kind}\n")
+
+    return now
 
 
 def find_last_sd(content: str) -> str:

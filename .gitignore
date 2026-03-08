@@ -14,6 +14,7 @@ test-results/
 .keel-state
 .gauntlet/
 pitkeel/.venv/
+pitkeel.mk
 pitkeel/.pytest_cache/
 __pycache__/
 *.wav
