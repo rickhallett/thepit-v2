@@ -13,8 +13,12 @@ Derived from SPEC.md dependency chain and EVAL.md success criteria. Each unit is
 | 2 | User sync on first auth | 04 | `1a6c5f0` | ensureUserRecord, referral codes, onboarding orchestrator |
 | — | API utils + rate limiter | 05 | `2622c65` | Branded types, error responses, sliding window rate limiter |
 | 3 | Preset agent definitions | 06 | `0b1e03d` | 4 JSON presets, Zod-validated loader, frozen cache |
+| 4a | Bout validation | 07 | `50c12dc` | BoutStatus enum, TranscriptEntry, SSEEventType, Zod schema, content safety, idempotency |
+| 4b | Bout turn loop | 08 | `7df99e5` | executeTurnLoop, round-robin agents, AI SDK streaming, buildTurnMessages |
+| 4c | Bout streaming + route | 09 | `6c254e3` | createBoutSSEStream (SSE), POST /api/run-bout, model enum validation, double-close guard |
 
 **QA signoff:** T-001 through T-006 verified (`docs/internal/weaver/qa-signoff-T001-T006.md`). Gate green. Foundation ready. 49 tests (40 pass, 9 skipped — need live DB).
+**T-007–T-009:** Phase 2 Unit 4 complete. Bout engine works end-to-end (without persistence/credits). 95 tests (86 pass, 9 skip). Darkcat-verified (2 rounds, critical double-close fixed).
 
 ---
 
