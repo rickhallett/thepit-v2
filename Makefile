@@ -309,7 +309,8 @@ darkcat:
 		--allowedTools "Bash(git:*) Read" \
 		> $(LOGS)/dc-$(TREE)-claude.log 2>&1
 	@echo "  → $(LOGS)/dc-$(TREE)-claude.log"
-	@grep -E '^(Findings:|Verdict:|##|###)' $(LOGS)/dc-$(TREE)-claude.log || true
+	@grep -E '^[#]{3} \[SEVERITY' $(LOGS)/dc-$(TREE)-claude.log | sed 's/^[#]*/   /' || true
+	@grep -E '^(Findings:|Verdict:)' $(LOGS)/dc-$(TREE)-claude.log | sed 's/^/  /' || true
 	@$(PITCOMMIT) attest dc-claude --tree $(TREE_FULL) --log $(LOGS)/dc-$(TREE)-claude.log
 
 # DC-2: OpenAI (Codex)
@@ -319,7 +320,8 @@ darkcat-openai:
 		"$$(cat $(DARKCAT_PROMPT))" \
 		> $(LOGS)/dc-$(TREE)-openai.log 2>&1
 	@echo "  → $(LOGS)/dc-$(TREE)-openai.log"
-	@grep -E '^(Findings:|Verdict:|##|###)' $(LOGS)/dc-$(TREE)-openai.log || true
+	@grep -E '^[#]{3} \[SEVERITY' $(LOGS)/dc-$(TREE)-openai.log | sed 's/^[#]*/   /' || true
+	@grep -E '^(Findings:|Verdict:)' $(LOGS)/dc-$(TREE)-openai.log | sed 's/^/  /' || true
 	@$(PITCOMMIT) attest dc-openai --tree $(TREE_FULL) --log $(LOGS)/dc-$(TREE)-openai.log
 
 # DC-3: Gemini
@@ -329,7 +331,8 @@ darkcat-gemini:
 		"$$(cat $(DARKCAT_PROMPT))" \
 		> $(LOGS)/dc-$(TREE)-gemini.log 2>&1
 	@echo "  → $(LOGS)/dc-$(TREE)-gemini.log"
-	@grep -E '^(Findings:|Verdict:|##|###)' $(LOGS)/dc-$(TREE)-gemini.log || true
+	@grep -E '^[#]{3} \[SEVERITY' $(LOGS)/dc-$(TREE)-gemini.log | sed 's/^[#]*/   /' || true
+	@grep -E '^(Findings:|Verdict:)' $(LOGS)/dc-$(TREE)-gemini.log | sed 's/^/  /' || true
 	@$(PITCOMMIT) attest dc-gemini --tree $(TREE_FULL) --log $(LOGS)/dc-$(TREE)-gemini.log
 
 # Darkcat pair — dc-claude + dc-openai (codex).

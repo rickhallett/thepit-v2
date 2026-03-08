@@ -64,7 +64,24 @@ SO.event_log    := notable_event -> append(events.yaml, {date, time, type, agent
 SO.rerun       := bad_output -> diagnose & reset & rerun !fix_in_place  [dumb_zone]
 SO.atomic_task := 1_action == 1_instruction_set == 1_agent              [all_dev]
 SO.commendation := extra_rations -> append(commendations.log, {date, agent, recipient, reason}) [durable]
+SO.backlog     := task.identified -> backlog add "title" --priority P [--epic E] [--tag T]
 ```
+
+### Backlog CLI
+
+Task tracking for the project. All agents use this instead of editing YAML directly.
+
+```
+backlog                               # list open items (default)
+backlog add "title" [-p high] [-e E1] [-t tag]  # add new item
+backlog list [-s open|closed|all] [-e E1] [-t tag] [-p high]
+backlog show BL-001                   # full item details
+backlog close BL-001 [-r "reason"]    # close an item
+backlog edit BL-001 -s blocked [-r "reason"]
+backlog count [-s open]               # count by status
+```
+
+Data: `docs/internal/backlog.yaml` | IDs: `BL-NNN` (auto-incremented)
 
 ---
 
