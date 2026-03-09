@@ -2,7 +2,7 @@
 // All amounts are in micro-credits unless otherwise specified.
 
 /** Per-million-token rates in GBP */
-const MODEL_PRICING = {
+export const MODEL_PRICING = {
   "claude-haiku": { inputPerMillion: 0.25, outputPerMillion: 1.25 },
   "claude-sonnet": { inputPerMillion: 3.0, outputPerMillion: 15.0 },
 } as const;
