@@ -609,3 +609,15 @@ The Captain extended this acknowledgment to all crew members, noting the closest
 | ID | Decision | Made By | Status |
 |----|----------|---------|--------|
 | SD-316 | [backref-density] **Backref density policy: 9 mechanisms adopted to increase the ref web density between LLM↔human I/O.** Captain's observation: "without refs, data is effectively lost forever." Adopted: (2) SD ref column in darkcat-findings.tsv, (4) curated interaction snapshots in `docs/internal/signal-examples.md`, (5) commit message DC-Ref trailers, (6) events spine — migrated from TSV to YAML for readability, (7) `make journal` daily collation target, (8) agent echo must cite SD/SO refs, (9) verbatim I/O recording for all sessions, (10) flag-and-capture via "log that" trigger. Rejected: (1) auto-append SD for DC catches — SDs reserved for explicit decisions, not data capture. Deferred: (3) session transcript dump. Lexicon additions: "log that" (capture this exchange to file), "scrub that" (remove from file, very rare), "mint" (create an SD or ref — evokes value). Lexicon note: "mark that" rejected as trigger for item 10 — collides with "mark" as general confirmation. "log that" adopted (10x better). | Captain (decisions, lexicon) / Weaver (muster, implementation) | **STANDING** |
+
+---
+
+## 2026-03-09 — Session (QA Sequencing & Cross-Model Triangulation)
+
+> Source: Weaver integration session. Code review complete, cross-model reviews commissioned.
+
+### Decisions Made
+
+| ID | Decision | Made By | Status |
+|----|----------|---------|--------|
+| SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Captain walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → CAPTAIN WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
