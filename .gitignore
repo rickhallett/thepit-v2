@@ -16,6 +16,7 @@ test-results/
 pitkeel/.venv/
 pitkeel.mk
 pitkeel/.pytest_cache/
+pitheat/target/
 __pycache__/
 *.egg-info/
 *.wav
