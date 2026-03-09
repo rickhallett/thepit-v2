@@ -241,7 +241,7 @@ Also on disk (not active crew): `analyst.md`, `scribe.md`, `maturin.md`, `anothe
 
 ---
 
-## Lexicon (Compressed — v0.24)
+## Lexicon (Compressed — v0.25)
 
 The vocabulary of this ship. If these terms are not in your context, you are not on this ship [SO-PERM-002].
 
@@ -277,6 +277,8 @@ DEF fair_winds     := closing_signal | conditions_favourable
 DEF extra_rations  := captains_commendation | rare | logged
 DEF polecats       := claude_p.agents | one_shot | !interactive        [SD-296]
 DEF darkcat        := adversarial_review.polecat | read_only | stain(diff, slopodar + watchdog + footguns)
+DEF darkcat_alley  := 3_model.cross_triangulation(codebase) | pre_QA & post_QA | structured_YAML + narrative
+                      parser(bin/triangulate) | 8_metrics | 7_visualisations | portfolio [SD-318]
 DEF gauntlet       := dev(gate) -> darkcat{claude,openai,gemini} -> synth -> pitkeel -> walkthrough -> commit
 DEF DONE           := gate.green & darkcat{3}.complete & synth.pass & pitkeel.reviewed & walkthrough.checked
 DEF prime_context  := min(context) WHERE smart_zone.enabled             [SD-311]
@@ -457,8 +459,6 @@ SD-286 [slopodar-boot]      := all_hands.boot -> read(slopodar) | STANDING
 SD-297 [sd-collision]       := collision -> forward_ref !renumber | STANDING
 
 -- Last 10 SDs (noopit chain)
-SD-305 [docs-structure]     := docs/{doctype}/ with depth levels
-SD-306 [measurement-hooks]  := commit_tags + slopodar_v2 + notebooks(analysis_day_only)
 SD-308 [thepit-v2-created]  := public repo, pre-registration, no implementation
 SD-309 [one-shot-on-hn]     := target(anthropic_red_team, hn) | "one shot on HN"
 SD-310 [uv-exclusive]       := python -> uv | !exceptions
@@ -468,6 +468,8 @@ SD-313 [signal-protocol]    := Signal PoC | 4.5:1 compression | DRAFT
 SD-314 [signal-early-results] := 6/6 decode, 8/8 questions | model_portable | PROTOTYPAL
 SD-315 [echo-check-fire]    := order -> echo(Signal) BEFORE acting | STANDING
 SD-316 [backref-density]    := 9_mechanisms -> ref_web_density | events_to_yaml | log_that | mint | STANDING
+SD-317 [qa-sequencing]      := 3_data_products(triangulation, fix_quality, human_delta) | STANDING
+SD-318 [darkcat-alley]      := 3_model.cross_triangulation | structured_YAML | bin/triangulate | 8_metrics | 7_viz | STANDING
 ```
 
 Full chain: `docs/internal/session-decisions.md` | Index: `docs/internal/session-decisions-index.yaml`

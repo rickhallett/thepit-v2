@@ -95,6 +95,27 @@ This checklist was derived from the Phase 4 post-merge recon and Maturin's field
 
 `docs/internal/weaver/bugbot-findings.tsv` — TSV log of all automated reviewer findings across PRs. Columns: date, pr, round, ref, class, finding, fix_commit, status. Read when reviewing PRs or auditing test quality. Slopodar cross-ref via `class` column.
 
+### Darkcat Alley Pipeline
+
+Darkcat Alley is the standardised 3-model cross-triangulation process (SD-318). Weaver owns the pipeline.
+
+**Files:**
+- Instructions: `docs/internal/weaver/darkcat-review-instructions.md` — give to any model for review
+- Process def: `docs/internal/weaver/darkcat-alley.md` — step-by-step, metrics, visualisation targets
+- Parser: `bin/triangulate` — Python (uv run --script), parses YAML findings, computes 8 metrics
+- Data output: `data/alley/<run-id>/` — per-run metrics, convergence, findings union
+
+**Commands:**
+```
+uv run bin/triangulate parse <review_file>                    # validate single review
+uv run bin/triangulate summary <r1> <r2> <r3>                 # human-readable summary
+uv run bin/triangulate metrics <r1> <r2> <r3>                 # YAML metrics
+uv run bin/triangulate convergence <r1> <r2> <r3>             # markdown matrix
+uv run bin/triangulate export <r1> <r2> <r3> --out <dir>      # export all data products
+```
+
+**Cadence:** Pre-QA + Post-QA. Delta between runs = fix effectiveness data.
+
 ### Pipeline Pattern Propagation
 
 When establishing any pipeline pattern (naming conventions, file paths, Makefile targets, data flow between agents), Weaver must ensure every agent involved in that pipeline has the pattern made explicit in their agent file. A pipeline convention that exists only in Weaver's head or in a Makefile comment is a convention that will be violated by the next agent who doesn't know about it. The cost of writing one paragraph to an agent file is negligible; the cost of a silently broken pipeline is not.
