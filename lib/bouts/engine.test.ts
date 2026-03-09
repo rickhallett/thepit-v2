@@ -14,13 +14,22 @@ import type { TranscriptEntry } from "./types";
 // Mock the ai module before imports
 vi.mock("ai", () => ({
   streamText: vi.fn(),
+  generateText: vi.fn(),
 }));
 
 // Import after mock setup
-import { streamText } from "ai";
-import { executeTurnLoop, buildTurnMessages, type TurnLoopConfig, type TurnCallback } from "./engine";
+import { streamText, generateText } from "ai";
+import {
+  executeTurnLoop,
+  buildTurnMessages,
+  generateShareLine,
+  computeActualCostMicro,
+  type TurnLoopConfig,
+  type TurnCallback,
+} from "./engine";
 
 const mockStreamText = vi.mocked(streamText);
+const mockGenerateText = vi.mocked(generateText);
 
 // Helper to create a mock streamText result
 function createMockStreamResult(text: string, outputTokens: number): ReturnType<typeof streamText> {
@@ -412,5 +421,198 @@ describe("executeTurnLoop", () => {
     };
 
     await expect(executeTurnLoop(config, callbacks)).rejects.toThrow("LLM API error");
+  });
+});
+
+describe("generateShareLine", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("calls generateText with correct system prompt", async () => {
+    mockGenerateText.mockResolvedValue({
+      text: "A fierce debate on evolution",
+    } as Awaited<ReturnType<typeof generateText>>);
+
+    const transcript: TranscriptEntry[] = [
+      {
+        turnIndex: 0,
+        agentId: "darwin",
+        agentName: "Darwin",
+        agentColor: "#8B4513",
+        content: "Natural selection drives change.",
+        tokenCount: 10,
+        timestamp: "2024-01-01T00:00:00Z",
+      },
+    ];
+
+    await generateShareLine(transcript, mockModel);
+
+    expect(mockGenerateText).toHaveBeenCalledTimes(1);
+    const callArgs = mockGenerateText.mock.calls[0][0];
+
+    expect(callArgs.system).toContain("witty headline writer");
+    expect(callArgs.system).toContain("Maximum 80 tokens");
+    expect(callArgs.system).toContain("No hashtags");
+    expect(callArgs.system).toContain("No emoji");
+    expect(callArgs.maxOutputTokens).toBe(80);
+  });
+
+  it("summarizes transcript with agent names and truncated content", async () => {
+    mockGenerateText.mockResolvedValue({
+      text: "Two scientists clash on evolution",
+    } as Awaited<ReturnType<typeof generateText>>);
+
+    const longContent = "A".repeat(150); // 150 chars
+    const transcript: TranscriptEntry[] = [
+      {
+        turnIndex: 0,
+        agentId: "darwin",
+        agentName: "Darwin",
+        agentColor: "#8B4513",
+        content: longContent,
+        tokenCount: 50,
+        timestamp: "2024-01-01T00:00:00Z",
+      },
+      {
+        turnIndex: 1,
+        agentId: "huxley",
+        agentName: "Huxley",
+        agentColor: "#2F4F4F",
+        content: "Short reply",
+        tokenCount: 5,
+        timestamp: "2024-01-01T00:00:01Z",
+      },
+    ];
+
+    await generateShareLine(transcript, mockModel);
+
+    const callArgs = mockGenerateText.mock.calls[0][0];
+    const prompt = callArgs.prompt as string;
+
+    // First entry truncated to 100 chars + ellipsis
+    expect(prompt).toContain("Darwin: " + "A".repeat(100) + "...");
+    // Second entry not truncated (under 100 chars)
+    expect(prompt).toContain("Huxley: Short reply");
+    expect(prompt).not.toContain("Huxley: Short reply...");
+  });
+
+  it("returns trimmed text from LLM response", async () => {
+    mockGenerateText.mockResolvedValue({
+      text: "  Punchy headline with whitespace  \n",
+    } as Awaited<ReturnType<typeof generateText>>);
+
+    const transcript: TranscriptEntry[] = [
+      {
+        turnIndex: 0,
+        agentId: "darwin",
+        agentName: "Darwin",
+        agentColor: "#8B4513",
+        content: "Content",
+        tokenCount: 10,
+        timestamp: "2024-01-01T00:00:00Z",
+      },
+    ];
+
+    const result = await generateShareLine(transcript, mockModel);
+
+    expect(result).toBe("Punchy headline with whitespace");
+  });
+});
+
+describe("computeActualCostMicro", () => {
+  it("computes cost based on output tokens for haiku", () => {
+    const transcript: TranscriptEntry[] = [
+      {
+        turnIndex: 0,
+        agentId: "darwin",
+        agentName: "Darwin",
+        agentColor: "#8B4513",
+        content: "Response",
+        tokenCount: 100,
+        timestamp: "2024-01-01T00:00:00Z",
+      },
+      {
+        turnIndex: 1,
+        agentId: "huxley",
+        agentName: "Huxley",
+        agentColor: "#2F4F4F",
+        content: "Response",
+        tokenCount: 200,
+        timestamp: "2024-01-01T00:00:01Z",
+      },
+    ];
+
+    const cost = computeActualCostMicro(transcript, "claude-haiku");
+
+    // Expected calculation:
+    // 2 turns × 500 input tokens = 1000 input tokens
+    // 100 + 200 = 300 output tokens
+    // Haiku: $0.25/M input, $1.25/M output (in GBP)
+    // Input: 1000 * 0.25 / 1_000_000 = 0.00025 GBP
+    // Output: 300 * 1.25 / 1_000_000 = 0.000375 GBP
+    // Base: 0.000625 GBP
+    // With 10% margin: 0.0006875 GBP
+    // Micro: 0.0006875 / 0.01 * 100 = 6.875 → ceil = 7
+    expect(cost).toBe(7);
+  });
+
+  it("computes higher cost for sonnet model", () => {
+    const transcript: TranscriptEntry[] = [
+      {
+        turnIndex: 0,
+        agentId: "darwin",
+        agentName: "Darwin",
+        agentColor: "#8B4513",
+        content: "Response",
+        tokenCount: 100,
+        timestamp: "2024-01-01T00:00:00Z",
+      },
+    ];
+
+    const haikuCost = computeActualCostMicro(transcript, "claude-haiku");
+    const sonnetCost = computeActualCostMicro(transcript, "claude-sonnet");
+
+    // Sonnet is more expensive than Haiku
+    expect(sonnetCost).toBeGreaterThan(haikuCost);
+  });
+
+  it("handles empty token counts gracefully", () => {
+    const transcript: TranscriptEntry[] = [
+      {
+        turnIndex: 0,
+        agentId: "darwin",
+        agentName: "Darwin",
+        agentColor: "#8B4513",
+        content: "Response",
+        tokenCount: undefined, // no token count
+        timestamp: "2024-01-01T00:00:00Z",
+      },
+    ];
+
+    const cost = computeActualCostMicro(transcript, "claude-haiku");
+
+    // Should compute based on 0 output tokens + estimated input tokens
+    expect(cost).toBeGreaterThan(0); // Input tokens still contribute
+  });
+
+  it("rounds up to nearest micro-credit", () => {
+    const transcript: TranscriptEntry[] = [
+      {
+        turnIndex: 0,
+        agentId: "darwin",
+        agentName: "Darwin",
+        agentColor: "#8B4513",
+        content: "Response",
+        tokenCount: 1, // Very small output
+        timestamp: "2024-01-01T00:00:00Z",
+      },
+    ];
+
+    const cost = computeActualCostMicro(transcript, "claude-haiku");
+
+    // Should be an integer (ceiling applied)
+    expect(Number.isInteger(cost)).toBe(true);
+    expect(cost).toBeGreaterThan(0);
   });
 });

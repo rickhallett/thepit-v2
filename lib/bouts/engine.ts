@@ -1,7 +1,14 @@
-// engine.ts — Core bout execution: turn loop, LLM orchestration.
+// engine.ts — Core bout execution: turn loop, LLM orchestration, share line generation.
 // Source of truth for bout execution logic. Does NOT handle persistence or SSE streaming.
 
-import { streamText, type LanguageModel } from "ai";
+import { streamText, generateText, type LanguageModel } from "ai";
+import {
+  MODEL_PRICING,
+  type ModelId,
+  CREDIT_PLATFORM_MARGIN,
+  GBP_PER_CREDIT,
+  MICRO_PER_CREDIT,
+} from "@/lib/credits/catalog";
 import type { Preset, PresetAgent } from "./presets";
 import type { TranscriptEntry } from "./types";
 
@@ -133,4 +140,65 @@ export async function executeTurnLoop(
   }
 
   return transcript;
+}
+
+const SHARE_LINE_SYSTEM_PROMPT =
+  "You are a witty headline writer. Write one punchy sentence summarizing this debate. Maximum 80 tokens. No hashtags. No emoji.";
+
+/**
+ * Generate a share line from a completed transcript.
+ * Uses a separate LLM call (non-streaming) to Haiku for summarization.
+ */
+export async function generateShareLine(
+  transcript: TranscriptEntry[],
+  model: LanguageModel,
+): Promise<string> {
+  // Summarize transcript: agent names + first 100 chars of each turn
+  const summaryLines = transcript.map(
+    (entry) =>
+      `${entry.agentName}: ${entry.content.slice(0, 100)}${entry.content.length > 100 ? "..." : ""}`,
+  );
+  const transcriptSummary = summaryLines.join("\n");
+
+  const result = await generateText({
+    model,
+    system: SHARE_LINE_SYSTEM_PROMPT,
+    prompt: transcriptSummary,
+    maxOutputTokens: 80,
+  });
+
+  return result.text.trim();
+}
+
+/**
+ * Compute actual cost from transcript token counts.
+ * Sums output tokens across all turns and applies model pricing.
+ */
+export function computeActualCostMicro(
+  transcript: TranscriptEntry[],
+  model: ModelId,
+): number {
+  const pricing = MODEL_PRICING[model];
+
+  // Sum output tokens (we don't track input tokens in transcript)
+  const totalOutputTokens = transcript.reduce(
+    (sum, entry) => sum + (entry.tokenCount ?? 0),
+    0,
+  );
+
+  // Estimate input tokens: ~500 per turn (same as preauth estimate)
+  const estimatedInputTokens = transcript.length * 500;
+
+  // Calculate GBP cost
+  const inputCostGbp =
+    (estimatedInputTokens * pricing.inputPerMillion) / 1_000_000;
+  const outputCostGbp =
+    (totalOutputTokens * pricing.outputPerMillion) / 1_000_000;
+  const baseCostGbp = inputCostGbp + outputCostGbp;
+  const totalCostGbp = baseCostGbp * (1 + CREDIT_PLATFORM_MARGIN);
+
+  // Convert to micro-credits
+  const microCost = (totalCostGbp / GBP_PER_CREDIT) * MICRO_PER_CREDIT;
+
+  return Math.ceil(microCost);
 }

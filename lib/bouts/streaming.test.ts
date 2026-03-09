@@ -1,8 +1,8 @@
 /**
  * streaming.test.ts — SSE streaming tests.
  *
- * Tests createBoutSSEStream: event format, order, error handling, client disconnect.
- * Mocks executeTurnLoop to control callback timing.
+ * Tests createBoutSSEStream and createBoutSSEStreamWithPersistence.
+ * Mocks executeTurnLoop, db, and credit functions.
  *
  * @vitest-environment node
  */
@@ -10,16 +10,45 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { TurnCallback, TurnLoopConfig } from "./engine";
 import type { PresetAgent } from "./presets";
+import type { TranscriptEntry } from "./types";
 
-// Mock the engine module
+// Mock modules before imports
 vi.mock("./engine", () => ({
   executeTurnLoop: vi.fn(),
+  generateShareLine: vi.fn(),
+  computeActualCostMicro: vi.fn(),
 }));
 
-import { executeTurnLoop } from "./engine";
-import { createBoutSSEStream } from "./streaming";
+vi.mock("@/db", () => ({
+  db: {
+    update: vi.fn(),
+  },
+}));
+
+vi.mock("@/db/schema", () => ({
+  bouts: { id: "id" },
+}));
+
+vi.mock("drizzle-orm", () => ({
+  eq: vi.fn((a, b) => ({ column: a, value: b })),
+}));
+
+vi.mock("@/lib/credits/settlement", () => ({
+  settleCredits: vi.fn(),
+  refundPreauth: vi.fn(),
+}));
+
+import { executeTurnLoop, generateShareLine, computeActualCostMicro } from "./engine";
+import { db } from "@/db";
+import { settleCredits, refundPreauth } from "@/lib/credits/settlement";
+import { createBoutSSEStream, createBoutSSEStreamWithPersistence } from "./streaming";
 
 const mockExecuteTurnLoop = vi.mocked(executeTurnLoop);
+const mockGenerateShareLine = vi.mocked(generateShareLine);
+const mockComputeActualCostMicro = vi.mocked(computeActualCostMicro);
+const mockDb = vi.mocked(db);
+const mockSettleCredits = vi.mocked(settleCredits);
+const mockRefundPreauth = vi.mocked(refundPreauth);
 
 interface ParsedSSEEvent {
   event: string;
