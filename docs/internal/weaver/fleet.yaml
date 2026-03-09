@@ -1,0 +1,78 @@
+# Darkcat Fleet Configuration — v2
+# Backrefs: SD-318 (darkcat alley), fleet assessment 2026-03-09
+# Source: Artificial Analysis API (423 models, coding index ranking)
+
+version: 2
+date: "2026-03-09"
+supersedes: "v1 (claude-opus-4.6, gemini-3.1-pro, codex52)"
+
+models:
+  - id: claude-opus-4-6
+    provider: Anthropic
+    lineage: anthropic
+    api_base: "https://api.anthropic.com"
+    model_id: "claude-opus-4-20250514"  # verified 2026-03-09
+    env_key: ANTHROPIC_API_KEY
+    dispatch: api  # or manual via Claude Code
+    intelligence_rank: 4
+    coding_rank: 6
+    coding_index: 48.1
+    price_blended_per_mtok: 10.00
+    notes: "Our own model. Adaptive reasoning, max effort for darkcats."
+
+  - id: gemini-3.1-pro
+    provider: Google
+    lineage: google
+    api_base: "https://generativelanguage.googleapis.com"
+    model_id: "gemini-3.1-pro-preview"
+    env_key: GOOGLE_API_KEY
+    dispatch: api  # via generativelanguage.googleapis.com. Needs maxOutputTokens >= 8192.
+    intelligence_rank: 1
+    coding_rank: 2
+    coding_index: 55.5
+    price_blended_per_mtok: 4.50
+    notes: "#1 intelligence index. Manual dispatch via aistudio.google.com."
+
+  - id: gpt-5.4
+    provider: OpenAI
+    lineage: openai
+    api_base: "https://api.openai.com/v1"
+    model_id: "gpt-5.4"
+    reasoning_effort: "xhigh"
+    env_key: OPENAI_API_KEY
+    dispatch: api
+    intelligence_rank: 2
+    coding_rank: 1
+    coding_index: 57.3
+    price_blended_per_mtok: 5.62
+    notes: "Replaces codex52. #1 coding index. Use xhigh reasoning for darkcats. API uses max_completion_tokens not max_tokens."
+
+  - id: grok-4
+    provider: xAI
+    lineage: xai
+    api_base: "https://api.x.ai/v1"
+    model_id: "grok-4-latest"
+    env_key: GROK_API_KEY
+    dispatch: api
+    intelligence_rank: 30
+    coding_rank: 20
+    coding_index: 40.5
+    price_blended_per_mtok: 6.00
+    notes: "Different training lineage (X/Twitter corpus). Lower rank but independent prior."
+
+retired:
+  - id: codex52
+    reason: "Marginal value 2.8 (lowest), 3 operational incidents in 20260309 run, not ranked on AA intelligence index"
+    replaced_by: gpt-5.4
+    date: "2026-03-09"
+
+lineage_coverage:
+  v1: ["anthropic", "google", "openai-degraded"]  # 2 effective lineages
+  v2: ["anthropic", "google", "openai", "xai"]     # 4 distinct lineages
+
+selection_rationale: |
+  Fleet selected to maximise training lineage diversity for blind-spot detection.
+  Coding index is the primary metric (code review is the use case).
+  GLM-5 (Z AI, coding 44.2) was considered but rejected due to Chinese KYC requirements.
+  Grok 4 selected as 4th model for xAI lineage diversity despite lower coding rank.
+  Data source: Artificial Analysis API, 423 models, queried 2026-03-09.
