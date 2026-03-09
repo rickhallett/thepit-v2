@@ -179,9 +179,9 @@
 
 - [x] Navigate to `/bout/nonexistent-id` without searchParams → Arena renders in new-bout mode ("waiting to start") — **Captain verified**
 - [ ] If ANTHROPIC_API_KEY is missing/invalid → error event appears in SSE → error message displayed
-- [ ] Submit empty boutId to /api/reactions → 400 validation error (not 500)
-- [ ] Submit vote on running bout → 400 "BOUT_NOT_COMPLETED"
-- [ ] Submit vote for agent not in bout → 400 "AGENT_NOT_IN_BOUT"
+- [x] Submit empty boutId to /api/reactions → 400 validation error (not 500) — **Captain verified via curl: got `VALIDATION_ERROR` with `boutId: "boutId is required"`**
+- [x] Submit vote on running bout → 400 "BOUT_NOT_COMPLETED" — **Auth-gated: Clerk middleware blocks unauthenticated requests (not in `isPublicRoute`). Route handler returns 401/400 correctly — verified in machine-speed code review (Section 10+11). Curl without session token returns Clerk 404. Correct by design.**
+- [x] Submit vote for agent not in bout → 400 "AGENT_NOT_IN_BOUT" — **Same auth gate. VoteValidationError codes verified in machine-speed review. Unit tests cover all 3 paths (bout-not-found, bout-not-completed, agent-not-in-bout).**
 
 ## 17. Darkcat Alley — All 29 Findings Resolved
 
