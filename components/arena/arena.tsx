@@ -7,6 +7,7 @@
 import { useEffect, useRef } from "react";
 import { useBout, type BoutMessage } from "@/lib/bouts/use-bout";
 import { MessageCard } from "./message-card";
+import { SharePanel } from "@/components/engagement/share-panel";
 import type { TranscriptEntry } from "@/lib/bouts/types";
 
 interface ArenaProps {
@@ -101,13 +102,14 @@ export function Arena({ boutId, initialBout, autoStart }: ArenaProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Share line */}
+      {/* Share line + Share panel */}
       {displayShareLine && displayStatus === "done" && (
         <div className="mt-8 border-t border-stone-700 pt-6">
           <p className="text-sm text-stone-500">Share line</p>
           <p className="mt-1 text-lg font-medium italic text-stone-300">
             &ldquo;{displayShareLine}&rdquo;
           </p>
+          <SharePanel boutId={boutId} shareLine={displayShareLine} />
         </div>
       )}
     </div>
