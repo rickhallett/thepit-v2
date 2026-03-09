@@ -13,8 +13,6 @@ Backrefs: SD-318 (Darkcat Alley), SD-317 (QA sequencing)
 
 import importlib.util
 import importlib.machinery
-import io
-import textwrap
 from pathlib import Path
 
 import pytest
@@ -439,8 +437,7 @@ class TestAvgSimilarityToGroup:
                 "R1": _make_finding(title="Missing null check", file="a.ts"),
             },
         }
-        # all_findings is passed but unused in the implementation
-        score = tri._avg_similarity_to_group(finding, group, [])
+        score = tri._avg_similarity_to_group(finding, group)
         assert score == pytest.approx(1.0)
 
     def test_average_across_multiple_members(self):
@@ -451,36 +448,24 @@ class TestAvgSimilarityToGroup:
                 "R2": _make_finding(title="Something else entirely", file="z.ts"),
             },
         }
-        score = tri._avg_similarity_to_group(finding, group, [])
+        score = tri._avg_similarity_to_group(finding, group)
         # Should be average of ~1.0 (R1 match) and ~0.x (R2 mismatch)
         assert 0.3 < score < 0.9
 
-    def test_all_findings_parameter_is_unused(self):
-        """BUG: all_findings parameter is accepted but never used (2-way, LOW).
+    def test_only_two_parameters_required(self):
+        """Verify unused all_findings parameter was removed (2-way converged fix)."""
+        import inspect
 
-        The function signature accepts all_findings but the implementation
-        only uses group["matched_findings"]. The parameter could be removed.
-        This test documents the bug by proving the result is identical
-        regardless of what is passed for all_findings.
-        """
-        finding = _make_finding(title="Test", file="a.ts")
-        group = {
-            "matched_findings": {
-                "R1": _make_finding(title="Test", file="a.ts"),
-            },
-        }
-        score_empty = tri._avg_similarity_to_group(finding, group, [])
-        score_with_data = tri._avg_similarity_to_group(
-            finding,
-            group,
-            [("R1", _make_finding()), ("R2", _make_finding()), ("R3", _make_finding())],
+        sig = inspect.signature(tri._avg_similarity_to_group)
+        assert len(sig.parameters) == 2, (
+            f"Expected 2 parameters (finding, group), got {len(sig.parameters)}: "
+            f"{list(sig.parameters.keys())}"
         )
-        assert score_empty == score_with_data
 
     def test_empty_group_returns_zero(self):
         finding = _make_finding()
         group = {"matched_findings": {}}
-        assert tri._avg_similarity_to_group(finding, group, []) == 0.0
+        assert tri._avg_similarity_to_group(finding, group) == 0.0
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -499,15 +484,13 @@ class TestComputeMetrics:
 
     # -- converged_2plus --
 
-    def test_converged_2plus_n2_double_count_bug(self):
-        """BUG: converged_2plus double-counts for N=2 (Gemini F-001, HIGH).
+    def test_converged_2plus_n2_correct(self):
+        """Regression test: converged_2plus uses len>=2, no double-count for N=2.
 
-        When N=2, converged_all and converged_2 both count the same groups
-        (any group with 2 reviews hits BOTH len==n_reviews AND len==2).
-        The local variable converged_2plus = converged_all + converged_2 = 2x
-        the actual count. This surfaces in rate_2plus.
-
-        EXPECTED: rate_2plus should equal converged_groups / total, not 2x.
+        Previously (pre-fix), converged_2plus = converged_all + converged_2
+        double-counted when N=2 because both counted the same groups.
+        Fix: converged_2plus = sum(1 for g if len(g.convergence) >= 2).
+        Ref: Gemini F-001, 3-way converged finding.
         """
         review_ids = ["R1", "R2"]
         # One group converged by both reviews, one singleton
@@ -535,15 +518,10 @@ class TestComputeMetrics:
         metrics = self._build_groups_and_call(groups, review_ids)
         cr = metrics["convergence_rate"]
 
-        # BUG: converged_all=1 (len==2==n_reviews), converged_2=1 (len==2)
-        # internally converged_2plus = 1+1 = 2, but only 1 group is actually converged
         assert cr["converged_all"] == 1
         assert cr["converged_2"] == 1
-        # rate_2plus = converged_2plus/total = 2/2 = 1.0
-        assert (
-            cr["rate_2plus"] == 1.0
-        )  # BUG: should be 0.5 (1 converged out of 2 groups)
-        # EXPECTED: rate_2plus == 0.5
+        # 1 converged group out of 2 total = 0.5
+        assert cr["rate_2plus"] == 0.5
 
     def test_converged_2plus_n3_correct(self):
         """For N=3, converged_2 and converged_all are disjoint — correct.
@@ -594,15 +572,13 @@ class TestComputeMetrics:
         assert cr["rate_2plus"] == pytest.approx(2 / 3, abs=0.001)
         assert cr["single_model"] == 1
 
-    def test_converged_2plus_n4_misses_intermediate_bug(self):
-        """BUG: converged_2plus misses intermediate convergence sizes for N>3 (Gemini, HIGH).
+    def test_converged_2plus_n4_includes_intermediate(self):
+        """Regression test: converged_2plus includes intermediate convergence for N>3.
 
-        For N=4, a group converged by exactly 3 reviews has len(convergence)==3,
-        which is != n_reviews (4) and != 2, so it's counted in NEITHER
-        converged_all NOR converged_2. The internal converged_2plus = 0+0 = 0,
-        and rate_2plus = 0. But there IS a converged group.
-
-        EXPECTED: rate_2plus should reflect all groups with len >= 2.
+        Previously (pre-fix), a group with 3-of-4 convergence was missed by
+        converged_2plus because it checked only len==n_reviews and len==2.
+        Fix: converged_2plus = sum(1 for g if len(g.convergence) >= 2).
+        Ref: Gemini F-001.
         """
         review_ids = ["R1", "R2", "R3", "R4"]
         groups = [
@@ -622,53 +598,70 @@ class TestComputeMetrics:
         metrics = self._build_groups_and_call(groups, review_ids)
         cr = metrics["convergence_rate"]
 
-        # BUG: converged_all = 0 (len 3 != 4), converged_2 = 0 (len 3 != 2)
-        # rate_2plus = 0/1 = 0, but there IS a converged group (3-way)
-        assert cr["converged_all"] == 0
-        assert cr["converged_2"] == 0
-        assert cr["rate_2plus"] == 0  # BUG: should be 1.0 (1 converged / 1 total)
-        # EXPECTED: rate_2plus == 1.0
+        assert cr["converged_all"] == 0  # len 3 != 4
+        assert cr["converged_2"] == 0  # len 3 != 2
+        # 1 converged group (len>=2) out of 1 total = 1.0
+        assert cr["rate_2plus"] == 1.0
 
     # -- match_confidence --
 
-    def test_match_confidence_spanning_tree_bug(self):
-        """BUG: match_confidence averages N-1 spanning-tree edges instead of
-        all N*(N-1)/2 pairwise scores (3-way, HIGH).
+    def test_match_confidence_uses_all_pairwise(self):
+        """Regression test: match_confidence averages all N*(N-1)/2 pairwise scores.
 
-        For a 3-way match, there are 3 pairwise combinations (AB, AC, BC),
-        but the greedy algorithm only records 2 edges (the spanning tree).
-        match_confidence is the average of those 2 edges, not all 3 pairs.
+        Previously (pre-fix), only N-1 spanning-tree edges were averaged.
+        Now all pairwise similarities within a group are computed after grouping.
+        Ref: 3-way converged finding (Claude + Gemini + Codex).
 
-        This test documents the behavior: for a 3-way match, _scores
-        has 2 entries (N-1), not 3 (N*(N-1)/2).
+        Uses findings with varying pairwise similarities so the all-pairs
+        average differs from the spanning-tree average.
         """
+        # A-B: very similar titles + same file → high score
+        # A-C: somewhat similar titles + different file → medium score
+        # B-C: somewhat similar titles + different file → medium score
         reviews = {
-            "R1": [_make_finding(title="Same exact finding", file="same.ts")],
-            "R2": [_make_finding(title="Same exact finding", file="same.ts")],
-            "R3": [_make_finding(title="Same exact finding", file="same.ts")],
+            "R1": [
+                _make_finding(
+                    title="Missing null check in engine", file="lib/engine.ts"
+                )
+            ],
+            "R2": [
+                _make_finding(
+                    title="Missing null check in engine", file="lib/engine.ts"
+                )
+            ],
+            "R3": [
+                _make_finding(
+                    title="Null check absent from engine module", file="lib/engine.ts"
+                )
+            ],
         }
-        groups = tri.match_findings(reviews)
+        groups = tri.match_findings(reviews, threshold=0.4)
         three_way = [g for g in groups if len(g["convergence"]) == 3]
         assert len(three_way) == 1
 
-        # The match_confidence is computed from _scores which has N-1 entries
-        # for the spanning tree, not N*(N-1)/2 for all pairwise comparisons.
-        # For 3 identical findings, each pairwise score is ~1.0, so the average
-        # is still ~1.0 — the bug only manifests when scores differ across pairs.
-        # We can't inspect _scores directly (it's deleted), but we verify the
-        # confidence is present and reasonable.
         conf = three_way[0]["match_confidence"]
         assert conf is not None
-        assert conf == pytest.approx(1.0, abs=0.01)
+
+        # Verify by computing expected all-pairs average manually
+        members = list(three_way[0]["matched_findings"].values())
+        pairwise_sims = []
+        for a in range(len(members)):
+            for b in range(a + 1, len(members)):
+                file_sim = tri.similarity(members[a]["file"], members[b]["file"])
+                title_sim = tri.similarity(members[a]["title"], members[b]["title"])
+                pairwise_sims.append(0.3 * file_sim + 0.7 * title_sim)
+        expected = sum(pairwise_sims) / len(pairwise_sims)
+        assert len(pairwise_sims) == 3  # N*(N-1)/2 = 3 pairs
+        assert conf == pytest.approx(expected, abs=0.001)
 
     # -- match_diagnostics threshold --
 
-    def test_match_diagnostics_hardcodes_threshold_bug(self):
-        """BUG: match_diagnostics hardcodes threshold=0.6 regardless of
-        --match-threshold (Codex-only, MEDIUM).
+    def test_match_diagnostics_uses_actual_threshold(self):
+        """Regression test: match_diagnostics reports the actual threshold used.
 
-        Even when a different threshold is used for matching, the diagnostics
-        always report 0.6.
+        Previously (pre-fix), threshold was hardcoded to 0.6 in diagnostics.
+        Now compute_metrics accepts threshold parameter and threads it through.
+        Ref: Codex-only finding, confirmed real bug.
         """
         review_ids = ["R1", "R2"]
         reviews_data = _make_reviews_data(review_ids)
@@ -685,13 +678,13 @@ class TestComputeMetrics:
                 "match_confidence": 0.85,
             },
         ]
-        # Even though we would have used threshold=0.8, compute_metrics
-        # doesn't receive the threshold — it hardcodes 0.6
-        metrics = tri.compute_metrics(groups, review_ids, reviews_data)
+        # Pass threshold=0.8 — diagnostics should reflect this
+        metrics = tri.compute_metrics(groups, review_ids, reviews_data, threshold=0.8)
+        assert metrics["match_diagnostics"]["threshold"] == 0.8
 
-        # BUG: Always 0.6 regardless of actual threshold used
-        assert metrics["match_diagnostics"]["threshold"] == 0.6
-        # EXPECTED: threshold should reflect the actual value used for matching
+        # Default threshold should be 0.6
+        metrics_default = tri.compute_metrics(groups, review_ids, reviews_data)
+        assert metrics_default["match_diagnostics"]["threshold"] == 0.6
 
     # -- marginal value --
 
@@ -975,21 +968,15 @@ class TestFormatSummary:
         metrics = tri.compute_metrics(groups, review_ids, reviews_data)
         return tri.format_summary(groups, metrics, review_ids, reviews_data)
 
-    def test_n2_display_bug_from_double_count(self):
-        """BUG: N=2 summary "2 of 2 models" line shows wrong percentage
-        due to cascading from the converged_2plus double-count bug (Codex, LOW).
+    def test_n2_display_convergence_percentage(self):
+        """Regression test: N=2 summary shows correct percentage after converged_2plus fix.
 
-        For N=2, format_summary skips the "All N models" line (only shown
-        for n_reviews >= 3). The "2 of N" line shows rate_2only which is
-        computed as rate_2plus - rate_all.
-
-        With the double-count bug: rate_2plus = 2.0 (2/1), rate_all = 1.0 (1/1).
-        So rate_2only = 2.0 - 1.0 = 1.0 → 100.0%.
-
-        EXPECTED: For N=2 with 1 converged group out of 1 total, the "2 of 2"
-        line should show 100.0% (correct) or the "All 2" line should be shown
-        instead. The current output happens to display the right count (1)
-        but the percentage calculation is wrong (it's 100% for the wrong reason).
+        Previously, rate_2only was computed from double-counted rate_2plus.
+        Now rate_2plus is correct, and rate_2only = rate_2plus - rate_all.
+        With 1 converged group and 0 singletons: rate_2plus=1.0, rate_all=1.0,
+        rate_2only=0.0. The "2 of 2" line shows 0.0% because all groups are
+        already counted as "All N" convergence; the "2 of N" line shows only
+        groups converged by exactly 2 (not all).
         """
         review_ids = ["R1", "R2"]
         groups = [
@@ -1009,12 +996,10 @@ class TestFormatSummary:
 
         # For N=2, "All N models" line is NOT shown (n_reviews < 3)
         assert "All 2 models:" not in output
-        # Only the "2 of 2" line is shown
+        # "2 of 2" line is shown with the rate_2only percentage
         assert "2 of 2 models:" in output
-        # The percentage shown is rate_2only = rate_2plus - rate_all = 100.0%
-        # This is coincidentally "correct" looking (100%) but computed wrong:
-        # rate_2plus = 2.0 (double-counted), rate_all = 1.0 → diff = 1.0
-        assert "100.0%" in output
+        # rate_2only = rate_2plus - rate_all = 1.0 - 1.0 = 0.0
+        assert "0.0%" in output
 
     def test_converged_findings_appear(self):
         review_ids = ["R1", "R2"]
@@ -1163,40 +1148,33 @@ class TestCmdMetricsBypassBug:
 # ═══════════════════════════════════════════════════════════════
 
 
-class TestDocstringMismatch:
-    """BUG: match_findings docstring says "max-weight bipartite" but the
-    implementation is greedy best-first with no group merging (2-way, HIGH).
+class TestDocstringAccuracy:
+    """Regression test: match_findings docstring accurately describes the algorithm.
 
-    This test documents the discrepancy by checking the docstring contains
-    the misleading term and verifying the implementation behavior differs.
+    Previously, the docstring said "max-weight bipartite matching" but the
+    implementation was greedy best-first. The docstring was corrected.
+    Ref: 2-way converged finding (Claude + Gemini).
     """
 
-    def test_docstring_says_bipartite(self):
-        assert "bipartite" in tri.match_findings.__doc__
+    def test_docstring_describes_greedy_best_first(self):
+        doc = tri.match_findings.__doc__
+        assert "greedy" in doc.lower()
+        assert "bipartite" not in doc.lower()
 
     def test_implementation_is_greedy_no_merge(self):
         """Greedy: once both findings are in different groups, they are NOT merged.
 
-        A true bipartite/optimal matching would consider merging groups.
-        The greedy algorithm skips when both are assigned (line 230: 'continue').
+        The greedy algorithm skips when both are assigned. For identical findings
+        the spanning tree still connects them all into one group.
         """
-        # Create a scenario where merging would help but greedy doesn't do it.
-        # R1-A matches R2-A well (0.95), R1-A matches R3-A well (0.95),
-        # but R2-A and R3-A might be in separate groups if consumed in wrong order.
-        # With identical titles, greedy happens to work — but the code path
-        # explicitly skips merging (line 230: both assigned → continue).
         reviews = {
             "R1": [_make_finding(title="The critical bug", file="engine.ts")],
             "R2": [_make_finding(title="The critical bug", file="engine.ts")],
             "R3": [_make_finding(title="The critical bug", file="engine.ts")],
         }
         groups = tri.match_findings(reviews)
-        # For identical findings, greedy still produces a single group
-        # because the spanning tree connects them all.
         three_way = [g for g in groups if len(g["convergence"]) == 3]
         assert len(three_way) == 1
-        # But the algorithm is still greedy, not bipartite — this is a
-        # documentation bug, not necessarily a behavioral bug for simple cases.
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1394,3 +1372,259 @@ class TestConstants:
 
     def test_watchdog_ids_include_none(self):
         assert "none" in tri.WATCHDOG_IDS
+
+
+# ═══════════════════════════════════════════════════════════════
+# 15. CLI Command Handlers — integration tests
+#     Ref: Converged finding (Claude F-005 + Gemini F-007)
+# ═══════════════════════════════════════════════════════════════
+
+
+class TestCliCommandHandlers:
+    """Integration tests for CLI command handlers.
+
+    These test the full path: args → parse → load → compute → output,
+    using real temporary files and capturing stdout/stderr.
+    """
+
+    def _write_review_files(self, tmp_path, n=2):
+        """Write n review markdown files to tmp_path, return list of paths."""
+        paths = []
+        for i in range(n):
+            findings = [
+                _make_finding(
+                    id=f"F-{i + 1:03d}",
+                    title=f"Finding shared across reviews",
+                    file="lib/engine.ts",
+                    severity="high" if i == 0 else "medium",
+                ),
+            ]
+            if i == 0:
+                # Add a unique finding to first review
+                findings.append(
+                    _make_finding(
+                        id="F-100",
+                        title="Unique to first review only",
+                        file="lib/unique.ts",
+                        severity="low",
+                    )
+                )
+            md = _make_review_yaml(findings, model=f"model-{i + 1}")
+            p = tmp_path / f"review-{i + 1}.md"
+            p.write_text(md)
+            paths.append(str(p))
+        return paths
+
+    def test_cmd_parse_valid_file(self, tmp_path, capsys):
+        """cmd_parse prints model name and finding count."""
+        findings = [_make_finding(), _make_finding(id="F-002", title="Second")]
+        md = _make_review_yaml(findings, model="test-model")
+        p = tmp_path / "review.md"
+        p.write_text(md)
+
+        tri.cmd_parse([str(p)])
+        out = capsys.readouterr().out
+        assert "test-model" in out
+        assert "2" in out
+
+    def test_cmd_parse_missing_file(self, capsys):
+        """cmd_parse exits with error for missing file."""
+        with pytest.raises(SystemExit):
+            tri.cmd_parse(["/nonexistent/file.md"])
+
+    def test_cmd_parse_no_args(self, capsys):
+        """cmd_parse exits with usage when no args provided."""
+        with pytest.raises(SystemExit):
+            tri.cmd_parse([])
+
+    def test_cmd_summary_valid_2_files(self, tmp_path, capsys):
+        """cmd_summary produces output containing DARKCAT ALLEY header."""
+        paths = self._write_review_files(tmp_path, n=2)
+        tri.cmd_summary(paths)
+        out = capsys.readouterr().out
+        assert "DARKCAT ALLEY" in out
+        assert "CONVERGENCE" in out
+        assert "MARGINAL VALUE" in out
+
+    def test_cmd_summary_too_few_files(self, capsys):
+        """cmd_summary exits when fewer than 2 files provided."""
+        with pytest.raises(SystemExit):
+            tri.cmd_summary(["only_one.md"])
+
+    def test_cmd_metrics_valid_2_files(self, tmp_path, capsys):
+        """cmd_metrics outputs valid YAML to stdout."""
+        paths = self._write_review_files(tmp_path, n=2)
+        tri.cmd_metrics(paths)
+        out = capsys.readouterr().out
+        parsed = yaml.safe_load(out)
+        assert "finding_count" in parsed
+        assert "convergence_rate" in parsed
+        assert "match_diagnostics" in parsed
+
+    def test_cmd_convergence_valid_2_files(self, tmp_path, capsys):
+        """cmd_convergence outputs markdown table."""
+        paths = self._write_review_files(tmp_path, n=2)
+        tri.cmd_convergence(paths)
+        out = capsys.readouterr().out
+        assert "# Convergence Matrix" in out
+        assert "|" in out
+
+    def test_cmd_export_creates_files(self, tmp_path, capsys):
+        """cmd_export creates all expected output files."""
+        paths = self._write_review_files(tmp_path, n=2)
+        out_dir = tmp_path / "export"
+        tri.cmd_export(paths + ["--out", str(out_dir)])
+        assert (out_dir / "metadata.yaml").exists()
+        assert (out_dir / "convergence.yaml").exists()
+        assert (out_dir / "metrics.yaml").exists()
+        assert (out_dir / "findings-union.yaml").exists()
+
+    def test_cmd_summary_with_threshold(self, tmp_path, capsys):
+        """cmd_summary respects --match-threshold option."""
+        paths = self._write_review_files(tmp_path, n=2)
+        tri.cmd_summary(paths + ["--match-threshold", "0.9"])
+        out = capsys.readouterr().out
+        assert "DARKCAT ALLEY" in out
+
+    def test_cmd_summary_3_files(self, tmp_path, capsys):
+        """cmd_summary works with 3 review files and shows 'All 3 models' line."""
+        paths = self._write_review_files(tmp_path, n=3)
+        tri.cmd_summary(paths)
+        out = capsys.readouterr().out
+        assert "DARKCAT ALLEY" in out
+        assert "All 3 models:" in out
+
+    def test_main_unknown_command(self, monkeypatch, capsys):
+        """main() exits for unknown command."""
+        monkeypatch.setattr("sys.argv", ["triangulate", "bogus"])
+        with pytest.raises(SystemExit):
+            tri.main()
+
+    def test_main_no_args(self, monkeypatch, capsys):
+        """main() exits when no args provided."""
+        monkeypatch.setattr("sys.argv", ["triangulate"])
+        with pytest.raises(SystemExit):
+            tri.main()
+
+    def test_main_help(self, monkeypatch, capsys):
+        """main() exits for --help."""
+        monkeypatch.setattr("sys.argv", ["triangulate", "--help"])
+        with pytest.raises(SystemExit):
+            tri.main()
+
+
+# ═══════════════════════════════════════════════════════════════
+# 16. Export Content Validation
+#     Ref: Converged finding (Claude F-008 + Gemini F-005)
+# ═══════════════════════════════════════════════════════════════
+
+
+class TestExportContent:
+    """Verify exported files contain correct data, not just that they exist."""
+
+    def _run_export(self, tmp_path):
+        """Run a full export and return (out_dir, groups, metrics, review_ids, reviews_data)."""
+        review_ids = ["R1", "R2"]
+        reviews_data = {
+            "R1": {
+                "review": {
+                    "model": "claude",
+                    "date": "2026-03-08",
+                    "branches": ["main"],
+                    "base_commit": "abc123",
+                },
+                "findings": [
+                    _make_finding(title="Shared bug", file="a.ts", severity="high"),
+                    _make_finding(
+                        id="F-002", title="Unique to R1", file="b.ts", severity="low"
+                    ),
+                ],
+            },
+            "R2": {
+                "review": {
+                    "model": "gpt-4",
+                    "date": "2026-03-08",
+                    "branches": ["main"],
+                    "base_commit": "abc123",
+                },
+                "findings": [
+                    _make_finding(title="Shared bug", file="a.ts", severity="medium"),
+                ],
+            },
+        }
+        reviews = {rid: data["findings"] for rid, data in reviews_data.items()}
+        groups = tri.match_findings(reviews)
+        metrics = tri.compute_metrics(groups, review_ids, reviews_data)
+        out_dir = tmp_path / "export"
+        tri.export_all(groups, metrics, review_ids, reviews_data, out_dir, "test-run")
+        return out_dir, groups, metrics, review_ids, reviews_data
+
+    def test_convergence_yaml_structure(self, tmp_path):
+        """convergence.yaml contains correct group data."""
+        out_dir, groups, _, _, _ = self._run_export(tmp_path)
+        data = yaml.safe_load((out_dir / "convergence.yaml").read_text())
+        assert isinstance(data, list)
+        assert len(data) == len(groups)
+        for entry in data:
+            assert "title" in entry
+            assert "severity" in entry
+            assert "convergence" in entry
+            assert "convergence_count" in entry
+
+    def test_convergence_yaml_counts_match(self, tmp_path):
+        """convergence.yaml convergence_count matches actual convergence list length."""
+        out_dir, _, _, _, _ = self._run_export(tmp_path)
+        data = yaml.safe_load((out_dir / "convergence.yaml").read_text())
+        for entry in data:
+            assert entry["convergence_count"] == len(entry["convergence"])
+
+    def test_metrics_yaml_has_all_keys(self, tmp_path):
+        """metrics.yaml contains all expected metric keys."""
+        out_dir, _, _, _, _ = self._run_export(tmp_path)
+        data = yaml.safe_load((out_dir / "metrics.yaml").read_text())
+        expected_keys = {
+            "computed_at",
+            "finding_count",
+            "convergence_rate",
+            "marginal_value",
+            "severity_distribution",
+            "watchdog_distribution",
+            "severity_calibration",
+            "false_positive_rate",
+            "match_diagnostics",
+        }
+        assert expected_keys.issubset(set(data.keys()))
+
+    def test_findings_union_has_details(self, tmp_path):
+        """findings-union.yaml contains per-review details for each finding."""
+        out_dir, groups, _, _, _ = self._run_export(tmp_path)
+        data = yaml.safe_load((out_dir / "findings-union.yaml").read_text())
+        assert isinstance(data, list)
+        assert len(data) == len(groups)
+        for entry in data:
+            assert "title" in entry
+            assert "details" in entry
+            assert isinstance(entry["details"], dict)
+            # Each detail entry should have key fields
+            for rid, detail in entry["details"].items():
+                assert "id" in detail
+                assert "severity" in detail
+                assert "description" in detail
+
+    def test_metadata_has_review_info(self, tmp_path):
+        """metadata.yaml contains correct review model info."""
+        out_dir, _, _, _, _ = self._run_export(tmp_path)
+        data = yaml.safe_load((out_dir / "metadata.yaml").read_text())
+        assert data["run_id"] == "test-run"
+        assert "R1" in data["reviews"]
+        assert "R2" in data["reviews"]
+        assert data["reviews"]["R1"]["model"] == "claude"
+        assert data["reviews"]["R2"]["model"] == "gpt-4"
+
+    def test_per_review_yaml_roundtrips(self, tmp_path):
+        """Per-review YAML files contain loadable data with findings."""
+        out_dir, _, _, _, _ = self._run_export(tmp_path)
+        for rid in ["R1", "R2"]:
+            data = yaml.safe_load((out_dir / f"{rid}.yaml").read_text())
+            assert "findings" in data
+            assert len(data["findings"]) >= 1

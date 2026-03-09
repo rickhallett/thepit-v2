@@ -191,10 +191,12 @@ def match_findings(
     reviews: dict[str, list[dict]],
     threshold: float = 0.6,
 ) -> list[dict]:
-    """Match findings across reviews using max-weight bipartite-style matching.
+    """Match findings across reviews using greedy best-first assignment.
 
-    Uses pairwise scoring with greedy-best-first assignment. Compares all
-    findings against all group members (not just seed) for group admission.
+    Computes all pairwise similarity scores between findings from different
+    reviews, sorts descending, and greedily assigns findings to groups.
+    Compares candidates against all existing group members (not just seed)
+    for group admission. Does not merge groups once formed.
 
     Returns a list of matched finding groups, each containing:
     - matched_findings: dict mapping review_id -> finding
@@ -234,7 +236,7 @@ def match_findings(
             group = groups[gi]
             if rid_j not in group["matched_findings"]:
                 # Check j against all existing group members (not just seed)
-                avg_sim = _avg_similarity_to_group(all_findings[j][1], group, all_findings)
+                avg_sim = _avg_similarity_to_group(all_findings[j][1], group)
                 if avg_sim >= threshold:
                     group["matched_findings"][rid_j] = all_findings[j][1]
                     group["convergence"].append(rid_j)
@@ -244,7 +246,7 @@ def match_findings(
             # j is in a group, try to add i to it
             group = groups[gj]
             if rid_i not in group["matched_findings"]:
-                avg_sim = _avg_similarity_to_group(all_findings[i][1], group, all_findings)
+                avg_sim = _avg_similarity_to_group(all_findings[i][1], group)
                 if avg_sim >= threshold:
                     group["matched_findings"][rid_i] = all_findings[i][1]
                     group["convergence"].append(rid_i)
@@ -273,7 +275,7 @@ def match_findings(
 
     # Set canonical values and match confidence for all groups
     for group in groups:
-        # Canonical = first finding in the group (by review ID order)
+        # Canonical = first finding in the group (by match order, not review ID order)
         first_rid = group["convergence"][0]
         first_finding = group["matched_findings"][first_rid]
         group["canonical_title"] = first_finding.get("title", "unknown")
@@ -288,9 +290,26 @@ def match_findings(
         rev_ordinal = {v: k for k, v in SEVERITY_ORDINAL.items()}
         group["canonical_severity"] = rev_ordinal.get(max_sev_ord, "low")
 
-        # Match confidence = average of pairwise scores in this group
-        if group["_scores"]:
-            group["match_confidence"] = round(sum(group["_scores"]) / len(group["_scores"]), 4)
+        # Match confidence = average of ALL pairwise similarities within the group.
+        # The greedy algorithm only records spanning-tree edges (N-1 scores).
+        # We recompute all N*(N-1)/2 pairwise similarities for accuracy.
+        members = list(group["matched_findings"].values())
+        if len(members) >= 2:
+            pairwise_sims = []
+            for a_idx in range(len(members)):
+                for b_idx in range(a_idx + 1, len(members)):
+                    file_sim = similarity(
+                        members[a_idx].get("file", ""),
+                        members[b_idx].get("file", ""),
+                    )
+                    title_sim = similarity(
+                        members[a_idx].get("title", ""),
+                        members[b_idx].get("title", ""),
+                    )
+                    pairwise_sims.append(0.3 * file_sim + 0.7 * title_sim)
+            group["match_confidence"] = round(
+                sum(pairwise_sims) / len(pairwise_sims), 4
+            )
         else:
             group["match_confidence"] = None  # singleton — no match to score
 
@@ -302,7 +321,6 @@ def match_findings(
 def _avg_similarity_to_group(
     finding: dict,
     group: dict,
-    all_findings: list[tuple[str, dict]],
 ) -> float:
     """Compute average similarity of a finding to all existing members of a group."""
     sims = []
@@ -320,6 +338,7 @@ def compute_metrics(
     groups: list[dict],
     review_ids: list[str],
     reviews_data: dict[str, dict],
+    threshold: float = 0.6,
 ) -> dict:
     """Compute all Darkcat Alley metrics from matched finding groups."""
 
@@ -346,7 +365,7 @@ def compute_metrics(
     converged_all = sum(1 for g in groups if len(g["convergence"]) == n_reviews)
     converged_2 = sum(1 for g in groups if len(g["convergence"]) == 2)
     single_model = sum(1 for g in groups if len(g["convergence"]) == 1)
-    converged_2plus = converged_all + converged_2
+    converged_2plus = sum(1 for g in groups if len(g["convergence"]) >= 2)
     convergence_rate = {
         "total_unique_findings": total,
         "n_reviews": n_reviews,
@@ -479,7 +498,7 @@ def compute_metrics(
     # Match diagnostics — report match quality
     converged_groups = [g for g in groups if len(g["convergence"]) >= 2]
     match_diagnostics = {
-        "threshold": 0.6,
+        "threshold": threshold,
         "total_groups": len(groups),
         "converged_groups": len(converged_groups),
         "singleton_groups": len(groups) - len(converged_groups),
@@ -874,7 +893,7 @@ def cmd_summary(args: list[str]) -> None:
     threshold = float(options.get("--match-threshold", "0.6"))
     review_ids, reviews_data, reviews = load_reviews(files)
     groups = match_findings(reviews, threshold)
-    metrics = compute_metrics(groups, review_ids, reviews_data)
+    metrics = compute_metrics(groups, review_ids, reviews_data, threshold)
     print(format_summary(groups, metrics, review_ids, reviews_data))
 
 
@@ -888,7 +907,7 @@ def cmd_metrics(args: list[str]) -> None:
     threshold = float(options.get("--match-threshold", "0.6"))
     review_ids, reviews_data, reviews = load_reviews(files)
     groups = match_findings(reviews, threshold)
-    metrics = compute_metrics(groups, review_ids, reviews_data)
+    metrics = compute_metrics(groups, review_ids, reviews_data, threshold)
     yaml.dump(metrics, sys.stdout, default_flow_style=False, sort_keys=False, allow_unicode=True, width=120)
 
 
@@ -920,7 +939,7 @@ def cmd_export(args: list[str]) -> None:
 
     review_ids, reviews_data, reviews = load_reviews(files)
     groups = match_findings(reviews, threshold)
-    metrics = compute_metrics(groups, review_ids, reviews_data)
+    metrics = compute_metrics(groups, review_ids, reviews_data, threshold)
     export_all(groups, metrics, review_ids, reviews_data, out_dir, run_id)
 
     # Also print summary to stdout
