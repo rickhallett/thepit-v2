@@ -23,7 +23,11 @@ export function computePromptHash(input: AgentCreateInput): string {
   if (input.systemPrompt) {
     content = input.systemPrompt;
   } else {
-    // Canonical JSON of structured fields (sorted keys for determinism)
+    // Structured fields serialized with explicit key ordering for determinism.
+    // Keys are alphabetically sorted in the object literal — DO NOT reorder without
+    // understanding that this changes all existing prompt hashes.
+    // JSON.stringify preserves insertion order in V8/Node but this is an implementation
+    // detail. If cross-engine determinism is ever needed, use a stable stringify library.
     const structured = {
       archetype: input.archetype ?? null,
       goal: input.goal ?? null,

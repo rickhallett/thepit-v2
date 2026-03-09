@@ -1,9 +1,9 @@
 /**
  * /b/[id] — Short link replay page.
  *
- * Renders completed bout transcripts statically with hero quote.
+ * Renders completed bout transcripts with hero quote (server-side, per-request).
  * Supports both direct bout IDs (21 chars) and short link slugs (8 chars).
- * Server component for SEO-friendly OG metadata.
+ * Server component — DB queries run per-request, not statically generated.
  */
 
 import { notFound } from "next/navigation";
@@ -123,7 +123,7 @@ export default async function ReplayPage({ params }: PageProps) {
   // Check if user is signed in (for CTA banner)
   const { userId } = await auth();
 
-  // Convert vote counts to record for display (unused for now but fetched for future use)
+  // TODO: Wire winnerVoteCounts into UI when vote display component is built.
   void winnerVoteCounts;
 
   return (

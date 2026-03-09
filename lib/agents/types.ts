@@ -10,12 +10,13 @@ import { z } from "zod";
 export const AgentCreateInputSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(1, "Name is required")
     .max(80, "Name must be 80 characters or fewer"),
   systemPrompt: z.string().max(10000, "System prompt must be 10000 characters or fewer").optional(),
   archetype: z.string().max(200).optional(),
   tone: z.string().max(200).optional(),
-  quirks: z.array(z.string()).optional(),
+  quirks: z.array(z.string().trim().min(1).max(200)).max(20).optional(),
   speechPattern: z.string().max(200).optional(),
   openingMove: z.string().max(500).optional(),
   signatureMove: z.string().max(500).optional(),

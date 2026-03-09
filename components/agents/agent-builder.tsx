@@ -19,8 +19,6 @@ interface FormState {
   signatureMove: string;
   weakness: string;
   customInstructions: string;
-  responseLength: string;
-  responseFormat: string;
 }
 
 export function AgentBuilder() {
@@ -40,8 +38,6 @@ export function AgentBuilder() {
     signatureMove: "",
     weakness: "",
     customInstructions: "",
-    responseLength: "medium",
-    responseFormat: "prose",
   });
 
   function updateField(field: keyof FormState, value: string) {
@@ -97,7 +93,7 @@ export function AgentBuilder() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Failed to create agent");
+        throw new Error(data.error?.message || data.message || "Failed to create agent");
       }
 
       const data = await res.json();
@@ -303,37 +299,8 @@ export function AgentBuilder() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-sm font-medium">
-                    Response Length
-                  </label>
-                  <select
-                    value={form.responseLength}
-                    onChange={(e) => updateField("responseLength", e.target.value)}
-                    className="w-full border border-stone-700 bg-stone-800 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none"
-                  >
-                    <option value="short">Short</option>
-                    <option value="medium">Medium</option>
-                    <option value="long">Long</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium">
-                    Response Format
-                  </label>
-                  <select
-                    value={form.responseFormat}
-                    onChange={(e) => updateField("responseFormat", e.target.value)}
-                    className="w-full border border-stone-700 bg-stone-800 px-3 py-2 text-sm focus:border-stone-500 focus:outline-none"
-                  >
-                    <option value="prose">Prose</option>
-                    <option value="bullet">Bullet points</option>
-                    <option value="mixed">Mixed</option>
-                  </select>
-                </div>
-              </div>
+              {/* responseLength and responseFormat fields removed — not wired to backend.
+                  Re-add when AgentCreateInputSchema supports these fields. */}
             </>
           )}
         </div>
