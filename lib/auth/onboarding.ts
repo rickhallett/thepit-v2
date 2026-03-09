@@ -3,11 +3,7 @@
 
 import { ensureUserRecord, type UserProfile } from "./users";
 import { ensureReferralCode } from "./referrals";
-
-// TODO: Replace with import from lib/credits/balance.ts in task 10
-async function ensureCreditAccount(_userId: string): Promise<void> {
-  // Stub — credit account creation implemented in task 10
-}
+import { ensureCreditAccount } from "@/lib/credits/balance";
 
 /**
  * Runs the full first-load initialisation sequence for a user.
