@@ -8,6 +8,8 @@ export default defineConfig({
     environment: "jsdom",
     include: ["lib/**/*.test.ts", "db/**/*.test.ts", "tests/**/*.test.ts"],
     passWithNoTests: true,
+    // Load .env so live-DB tests can detect DATABASE_URL
+    setupFiles: ["./tests/setup-env.ts"],
   },
   resolve: {
     alias: {
