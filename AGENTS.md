@@ -65,6 +65,7 @@ SO.rerun       := bad_output -> diagnose & reset & rerun !fix_in_place  [dumb_zo
 SO.atomic_task := 1_action == 1_instruction_set == 1_agent              [all_dev]
 SO.commendation := extra_rations -> append(commendations.log, {date, agent, recipient, reason}) [durable]
 SO.backlog     := task.identified -> backlog add "title" --priority P [--epic E] [--tag T]
+SO.roi         := before(dispatch | review_round) -> ROI(cost, time, marginal_value) vs proceed  [fleet_v2.1]
 ```
 
 ### Backlog CLI

@@ -62,6 +62,9 @@ INTERVENE skipped_gate         := merge.without(gate.green) -> block | !exceptio
 INTERVENE unverified_merge     := merged & !post_verified -> verify_now | fail -> halt
 INTERVENE stacked_prs          := dependent_PRs -> sequential_merge | PR1 -> verify -> PR2 -> verify
 INTERVENE speed_over_discipline := "fix_later" | "test_after_deploy" -> pushback | math.never_favours_skipping
+INTERVENE roi_gate              := before(dispatch | review_round) -> ROI(cost, time, marginal_value) vs proceed
+                                   RULE := diminishing_returns.on(meta_verification) | depth(reviewing_reviews_of_tests) -> stop
+                                   RULE := state(cost, existing_signal, what_unblocks) BEFORE dispatching [fleet_v2.1, SO.roi]
 INTERVENE wrong_branch         := git_op.wrong_ref -> abort & verify(status, log) & retry(correct_ref)
 INTERVENE review_findings      :=
   PR.open   -> push_commits(same_branch) | 1_PR == 1_concern == 1_merge
