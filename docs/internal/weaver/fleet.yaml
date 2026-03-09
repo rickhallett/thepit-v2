@@ -2,38 +2,47 @@
 # Backrefs: SD-318 (darkcat alley), fleet assessment 2026-03-09
 # Source: Artificial Analysis API (423 models, coding index ranking)
 
-version: 2
+version: 2.1
 date: "2026-03-09"
-supersedes: "v1 (claude-opus-4.6, gemini-3.1-pro, codex52)"
+supersedes: "v2 (all 4 equal weight)"
+
+# Standard fleet: 3 models, 3 lineages. Runs on every gauntlet.
+# Enhanced fleet: +Claude. Captain's call for high-stakes reviews.
+#
+# Rationale: Claude is 55% of spend for ~25% of marginal contribution.
+# Standard trio covers 3 distinct lineages at ~$0.29/trio.
+# Enhanced adds Claude at ~$0.34/trio extra (total ~$0.63).
+
+tiers:
+  standard:
+    description: "Default for all gauntlet runs"
+    models: ["gemini-3.1-pro", "gpt-5.4", "grok-4"]
+    lineages: ["google", "openai", "xai"]
+    est_cost_per_trio: 0.29
+
+  enhanced:
+    description: "Captain's call for high-stakes or pre-ship reviews"
+    models: ["gemini-3.1-pro", "gpt-5.4", "grok-4", "claude-opus-4"]
+    lineages: ["google", "openai", "xai", "anthropic"]
+    est_cost_per_trio: 0.63
 
 models:
-  - id: claude-opus-4-6
-    provider: Anthropic
-    lineage: anthropic
-    api_base: "https://api.anthropic.com"
-    model_id: "claude-opus-4-20250514"  # verified 2026-03-09
-    env_key: ANTHROPIC_API_KEY
-    dispatch: api  # or manual via Claude Code
-    intelligence_rank: 4
-    coding_rank: 6
-    coding_index: 48.1
-    price_blended_per_mtok: 10.00
-    notes: "Our own model. Adaptive reasoning, max effort for darkcats."
-
   - id: gemini-3.1-pro
+    tier: standard
     provider: Google
     lineage: google
     api_base: "https://generativelanguage.googleapis.com"
     model_id: "gemini-3.1-pro-preview"
     env_key: GOOGLE_API_KEY
-    dispatch: api  # via generativelanguage.googleapis.com. Needs maxOutputTokens >= 8192.
+    dispatch: api  # Needs maxOutputTokens >= 8192.
     intelligence_rank: 1
     coding_rank: 2
     coding_index: 55.5
     price_blended_per_mtok: 4.50
-    notes: "#1 intelligence index. Manual dispatch via aistudio.google.com."
+    notes: "#1 intelligence index. Cheapest frontier model in fleet."
 
   - id: gpt-5.4
+    tier: standard
     provider: OpenAI
     lineage: openai
     api_base: "https://api.openai.com/v1"
@@ -45,9 +54,10 @@ models:
     coding_rank: 1
     coding_index: 57.3
     price_blended_per_mtok: 5.62
-    notes: "Replaces codex52. #1 coding index. Use xhigh reasoning for darkcats. API uses max_completion_tokens not max_tokens."
+    notes: "Replaces codex52. #1 coding index. API uses max_completion_tokens not max_tokens."
 
   - id: grok-4
+    tier: standard
     provider: xAI
     lineage: xai
     api_base: "https://api.x.ai/v1"
@@ -59,6 +69,20 @@ models:
     coding_index: 40.5
     price_blended_per_mtok: 6.00
     notes: "Different training lineage (X/Twitter corpus). Lower rank but independent prior."
+
+  - id: claude-opus-4
+    tier: enhanced  # NOT standard — captain's call only
+    provider: Anthropic
+    lineage: anthropic
+    api_base: "https://api.anthropic.com"
+    model_id: "claude-opus-4-20250514"
+    env_key: ANTHROPIC_API_KEY
+    dispatch: api
+    intelligence_rank: 4
+    coding_rank: 6
+    coding_index: 48.1
+    price_blended_per_mtok: 10.00
+    notes: "55% of spend for ~25% of marginal value. Enhanced tier only."
 
 retired:
   - id: codex52
@@ -75,4 +99,6 @@ selection_rationale: |
   Coding index is the primary metric (code review is the use case).
   GLM-5 (Z AI, coding 44.2) was considered but rejected due to Chinese KYC requirements.
   Grok 4 selected as 4th model for xAI lineage diversity despite lower coding rank.
+  Claude moved to enhanced tier: 55% of spend for ~25% of marginal contribution.
+  Standard trio (Gemini + GPT-5.4 + Grok) covers 3 lineages at ~$0.29/trio.
   Data source: Artificial Analysis API, 423 models, queried 2026-03-09.
