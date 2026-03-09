@@ -63,8 +63,10 @@ export async function castWinnerVote(params: {
     );
   }
 
-  // Validate agent participated in this bout
-  const lineup = bout.agentLineup as AgentLineupEntry[] | null;
+  // Validate agent participated in this bout.
+  // Guard: agentLineup is JSONB — could be malformed if data was corrupted.
+  const rawLineup = bout.agentLineup;
+  const lineup = Array.isArray(rawLineup) ? (rawLineup as AgentLineupEntry[]) : null;
   if (!lineup || !lineup.some((a) => a.id === agentId)) {
     throw new VoteValidationError(
       "Agent did not participate in this bout",

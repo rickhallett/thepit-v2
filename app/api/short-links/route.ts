@@ -41,11 +41,17 @@ export async function POST(req: NextRequest) {
   }
 
   if (bout.status !== "completed") {
-    return errorResponse(400, "BOUT_NOT_COMPLETED", "Only completed bouts can be shared");
+    return errorResponse(400, API_ERRORS.CONFLICT, "Only completed bouts can be shared");
   }
 
   // 3. Create short link (idempotent)
-  const slug = await createShortLink(boutId);
+  let slug: string;
+  try {
+    slug = await createShortLink(boutId);
+  } catch (err) {
+    console.error("Failed to create short link:", err);
+    return errorResponse(500, API_ERRORS.INTERNAL, "Failed to create share link");
+  }
 
   // 4. Return response
   return Response.json({

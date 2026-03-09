@@ -13,7 +13,7 @@ import { shortLinks } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
 export const ShortLinkRequestSchema = z.object({
-  boutId: z.string().min(1),
+  boutId: z.string().min(1).max(21),
 });
 
 const MAX_SLUG_RETRIES = 3;
@@ -62,9 +62,13 @@ export async function createShortLink(boutId: string): Promise<string> {
       }
     } catch (err: unknown) {
       // Slug collision (unique constraint on slug column).
+      // PostgreSQL unique violation = error code 23505.
       // Retry with a new slug unless exhausted.
       const isUniqueViolation =
-        err instanceof Error && err.message.includes("unique");
+        err != null &&
+        typeof err === "object" &&
+        "code" in err &&
+        (err as { code: string }).code === "23505";
       if (!isUniqueViolation || attempt === MAX_SLUG_RETRIES - 1) {
         throw err;
       }

@@ -111,7 +111,6 @@ describe("toggleReaction", () => {
 
     const tx = { select: mockSelect, insert: mockInsert, delete: mockDelete };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     db.transaction.mockImplementation(async (cb: (t: any) => Promise<unknown>) => cb(tx));
 
     return { tx, mockInsert, mockDelete, mockSelect };

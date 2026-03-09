@@ -17,7 +17,7 @@ interface PresetCardProps {
 export function PresetCard({ preset }: PresetCardProps) {
   const router = useRouter();
   const [topic, setTopic] = useState("");
-  const [model, setModel] = useState("claude-haiku");
+  const [model, setModel] = useState(preset.defaultModel);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {

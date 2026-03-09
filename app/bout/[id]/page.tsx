@@ -10,7 +10,7 @@ import type { TranscriptEntry } from "@/lib/bouts/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ presetId?: string; topic?: string; model?: string }>;
+  searchParams: Promise<{ presetId?: string | string[]; topic?: string | string[]; model?: string | string[] }>;
 }
 
 export default async function BoutPage({ params, searchParams }: PageProps) {
@@ -45,9 +45,13 @@ export default async function BoutPage({ params, searchParams }: PageProps) {
 
   // Auto-start config from query params (when navigating from /arena).
   // Validate presetId/model format to prevent invalid data reaching client components.
-  const presetId = search.presetId?.slice(0, 64);
-  const model = search.model?.slice(0, 64);
-  const topic = search.topic?.slice(0, 500);
+  // Defensively narrow: Next.js searchParams values can be string | string[] | undefined.
+  const rawPresetId = search.presetId;
+  const rawModel = search.model;
+  const rawTopic = search.topic;
+  const presetId = (Array.isArray(rawPresetId) ? rawPresetId[0] : rawPresetId)?.slice(0, 64);
+  const model = (Array.isArray(rawModel) ? rawModel[0] : rawModel)?.slice(0, 64);
+  const topic = (Array.isArray(rawTopic) ? rawTopic[0] : rawTopic)?.slice(0, 500);
   const autoStart = presetId
     ? { presetId, topic, model }
     : undefined;

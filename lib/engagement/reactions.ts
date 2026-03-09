@@ -9,7 +9,7 @@ import { reactions } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 
 export const ReactionRequestSchema = z.object({
-  boutId: z.string().min(1, "boutId is required"),
+  boutId: z.string().min(1, "boutId is required").max(21),
   turnIndex: z.number().int().min(0),
   reactionType: z.enum(["heart", "fire"]),
 });
@@ -110,31 +110,6 @@ export async function toggleReaction(params: {
 
     return { action, counts };
   });
-}
-
-/**
- * Get reaction counts for a specific turn.
- */
-async function getCountsForTurn(
-  boutId: string,
-  turnIndex: number,
-): Promise<ReactionCounts> {
-  const rows = await db
-    .select({
-      reactionType: reactions.reactionType,
-      count: sql<number>`count(*)::int`,
-    })
-    .from(reactions)
-    .where(and(eq(reactions.boutId, boutId), eq(reactions.turnIndex, turnIndex)))
-    .groupBy(reactions.reactionType);
-
-  const counts: ReactionCounts = { heart: 0, fire: 0 };
-  for (const row of rows) {
-    if (row.reactionType === "heart" || row.reactionType === "fire") {
-      counts[row.reactionType] = row.count;
-    }
-  }
-  return counts;
 }
 
 /**

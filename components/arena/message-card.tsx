@@ -55,6 +55,7 @@ export function MessageCard({
           <button
             data-testid="reaction-heart"
             type="button"
+            aria-pressed={hasHeart}
             onClick={() => onReact(turnIndex, "heart")}
             className={`flex items-center gap-1 rounded px-2 py-1 font-mono text-sm transition-colors ${
               hasHeart
@@ -68,6 +69,7 @@ export function MessageCard({
           <button
             data-testid="reaction-fire"
             type="button"
+            aria-pressed={hasFire}
             onClick={() => onReact(turnIndex, "fire")}
             className={`flex items-center gap-1 rounded px-2 py-1 font-mono text-sm transition-colors ${
               hasFire

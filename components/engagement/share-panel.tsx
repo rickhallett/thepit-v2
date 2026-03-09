@@ -105,9 +105,14 @@ export function SharePanel({ boutId, shareLine, shortSlug }: SharePanelProps) {
           );
           break;
         case "copy":
-          await navigator.clipboard.writeText(url);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
+          try {
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          } catch {
+            // Clipboard API can fail (non-secure context, document not focused).
+            // Silently degrade — user sees no "Copied!" feedback, which is correct.
+          }
           break;
       }
     },

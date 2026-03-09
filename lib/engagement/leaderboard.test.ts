@@ -354,6 +354,7 @@ describe("time range filtering", () => {
   it("uses correct cutoff for week range (7 days)", async () => {
     const dbModule = await import("@/db");
     const db = dbModule.db as unknown as Record<string, ReturnType<typeof vi.fn>>;
+    const { gte, and, eq } = await import("drizzle-orm") as unknown as Record<string, ReturnType<typeof vi.fn>>;
 
     const mockVotesChain = {
       from: vi.fn().mockReturnThis(),
@@ -364,15 +365,27 @@ describe("time range filtering", () => {
 
     const { getLeaderboardData } = await import("./leaderboard");
 
+    const before = Date.now();
     await getLeaderboardData("week");
 
-    // Verify where was called (time filter applied)
-    expect(mockVotesChain.where).toHaveBeenCalled();
+    // Verify gte was called with a Date ~7 days ago
+    expect(gte).toHaveBeenCalled();
+    const gteArgs = gte.mock.calls[0];
+    const cutoffDate = gteArgs[1] as Date;
+    const expectedMs = 7 * 24 * 60 * 60 * 1000;
+    expect(before - cutoffDate.getTime()).toBeGreaterThanOrEqual(expectedMs - 1000);
+    expect(before - cutoffDate.getTime()).toBeLessThanOrEqual(expectedMs + 1000);
+
+    // Verify and() was called to combine status + time filter
+    expect(and).toHaveBeenCalled();
+    // Verify eq was called for status filter
+    expect(eq).toHaveBeenCalled();
   });
 
   it("uses correct cutoff for month range (30 days)", async () => {
     const dbModule = await import("@/db");
     const db = dbModule.db as unknown as Record<string, ReturnType<typeof vi.fn>>;
+    const { gte, and } = await import("drizzle-orm") as unknown as Record<string, ReturnType<typeof vi.fn>>;
 
     const mockVotesChain = {
       from: vi.fn().mockReturnThis(),
@@ -383,14 +396,25 @@ describe("time range filtering", () => {
 
     const { getLeaderboardData } = await import("./leaderboard");
 
+    const before = Date.now();
     await getLeaderboardData("month");
 
-    expect(mockVotesChain.where).toHaveBeenCalled();
+    // Verify gte was called with a Date ~30 days ago
+    expect(gte).toHaveBeenCalled();
+    const gteArgs = gte.mock.calls[0];
+    const cutoffDate = gteArgs[1] as Date;
+    const expectedMs = 30 * 24 * 60 * 60 * 1000;
+    expect(before - cutoffDate.getTime()).toBeGreaterThanOrEqual(expectedMs - 1000);
+    expect(before - cutoffDate.getTime()).toBeLessThanOrEqual(expectedMs + 1000);
+
+    // Verify and() was called to combine status + time filter
+    expect(and).toHaveBeenCalled();
   });
 
-  it("does not filter for 'all' range", async () => {
+  it("does not apply time filter for 'all' range", async () => {
     const dbModule = await import("@/db");
     const db = dbModule.db as unknown as Record<string, ReturnType<typeof vi.fn>>;
+    const { gte, eq } = await import("drizzle-orm") as unknown as Record<string, ReturnType<typeof vi.fn>>;
 
     const mockVotesChain = {
       from: vi.fn().mockReturnThis(),
@@ -403,7 +427,9 @@ describe("time range filtering", () => {
 
     await getLeaderboardData("all");
 
-    // Where should still be called (for status filter), but no gte for time
-    expect(mockVotesChain.where).toHaveBeenCalled();
+    // eq should be called for status filter
+    expect(eq).toHaveBeenCalled();
+    // gte should NOT be called (no time filter for "all")
+    expect(gte).not.toHaveBeenCalled();
   });
 });

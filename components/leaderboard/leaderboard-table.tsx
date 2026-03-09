@@ -69,8 +69,8 @@ export function LeaderboardTable({
       setSortDir(sortDir === "asc" ? "desc" : "asc");
     } else {
       setSortKey(key);
-      // Default to descending for numeric columns, ascending for text
-      setSortDir(key === "agentName" ? "asc" : "desc");
+      // Default to ascending for rank (lower=better) and text, descending for other numerics
+      setSortDir(key === "agentName" || key === "rank" ? "asc" : "desc");
     }
   }
 
