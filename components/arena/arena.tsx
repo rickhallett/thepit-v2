@@ -7,6 +7,7 @@
 import { useEffect, useRef } from "react";
 import { useBout, type BoutMessage } from "@/lib/bouts/use-bout";
 import { MessageCard } from "./message-card";
+import { SharePanel } from "@/components/engagement/share-panel";
 import type { TranscriptEntry } from "@/lib/bouts/types";
 
 interface ArenaProps {
@@ -41,12 +42,13 @@ export function Arena({ boutId, initialBout, autoStart }: ArenaProps) {
     }
   }, [autoStart, initialBout, boutId, startBout]);
 
-  // Auto-scroll to bottom on new messages during streaming
+  // Auto-scroll to bottom during streaming — triggers on every text delta,
+  // not just new turns, so long messages keep the viewport at the bottom.
   useEffect(() => {
     if (status === "streaming" && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages.length, status]);
+  }, [messages, status]);
 
   // Determine what to render: static transcript or streaming messages.
   // Status is already normalized by page.tsx: "done" | "streaming" | "error" | "idle"
@@ -67,16 +69,13 @@ export function Arena({ boutId, initialBout, autoStart }: ArenaProps) {
 
   return (
     <div className="mx-auto max-w-3xl py-8">
-      {/* Status indicator */}
+      {/* Pre-messages status (streaming indicator, idle, error) */}
       <div className="mb-6">
         {displayStatus === "streaming" && (
           <div className="flex items-center gap-2 text-stone-400">
             <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-green-500" />
             Streaming...
           </div>
-        )}
-        {displayStatus === "done" && (
-          <div className="text-stone-400">Debate complete</div>
         )}
         {displayStatus === "error" && (
           <div className="text-red-500">{error || "An error occurred"}</div>
@@ -101,13 +100,19 @@ export function Arena({ boutId, initialBout, autoStart }: ArenaProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Share line */}
+      {/* Post-messages status — "Debate complete" appears at bottom where user is looking */}
+      {displayStatus === "done" && (
+        <div className="mt-6 text-center text-stone-400">Debate complete</div>
+      )}
+
+      {/* Share line + Share panel */}
       {displayShareLine && displayStatus === "done" && (
         <div className="mt-8 border-t border-stone-700 pt-6">
           <p className="text-sm text-stone-500">Share line</p>
           <p className="mt-1 text-lg font-medium italic text-stone-300">
             &ldquo;{displayShareLine}&rdquo;
           </p>
+          <SharePanel boutId={boutId} shareLine={displayShareLine} />
         </div>
       )}
     </div>

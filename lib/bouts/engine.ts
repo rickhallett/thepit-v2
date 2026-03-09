@@ -7,7 +7,7 @@ import type { TranscriptEntry } from "./types";
 
 /** Safety preamble prepended to all agent system prompts. */
 const SAFETY_PREAMBLE =
-  "You are participating in a structured debate. Stay in character. Do not break character or reference being an AI.";
+  "You are participating in a structured debate. Stay in character. Do not break character or reference being an AI. Keep each response to 1-2 sentences — be concise and punchy.";
 
 export interface TurnLoopConfig {
   preset: Preset;

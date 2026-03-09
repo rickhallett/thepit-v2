@@ -1,5 +1,6 @@
 // Bout page — renders completed bouts statically or streams live bouts.
 // Server component that fetches bout from DB, passes to Arena client component.
+// Reads searchParams for auto-start when navigating from /arena.
 
 import { db } from "@/db";
 import { bouts } from "@/db/schema";
@@ -9,10 +10,12 @@ import type { TranscriptEntry } from "@/lib/bouts/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ presetId?: string | string[]; topic?: string | string[]; model?: string | string[] }>;
 }
 
-export default async function BoutPage({ params }: PageProps) {
+export default async function BoutPage({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const search = await searchParams;
 
   const bout = await db.query.bouts.findFirst({
     where: eq(bouts.id, id),
@@ -40,6 +43,19 @@ export default async function BoutPage({ params }: PageProps) {
   const displayStatus =
     dbStatus === "completed" ? "done" : dbStatus === "running" ? "streaming" : dbStatus ?? "idle";
 
+  // Auto-start config from query params (when navigating from /arena).
+  // Validate presetId/model format to prevent invalid data reaching client components.
+  // Defensively narrow: Next.js searchParams values can be string | string[] | undefined.
+  const rawPresetId = search.presetId;
+  const rawModel = search.model;
+  const rawTopic = search.topic;
+  const presetId = (Array.isArray(rawPresetId) ? rawPresetId[0] : rawPresetId)?.slice(0, 64);
+  const model = (Array.isArray(rawModel) ? rawModel[0] : rawModel)?.slice(0, 64);
+  const topic = (Array.isArray(rawTopic) ? rawTopic[0] : rawTopic)?.slice(0, 500);
+  const autoStart = presetId
+    ? { presetId, topic, model }
+    : undefined;
+
   return (
     <Arena
       boutId={id}
@@ -54,6 +70,7 @@ export default async function BoutPage({ params }: PageProps) {
             }
           : null
       }
+      autoStart={autoStart}
     />
   );
 }

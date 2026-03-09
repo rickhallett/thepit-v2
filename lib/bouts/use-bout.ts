@@ -215,6 +215,33 @@ export function useBout(): UseBoutReturn {
               }
             }
           }
+          // Flush any remaining buffer after stream ends.
+          // The done event may be in the final chunk that wasn't terminated by \n\n
+          // before the stream closed.
+          if (buffer.trim()) {
+            const finalEvents = parseSSEChunk(buffer);
+            for (const sseEvent of finalEvents) {
+              let data: Record<string, unknown>;
+              try {
+                data = JSON.parse(sseEvent.data) as Record<string, unknown>;
+              } catch {
+                continue;
+              }
+              switch (sseEvent.event) {
+                case "data-share-line":
+                  setShareLine(data.shareLine as string);
+                  break;
+                case "done":
+                  setStatus("done");
+                  break;
+                case "error":
+                  setError(data.message as string);
+                  setStatus("error");
+                  break;
+              }
+            }
+          }
+
           // Stream ended — if status is still "streaming", set to "done"
           // (handles case where server closes without sending done/error event)
           setStatus((prev) => (prev === "streaming" ? "done" : prev));
