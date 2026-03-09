@@ -217,4 +217,4 @@ last_known:
 
 ---
 
-*The problem of governing semi-autonomous agents under uncertainty, with probabilistic communication, limited bandwidth, and high stakes for unverified action — that problem was solved at sea two hundred years before anyone wrote a line of code.*
+*Naval command solved the problem of coordinating semi-autonomous agents under uncertainty two centuries before software.*
