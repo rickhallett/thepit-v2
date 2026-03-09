@@ -153,12 +153,12 @@
 
 > **Captain only.** These items require `pnpm run dev` + browser.
 
-- [ ] `pnpm run dev` starts without errors
-- [ ] Navigate to http://localhost:3000/arena — preset cards render
-- [ ] Each preset card shows: name, description, agent badges with colors, turn count, tier
-- [ ] Topic input accepts text, placeholder says "Custom topic (optional)"
-- [ ] Model dropdown shows "Haiku (fast)" selected, "Sonnet (coming soon)" disabled
-- [ ] Click "Start Debate" → URL changes to `/bout/{nanoid}?presetId=...&model=claude-haiku`
+- [x] `pnpm run dev` starts without errors — **Captain verified**
+- [x] Navigate to http://localhost:3000/arena — preset cards render — **Captain verified**
+- [x] Each preset card shows: name, description, agent badges with colors, turn count, tier — **Captain verified**
+- [x] Topic input accepts text, placeholder says "Custom topic (optional)" — **Captain verified**
+- [x] Model dropdown shows "Haiku (fast)" selected, "Sonnet (coming soon)" disabled — **Captain verified**
+- [ ] Click "Start Debate" → URL changes to `/bout/{nanoid}?presetId=...&model=claude-haiku` — **BLOCKED: MODEL_MAP had stale IDs (claude-3-5-haiku-latest). Fixed in `73bcf15` → now uses `claude-haiku-4-5`. Needs re-test.**
 - [ ] Bout page shows streaming indicator
 - [ ] SSE events stream in: message cards appear with colored borders, agent names, turn numbers
 - [ ] Content appears incrementally (streaming text deltas visible)
@@ -177,7 +177,7 @@
 
 > **Captain only.** These items require `pnpm run dev` + browser/curl.
 
-- [ ] Navigate to `/bout/nonexistent-id` without searchParams → Arena renders in new-bout mode
+- [x] Navigate to `/bout/nonexistent-id` without searchParams → Arena renders in new-bout mode ("waiting to start") — **Captain verified**
 - [ ] If ANTHROPIC_API_KEY is missing/invalid → error event appears in SSE → error message displayed
 - [ ] Submit empty boutId to /api/reactions → 400 validation error (not 500)
 - [ ] Submit vote on running bout → 400 "BOUT_NOT_COMPLETED"
