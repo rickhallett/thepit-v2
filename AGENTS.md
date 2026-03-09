@@ -280,6 +280,9 @@ DEF polecats       := claude_p.agents | one_shot | !interactive        [SD-296]
 DEF darkcat        := adversarial_review.polecat | read_only | stain(diff, slopodar + watchdog + footguns)
 DEF darkcat_alley  := 3_model.cross_triangulation(codebase) | pre_QA & post_QA | structured_YAML + narrative
                       parser(bin/triangulate) | 8_metrics | 7_visualisations | portfolio [SD-318]
+DEF sortie         := feature -> spec_plan -> {dev + darkcat}* UNTIL roi.diminishes -> human_qa? -> gauntlet -> commit
+                      RULE: spec_plan BEFORE dev | darkcat.loop.exits WHEN marginal_value < marginal_cost
+                      RULE: human_qa := checklist !exploration | taste_required items only | skip WHEN gate.covers
 DEF gauntlet       := dev(gate) -> darkcat{claude,openai,gemini} -> synth -> pitkeel -> walkthrough -> commit
 DEF DONE           := gate.green & darkcat{3}.complete & synth.pass & pitkeel.reviewed & walkthrough.checked
 DEF prime_context  := min(context) WHERE smart_zone.enabled             [SD-311]
