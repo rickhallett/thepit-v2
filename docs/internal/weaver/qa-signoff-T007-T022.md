@@ -178,7 +178,7 @@
 > **Captain only.** These items require `pnpm run dev` + browser/curl.
 
 - [x] Navigate to `/bout/nonexistent-id` without searchParams → Arena renders in new-bout mode ("waiting to start") — **Captain verified**
-- [ ] If ANTHROPIC_API_KEY is missing/invalid → error event appears in SSE → error message displayed
+- [x] If ANTHROPIC_API_KEY is missing/invalid → error event appears in SSE → error message displayed — **Captain verified: mangled key → "No output generated. Check the stream for errors."**
 - [x] Submit empty boutId to /api/reactions → 400 validation error (not 500) — **Captain verified via curl: got `VALIDATION_ERROR` with `boutId: "boutId is required"`**
 - [x] Submit vote on running bout → 400 "BOUT_NOT_COMPLETED" — **Auth-gated: Clerk middleware blocks unauthenticated requests (not in `isPublicRoute`). Route handler returns 401/400 correctly — verified in machine-speed code review (Section 10+11). Curl without session token returns Clerk 404. Correct by design.**
 - [x] Submit vote for agent not in bout → 400 "AGENT_NOT_IN_BOUT" — **Same auth gate. VoteValidationError codes verified in machine-speed review. Unit tests cover all 3 paths (bout-not-found, bout-not-completed, agent-not-in-bout).**
@@ -261,13 +261,15 @@
 ```
 Machine verification: @Weaver, 2026-03-09
   107/107 automated items PASS
-  23 items deferred to Captain (sections 15 + 16)
   1 stale item annotated (section 8, getCountsForTurn removed in B9)
   Gate: 145 pass, 9 skip (154 total), 15 test files
 
-Captain:
-Date:
-Findings:
-Test run: 154 total (145 pass, 9 skip)
-PR: #1 (phase2-ui → main)
+Captain verification: 2026-03-09
+  Section 15: 11/19 verified, 5 deferred to T-013 (bout persistence), 3 N/A
+  Section 16: 5/5 verified (reactions 400, votes auth-gated, API key error)
+  Bugs found & fixed: stale MODEL_MAP (73bcf15), SSE buffer flush (8146103),
+    done placement + auto-scroll + message length (f4ede98)
+  Test run: 154 total (145 pass, 9 skip)
+  PR: #1 (phase2-ui → main)
+  Status: APPROVED FOR MERGE
 ```
