@@ -98,8 +98,19 @@ export async function claimFromIntroPool(
     return { claimed: 0, poolRemaining: status.effectiveRemainingMicro };
   }
 
-  // Atomic conditional update: claim up to min(requested, available)
-  // The WHERE clause ensures we only update if there's enough remaining
+  // Check available before attempting claim — guards against empty pool minting 0-credit claims
+  // that still trigger the UPDATE and downstream applyCreditDelta.
+  const preCheck = await getIntroPoolStatus();
+  if (preCheck.effectiveRemainingMicro <= 0) {
+    return { claimed: 0, poolRemaining: 0 };
+  }
+
+  // Atomic conditional update: claim up to min(requested, available).
+  // LEAST + GREATEST in SQL ensures we never claim more than what's left.
+  // RETURNING gives us the AFTER state; we compute actual claim from
+  // oldClaimed (captured before) vs newClaimed (returned).
+  const oldClaimedMicro = preCheck.claimedMicro;
+
   const result = await db
     .update(introPool)
     .set({
@@ -124,23 +135,21 @@ export async function claimFromIntroPool(
     return { claimed: 0, poolRemaining: 0 };
   }
 
-  // Calculate what was actually claimed
   const row = result[0];
+  const newClaimedMicro = row.claimedMicro ?? 0;
+
+  // Actual claim = difference between old and new claimedMicro.
+  // This is the ground truth — no fragile JS recomputation of the SQL decay formula.
+  const actualClaim = newClaimedMicro - oldClaimedMicro;
+
+  // Recompute effective remaining for the return value
   const halfLifeDays = parseFloat(row.halfLifeDays ?? String(DEFAULT_HALF_LIFE_DAYS));
   const initialMicro = row.initialMicro ?? DEFAULT_INITIAL_MICRO;
   const createdAt = row.createdAt ?? new Date();
-  const newClaimedMicro = row.claimedMicro ?? 0;
-
-  // Recompute effective remaining to determine actual claim
   const elapsedSeconds = (Date.now() - createdAt.getTime()) / 1000;
   const decayFactor = Math.pow(0.5, elapsedSeconds / (halfLifeDays * 86400));
   const decayedTotal = initialMicro * decayFactor;
   const effectiveRemaining = Math.max(0, decayedTotal - newClaimedMicro);
-
-  // The claim was: min(requested, what_was_available_before_update)
-  // What was available before = effectiveRemaining + actualClaim
-  const availableBefore = effectiveRemaining + Math.min(requestedMicro, Math.max(0, decayedTotal - (newClaimedMicro - requestedMicro)));
-  const actualClaim = Math.min(requestedMicro, Math.max(0, availableBefore - effectiveRemaining));
 
   // Credit the user if we claimed anything
   if (actualClaim > 0) {

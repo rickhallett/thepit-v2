@@ -71,6 +71,15 @@ export async function applyCreditDelta(
   // Transaction ensures balance update and audit log are atomic.
   // Without this, a failed INSERT leaves balance changed with no audit trail.
   return db.transaction(async (tx) => {
+    // Read balance BEFORE update to compute actual applied delta.
+    // GREATEST(0, ...) may floor the result, so requested delta ≠ applied delta.
+    const before = await tx
+      .select({ balanceMicro: credits.balanceMicro })
+      .from(credits)
+      .where(eq(credits.userId, userId));
+
+    const oldBalance = before[0]?.balanceMicro ?? 0;
+
     // Update balance with floor at 0
     const result = await tx
       .update(credits)
@@ -82,10 +91,13 @@ export async function applyCreditDelta(
 
     const newBalance = result[0]?.balanceMicro ?? 0;
 
-    // Log the transaction
+    // Log the ACTUAL applied delta, not the requested delta.
+    // If balance was 1000 and delta was -5000, actual is -1000 (floored at 0).
+    const actualDelta = newBalance - oldBalance;
+
     await tx.insert(creditTransactions).values({
       userId,
-      deltaMicro: delta,
+      deltaMicro: actualDelta,
       source,
       referenceId,
       metadata: metadata ?? null,

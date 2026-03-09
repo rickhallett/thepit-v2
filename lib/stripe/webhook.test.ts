@@ -142,6 +142,20 @@ function makeInvoice(overrides: Partial<Stripe.Invoice> = {}): Stripe.Invoice {
     object: "invoice",
     customer: "cus_test_123",
     billing_reason: "subscription_cycle",
+    lines: {
+      object: "list",
+      data: [
+        {
+          id: "il_test",
+          object: "line_item",
+          pricing: {
+            price_details: {
+              price: { id: "price_pass_123" },
+            },
+          },
+        },
+      ],
+    },
     ...overrides,
   } as Stripe.Invoice;
 }
@@ -463,7 +477,12 @@ describe("handleWebhookEvent", () => {
 
       await handleWebhookEvent(event);
 
-      expect(capturedSetArg).toEqual({ subscriptionStatus: "active" });
+      // DC4: handlePaymentSucceeded now restores BOTH tier (from invoice price)
+      // and status. This handles payment recovery after payment_failed downgrade.
+      expect(capturedSetArg).toEqual({
+        subscriptionTier: "pass",
+        subscriptionStatus: "active",
+      });
     });
 
     it("ignores invoice without customer", async () => {

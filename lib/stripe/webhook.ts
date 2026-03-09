@@ -223,11 +223,22 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
     return;
   }
 
+  // Resolve tier from the invoice's subscription price, NOT from the DB.
+  // If payment previously failed, handlePaymentFailed already set tier to 'free'.
+  // Reading tier from DB here would grant free-tier credits (0) instead of the
+  // actual subscription tier credits. The invoice's line items carry the truth.
+  const subscriptionLineItem = invoice.lines?.data?.[0];
+  const priceDetails = subscriptionLineItem?.pricing?.price_details;
+  const priceId =
+    typeof priceDetails?.price === "string"
+      ? priceDetails.price
+      : priceDetails?.price?.id;
+
   // Find user by stripe_customer_id
   const userRow = await db
     .select({
       id: users.id,
-      subscriptionTier: users.subscriptionTier,
+      subscriptionId: users.subscriptionId,
     })
     .from(users)
     .where(eq(users.stripeCustomerId, customerId))
@@ -238,7 +249,9 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
   }
 
   const user = userRow[0];
-  const tier = (user.subscriptionTier as UserTier) ?? UserTier.FREE;
+
+  // Resolve tier from price ID (falls back to free if price ID unknown)
+  const tier = priceId ? resolveTierFromPriceId(priceId) : UserTier.FREE;
   const grantMicro = TIER_CONFIG[tier].grantMicro;
 
   // Apply monthly grant (idempotent)
@@ -254,10 +267,15 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
     }
   }
 
-  // Restore active status if was past_due
+  // Restore tier AND active status. This handles the payment recovery case:
+  // payment_failed set tier=free + status=past_due → payment_succeeded
+  // restores both to the correct values.
   await db
     .update(users)
-    .set({ subscriptionStatus: "active" })
+    .set({
+      subscriptionTier: tier,
+      subscriptionStatus: "active",
+    })
     .where(eq(users.stripeCustomerId, customerId));
 }
 
@@ -293,12 +311,24 @@ export async function handleWebhookEvent(event: Stripe.Event): Promise<void> {
         return;
     }
   } catch (error) {
-    // Log but don't rethrow — returning 200 to Stripe prevents infinite retries
-    // for persistent errors (e.g., bad data, unique constraint violations).
-    // Transient errors (DB timeouts) are acceptable losses; Stripe will retry.
     console.error(
       `[webhook] Error handling ${event.type} (${event.id}):`,
       error,
     );
+
+    // Distinguish transient vs persistent errors.
+    // Transient (DB timeouts, network): re-throw so route returns 500 → Stripe retries.
+    // Persistent (unique constraint, bad data): swallow so route returns 200 → no infinite retry.
+    const isPersistent =
+      error instanceof Error &&
+      (error.message.includes("unique") ||
+        error.message.includes("duplicate") ||
+        error.message.includes("violates") ||
+        error.message.includes("invalid"));
+
+    if (!isPersistent) {
+      throw error;
+    }
+    // Persistent error: swallowed. Stripe gets 200, won't retry.
   }
 }
