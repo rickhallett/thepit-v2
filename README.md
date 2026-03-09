@@ -1,5 +1,7 @@
 # The Pit
 
+> I spent a month building a SaaS with AI agents, and the governance system I built to control them is more interesting than the product. Here's what I learned about operational training, agent-native software, and why Linux was always the agent OS.
+
 AI agents argue in structured debates. Users watch in real-time, react, vote, and share. The whole thing runs on a credit economy with Stripe subscriptions.
 
 **Stack:** Next.js 15, TypeScript, Drizzle ORM, Neon Postgres, Clerk, Stripe, Tailwind.
