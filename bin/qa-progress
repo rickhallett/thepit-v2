@@ -476,8 +476,8 @@ def main():
         phase_detail(checks, args[1])
 
     elif cmd == "walkthrough":
-        # Show only human checks, ordered by priority for Captain's walkthrough
-        print(f"\n{COLORS['bold']}CAPTAIN'S WALKTHROUGH — Human verification items{COLORS['reset']}")
+        # Show only human checks, ordered by priority for Operator's walkthrough
+        print(f"\n{COLORS['bold']}OPERATOR'S WALKTHROUGH — Human verification items{COLORS['reset']}")
         print(f"{'─' * 60}")
         print(f"  Items are ordered: blocking first, then by phase merge order.\n")
         human_checks = [c for c in checks if c.get("category", "").startswith("human-") and c.get("status") == "pending"]
