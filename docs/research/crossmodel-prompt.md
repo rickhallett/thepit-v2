@@ -1,6 +1,6 @@
 # Cross-Model Test Authoring Prompt
 
-> D3+ — agents do not enter this depth unless the Captain is watching.
+> D3+ — agents do not enter this depth unless the Operator is watching.
 > Copy the content below the line to the cross-model (GPT-4o or Gemini).
 
 ---

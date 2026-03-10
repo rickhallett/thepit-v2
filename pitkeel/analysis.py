@@ -253,8 +253,8 @@ def analyse_velocity(commits: list[Commit]) -> VelocitySignal:
 
 @dataclass
 class WellnessSignal:
-    captains_log_present: bool = False
-    captains_log_path: str = ""
+    operators_log_present: bool = False
+    operators_log_path: str = ""
     date: str = ""
 
 
@@ -266,11 +266,11 @@ def analyse_wellness(now: datetime, root: str) -> WellnessSignal:
 
     sig = WellnessSignal(
         date=date_str,
-        captains_log_path=os.path.join(
-            root, "docs", "internal", "captain", "captainslog", year, month, f"{day}.md"
+        operators_log_path=os.path.join(
+            root, "docs", "internal", "operator", "operatorslog", year, month, f"{day}.md"
         ),
     )
-    sig.captains_log_present = os.path.exists(sig.captains_log_path)
+    sig.operators_log_present = os.path.exists(sig.operators_log_path)
     return sig
 
 

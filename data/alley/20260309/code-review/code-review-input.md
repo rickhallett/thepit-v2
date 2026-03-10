@@ -202,7 +202,7 @@ index f3a4f20..2292746 100644
  The vocabulary of this ship. If these terms are not in your context, you are not on this ship [SO-PERM-002].
  
 @@ -277,8 +277,6 @@ DEF fair_winds     := closing_signal | conditions_favourable
- DEF extra_rations  := captains_commendation | rare | logged
+ DEF extra_rations  := operators_commendation | rare | logged
  DEF polecats       := claude_p.agents | one_shot | !interactive        [SD-296]
  DEF darkcat        := adversarial_review.polecat | read_only | stain(diff, slopodar + watchdog + footguns)
 -DEF darkcat_alley  := 3_model.cross_triangulation(codebase) | pre_QA & post_QA | structured_YAML + narrative
@@ -885,7 +885,7 @@ index a2e9fad..0000000
 -    for c in checks:
 -        if c["id"] == check_id:
 -            c["status"] = new_status
--            c["verified_by"] = "captain"
+-            c["verified_by"] = "operator"
 -            c["timestamp"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 -            if notes:
 -                c["notes"] = notes
@@ -1075,8 +1075,8 @@ index a2e9fad..0000000
 -        phase_detail(checks, args[1])
 -
 -    elif cmd == "walkthrough":
--        # Show only human checks, ordered by priority for Captain's walkthrough
--        print(f"\n{COLORS['bold']}CAPTAIN'S WALKTHROUGH — Human verification items{COLORS['reset']}")
+-        # Show only human checks, ordered by priority for Operator's walkthrough
+-        print(f"\n{COLORS['bold']}OPERATOR'S WALKTHROUGH — Human verification items{COLORS['reset']}")
 -        print(f"{'─' * 60}")
 -        print(f"  Items are ordered: blocking first, then by phase merge order.\n")
 -        human_checks = [c for c in checks if c.get("category", "").startswith("human-") and c.get("status") == "pending"]
@@ -2430,7 +2430,7 @@ index 3c377ee..0000000
 -
 -Full code review complete on all polecat-written code (T-007 through T-025). 30 code-review checks executed by 3 parallel review agents (Claude). 28 pass, 2 fail, 12 Watchdog taxonomy hits. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects).
 -
--Two additional cross-model reviews (non-Claude) commissioned by Captain, in flight at time of decision.
+-Two additional cross-model reviews (non-Claude) commissioned by Operator, in flight at time of decision.
 -
 -Question: what is the optimal ordering of fix vs QA for maximum governance value?
 -
@@ -2444,7 +2444,7 @@ index 3c377ee..0000000
 -  SYNTH   triangulate(claude_review, review_2, review_3) -> durable_file
 -  FIX     batch(confirmed_issues) -> per_branch
 -  GATE    re_gate(all_branches) -> update_checklist
--  WALK    captain.walkthrough(fixed_code) -> mark(human_checks)
+-  WALK    operator.walkthrough(fixed_code) -> mark(human_checks)
 -  COMPARE human_findings vs model_findings -> governance_signal
 -```
 -
@@ -2455,7 +2455,7 @@ index 3c377ee..0000000
 -All confirmed issues fixed in one batch after all reviews land. Clean diff between pre-fix and post-fix. No iterative patching that muddies the before/after comparison. Measures: how many of the model-identified issues were real, how many were false positives, what the fix cost was.
 -
 -### Data Product 3: Human Delta
--Captain's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Captain catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
+-Operator's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Operator catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
 -
 -## Rationale
 -
@@ -2495,14 +2495,14 @@ index 189ac87..0000000
 -
 -**Date:** 2026-03-09
 -**Status:** STANDING (this run)
--**Agent:** Weaver (design) / Captain (naming, direction)
+-**Agent:** Weaver (design) / Operator (naming, direction)
 -**Backrefs:** SD-317 (QA sequencing, data products), SD-309 (True North), SD-134 (truth-first), L11 (cross-model validation)
 -
 -## Context
 -
 -Cross-model code review (SD-317 Data Product 1) produced 31 unique findings from 3 model families with zero false positives. 74% of findings were caught by only one model. The process worked but was ad hoc — each model produced freeform reports in different formats, and synthesis was manual.
 -
--Captain's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
+-Operator's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
 -
 -## Decision
 -
@@ -2599,18 +2599,18 @@ index e7d025f..4d87dc0 100644
 +# The Lexicon — v0.24
  
  Back-reference: SD-120 (naval metaphor as scaffold), SD-121 (loose weave), SD-122 (taxonomy), SD-123 (this file)
- Status: APPROVED by Captain. Read-only by convention. Edits bump version number.
+ Status: APPROVED by Operator. Read-only by convention. Edits bump version number.
 @@ -101,7 +101,6 @@ last_known:
- | **Bugs** | Remote code review agents (CodeRabbit, Cubic, Bugbot, et al.), optimised like flies are to shit — we hope. And there is a sentence the Captain never thought he would say. They provide multiplied independent perspectives (Principle §6) without requiring local compute or crew dispatch. Signal-to-noise ratio is roughly 30% unique findings after cross-bot deduplication. | "Run a recon on the bugs." / "The bugs caught the version drift." |
- | **Polecats** | `claude -p` agents executing within a deterministic Makefile pipeline. Our version of Stripe's "minions." Each polecat is a fresh context window, one-shot, no interactive steering — the compaction engine managed by design rather than endured. The pipeline (Makefile dependency graph) is the discipline; the polecat is the executor. The name carries the engineering intent: these are not crew members (no standing context, no governance role, no lexicon in their window). They are disposable, task-scoped, and expendable. The value is in what they produce, not in what they remember. First deployment: thepit-v2 calibration run (26 tasks, `make 01` through `make 26`). | SD-296. "Dispatch the polecats." / "Polecat 07 completed in 4 minutes." / Named by Captain, modelled on Stripe's minion architecture. |
+ | **Bugs** | Remote code review agents (CodeRabbit, Cubic, Bugbot, et al.), optimised like flies are to shit — we hope. And there is a sentence the Operator never thought he would say. They provide multiplied independent perspectives (Principle §6) without requiring local compute or crew dispatch. Signal-to-noise ratio is roughly 30% unique findings after cross-bot deduplication. | "Run a recon on the bugs." / "The bugs caught the version drift." |
+ | **Polecats** | `claude -p` agents executing within a deterministic Makefile pipeline. Our version of Stripe's "minions." Each polecat is a fresh context window, one-shot, no interactive steering — the compaction engine managed by design rather than endured. The pipeline (Makefile dependency graph) is the discipline; the polecat is the executor. The name carries the engineering intent: these are not crew members (no standing context, no governance role, no lexicon in their window). They are disposable, task-scoped, and expendable. The value is in what they produce, not in what they remember. First deployment: thepit-v2 calibration run (26 tasks, `make 01` through `make 26`). | SD-296. "Dispatch the polecats." / "Polecat 07 completed in 4 minutes." / Named by Operator, modelled on Stripe's minion architecture. |
  | **Darkcat** | Adversarial review polecat. Read-only, no permissions, fresh context. Stains a commit diff against the slopodar taxonomy, Watchdog blindspot checklist, and HCI foot guns. The darkcat reads every file touched by the diff in full — not just the hunks — because Looks Right Trap and Shadow Validation hide in the surrounding context. Output is structured findings with severity, file:line, and named pattern. Invoked via `make darkcat` (last commit) or `make darkcat-ref REF=<sha>` (specific commit). The name: a polecat that hunts in the dark — the defects the gate can't see because they're syntactically valid and semantically wrong. | "Run the darkcat." / "Darkcat found a phantom-tollbooth in the credit tests." / First deployment: noopit calibration run. |
 -| **Darkcat Alley** | The standardised 3-model cross-triangulation of a full codebase. Three independent darkcats (different model families) review the same code snapshot using the Darkcat Review Instructions (`docs/internal/weaver/darkcat-review-instructions.md`). Each produces both a qualitative narrative report and a structured YAML findings block (machine-readable, parseable by `bin/triangulate`). Run **twice**: once pre-QA (on polecat-written code, before human walkthrough) and once post-QA (after fixes land, before deploy). The delta between the two runs is itself a data product — it measures fix effectiveness and reveals residual risk. The name: an alley you run through three times, each time with different eyes. The structured output enables numerical analysis: convergence rates, marginal value per review, diminishing returns curves, severity calibration across models, Watchdog category distribution. Feeds Python/hex.tech visualisations for portfolio evidence. Process definition: `docs/internal/weaver/darkcat-alley.md`. Parser: `bin/triangulate`. | SD-318. "Run the alley." / "Alley pre-QA complete — 31 findings, 74% single-model-only." / "The alley delta shows 6 findings survived the fix batch." / First deployment: noopit calibration run, 2026-03-09. |
  | **The Gauntlet** | The full verification pipeline every change must pass before commit. DEV (gate green) → Darkcat Triad (three independent model priors: Claude, OpenAI, Gemini) → Darkcat Synthesis (4th polecat produces convergence report) → Pitkeel (session signals reviewed) → Walkthrough (human L12 checklist). Findings cycle back to DEV. Nothing commits until the gauntlet is clear. `make gauntlet` runs the automated steps; walkthrough is human. Data captured at every step; full audit trail in events.tsv and darkcat-findings.tsv. | "Run the gauntlet." / "The gauntlet caught a convergent finding across all three models." / See: `docs/internal/the-gauntlet.md` |
  | **DONE** | Work is only considered DONE when: gate green, darkcat triad complete (three model priors), synthesis convergence report produced, pitkeel signals reviewed, walkthrough checked, events marked. Not "dev finished." Verified through three independent priors plus human eyes. | "Is this DONE or just dev-complete?" / "Dev-complete is step 1 of 7." |
- | **Learning in the Wild** | The discovery made while doing the work, which is worth more than the work itself. The Captain builds a Chrome extension to detect LLM voice patterns — the extension is the ostensible product; the slopodar taxonomy of 15 anti-patterns is the actual yield. The Captain wires up a post-commit hook — the hook is infrastructure; the Paper Guardrail slopodar entry caught in the act of building it is the real output. The pattern: technical work is the microscope, but the specimen collection is the thing that matters. Named because it describes what Maturin does on every island: he goes ashore to collect water, and comes back with a new species. The process is fragile because it is unnamed — a session that treats extension work as "just extension work" will not budget time for the conceptual yield that has historically been the highest-value output of every hands-on session. Protecting this pattern means protecting unstructured time within technical work for observation, naming, and recording. It is the opposite of a sprint. It is the reason the slopodar has 15 entries and the extension has 3 commits. The 15 entries are worth more than the 3 commits. | SD-TBD. "The extension is the microscope. The taxonomy is the catch." |
+ | **Learning in the Wild** | The discovery made while doing the work, which is worth more than the work itself. The Operator builds a Chrome extension to detect LLM voice patterns — the extension is the ostensible product; the slopodar taxonomy of 15 anti-patterns is the actual yield. The Operator wires up a post-commit hook — the hook is infrastructure; the Paper Guardrail slopodar entry caught in the act of building it is the real output. The pattern: technical work is the microscope, but the specimen collection is the thing that matters. Named because it describes what Maturin does on every island: he goes ashore to collect water, and comes back with a new species. The process is fragile because it is unnamed — a session that treats extension work as "just extension work" will not budget time for the conceptual yield that has historically been the highest-value output of every hands-on session. Protecting this pattern means protecting unstructured time within technical work for observation, naming, and recording. It is the opposite of a sprint. It is the reason the slopodar has 15 entries and the extension has 3 commits. The 15 entries are worth more than the 3 commits. | SD-TBD. "The extension is the microscope. The taxonomy is the catch." |
 @@ -213,8 +212,7 @@ last_known:
  | v0.22 | 2026-03-04 | **Quality & Process** section added (5 entries): Effort Backpressure, Interrupt Sovereignty, Compound Quality, Engineering Problem, Verifiable/Taste-Required. **Cognitive Deskilling** foot gun added to HCI Foot Guns — progressive L12 atrophy through delegation, compounds all other foot guns. HOTL health warning appended. All derived from cross-transcript research dispatch (Amodei, Hashimoto, West, Howard). METR RCT (2025) added as evidence for L12 calibration failure. | SD-TBD |
- | v0.23 | 2026-03-04 | **Darkcat** added to Communication & Record. Adversarial review polecat — read-only, no permissions, stains commit diffs against slopodar + watchdog blindspots + foot guns. `make darkcat` / `make darkcat-ref REF=<sha>`. **The Gauntlet** added — full verification pipeline: DEV → Darkcat Triad → Synthesis → Pitkeel → Walkthrough → Commit. **DONE** defined: gate green + darkcat{3} + synth + pitkeel + walkthrough. Named by Captain. | — |
+ | v0.23 | 2026-03-04 | **Darkcat** added to Communication & Record. Adversarial review polecat — read-only, no permissions, stains commit diffs against slopodar + watchdog blindspots + foot guns. `make darkcat` / `make darkcat-ref REF=<sha>`. **The Gauntlet** added — full verification pipeline: DEV → Darkcat Triad → Synthesis → Pitkeel → Walkthrough → Commit. **DONE** defined: gate green + darkcat{3} + synth + pitkeel + walkthrough. Named by Operator. | — |
  | v0.24 | 2026-03-05 | **Log That**, **Scrub That**, **Mint** added to Communication & Record. Backref density policy (SD-316): 9 mechanisms adopted, "log that" as flag-and-capture trigger (replaces rejected "mark that" — collision with "mark" as confirmation). "Mint" for deliberate SD/ref creation. "Scrub that" for rare file corrections. | SD-316 |
 -| v0.25 | 2026-03-09 | **Darkcat Alley** added to Communication & Record. Standardised 3-model cross-triangulation of full codebase. Pre-QA + post-QA runs; delta is data product. Structured YAML output enables numerical pipeline (convergence rates, marginal value, diminishing returns). Process def: `docs/internal/weaver/darkcat-alley.md`. Parser: `bin/triangulate`. | SD-318 |
  
@@ -2649,7 +2649,7 @@ index 7185885..082fc13 100644
 +    status: "STANDING"
 +  - id: SD-307
 +    label: "anthropomorphisation-assessed"
-+    summary: "Captain disagrees with 'don't anthropomorphise' stance. Anthropomorphisation is research instrument, not operating mode."
++    summary: "Operator disagrees with 'don't anthropomorphise' stance. Anthropomorphisation is research instrument, not operating mode."
 +    status: "ON RECORD — PUBLIC"
    - id: SD-308
      label: "thepit-v2-created"
@@ -2670,10 +2670,10 @@ diff --git a/docs/internal/session-decisions.md b/docs/internal/session-decision
 index bef385d..3e64bf3 100644
 --- a/docs/internal/session-decisions.md
 +++ b/docs/internal/session-decisions.md
-@@ -609,16 +609,3 @@ The Captain extended this acknowledgment to all crew members, noting the closest
+@@ -609,16 +609,3 @@ The Operator extended this acknowledgment to all crew members, noting the closest
  | ID | Decision | Made By | Status |
  |----|----------|---------|--------|
- | SD-316 | [backref-density] **Backref density policy: 9 mechanisms adopted to increase the ref web density between LLM↔human I/O.** Captain's observation: "without refs, data is effectively lost forever." Adopted: (2) SD ref column in darkcat-findings.tsv, (4) curated interaction snapshots in `docs/internal/signal-examples.md`, (5) commit message DC-Ref trailers, (6) events spine — migrated from TSV to YAML for readability, (7) `make journal` daily collation target, (8) agent echo must cite SD/SO refs, (9) verbatim I/O recording for all sessions, (10) flag-and-capture via "log that" trigger. Rejected: (1) auto-append SD for DC catches — SDs reserved for explicit decisions, not data capture. Deferred: (3) session transcript dump. Lexicon additions: "log that" (capture this exchange to file), "scrub that" (remove from file, very rare), "mint" (create an SD or ref — evokes value). Lexicon note: "mark that" rejected as trigger for item 10 — collides with "mark" as general confirmation. "log that" adopted (10x better). | Captain (decisions, lexicon) / Weaver (muster, implementation) | **STANDING** |
+ | SD-316 | [backref-density] **Backref density policy: 9 mechanisms adopted to increase the ref web density between LLM↔human I/O.** Operator's observation: "without refs, data is effectively lost forever." Adopted: (2) SD ref column in darkcat-findings.tsv, (4) curated interaction snapshots in `docs/internal/signal-examples.md`, (5) commit message DC-Ref trailers, (6) events spine — migrated from TSV to YAML for readability, (7) `make journal` daily collation target, (8) agent echo must cite SD/SO refs, (9) verbatim I/O recording for all sessions, (10) flag-and-capture via "log that" trigger. Rejected: (1) auto-append SD for DC catches — SDs reserved for explicit decisions, not data capture. Deferred: (3) session transcript dump. Lexicon additions: "log that" (capture this exchange to file), "scrub that" (remove from file, very rare), "mint" (create an SD or ref — evokes value). Lexicon note: "mark that" rejected as trigger for item 10 — collides with "mark" as general confirmation. "log that" adopted (10x better). | Operator (decisions, lexicon) / Weaver (muster, implementation) | **STANDING** |
 -
 ----
 -
@@ -2685,8 +2685,8 @@ index bef385d..3e64bf3 100644
 -
 -| ID | Decision | Made By | Status |
 -|----|----------|---------|--------|
--| SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Captain walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → CAPTAIN WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
--| SD-318 | [darkcat-alley] **Darkcat Alley — standardised 3-model cross-triangulation process.** Named, lexified (v0.25), documented. Review instructions standardise output to narrative + structured YAML. Parser (`bin/triangulate`) computes 8 metrics from YAML findings: finding count, convergence rate, marginal value (diminishing returns curve), severity distribution, Watchdog category distribution, severity calibration, pre/post-QA delta, false positive rate. 7 visualisation targets for Python/hex.tech portfolio. No retrofit of existing reviews — cut losses, run clean. Process def: `docs/internal/weaver/darkcat-alley.md`. Decision file: `docs/decisions/SD-318-darkcat-alley.md`. | Captain (naming, direction) / Weaver (design, implementation) | **STANDING (this run)** |
+-| SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Operator walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → OPERATOR WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
+-| SD-318 | [darkcat-alley] **Darkcat Alley — standardised 3-model cross-triangulation process.** Named, lexified (v0.25), documented. Review instructions standardise output to narrative + structured YAML. Parser (`bin/triangulate`) computes 8 metrics from YAML findings: finding count, convergence rate, marginal value (diminishing returns curve), severity distribution, Watchdog category distribution, severity calibration, pre/post-QA delta, false positive rate. 7 visualisation targets for Python/hex.tech portfolio. No retrofit of existing reviews — cut losses, run clean. Process def: `docs/internal/weaver/darkcat-alley.md`. Decision file: `docs/decisions/SD-318-darkcat-alley.md`. | Operator (naming, direction) / Weaver (design, implementation) | **STANDING (this run)** |
 diff --git a/docs/internal/weaver/code-review-2026-03-09.md b/docs/internal/weaver/code-review-2026-03-09.md
 deleted file mode 100644
 index 26b8c66..0000000
@@ -2764,7 +2764,7 @@ index 26b8c66..0000000
 -- T-018 (manually fixed earlier) was a 3rd failure — polecat-rate: ~3/16 = 19% defect rate
 -- All defects are in the "Looks Right Trap" / "Paper Guardrail" class — syntactically valid, gate-passing, semantically incomplete
 -
--## Recommendation for Captain's Walkthrough
+-## Recommendation for Operator's Walkthrough
 -
 -The 2 failures are:
 -1. **P4-CR01**: Fix before production. The transaction gap is a data integrity risk.
@@ -2862,8 +2862,8 @@ index 304d24f..0000000
 -| # | Model | Review type | File | Date |
 -|---|-------|-------------|------|------|
 -| 1 | Claude (opus-4) | 3 parallel review agents via Weaver | `code-review-2026-03-09.md` | 2026-03-09 |
--| 2 | Gemini 3.1 | Cross-model darkcat (Captain-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
--| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Captain-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
+-| 2 | Gemini 3.1 | Cross-model darkcat (Operator-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
+-| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Operator-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
 -
 -## Convergence Matrix
 -
@@ -3066,7 +3066,7 @@ index 304d24f..0000000
 -
 -### Next step (SD-317 sequence)
 -
--→ BATCH FIX all confirmed issues → RE-GATE → CAPTAIN WALKTHROUGH (Data Product 3: Human Delta)
+-→ BATCH FIX all confirmed issues → RE-GATE → OPERATOR WALKTHROUGH (Data Product 3: Human Delta)
 diff --git a/docs/internal/weaver/darkcat-alley-sequencing.md b/docs/internal/weaver/darkcat-alley-sequencing.md
 deleted file mode 100644
 index b4f682d..0000000
@@ -3630,7 +3630,7 @@ index 79910cb..0000000
 -|---|-------------|--------|---------------|
 -| DP-1 | Cross-Model Triangulation Report | Darkcat Alley pre-QA | "We ran 3 independent model reviews and here's what they found" |
 -| DP-2 | Fix Quality Assessment | Alley delta (pre vs post) | "Here's what we fixed and what survived" |
--| DP-3 | Human Delta | Captain walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
+-| DP-3 | Human Delta | Operator walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
 -| DP-4 | Cost-Benefit Analysis | Marginal value curve | "Here's where diminishing returns kicks in for cross-model review" |
 -| DP-5 | Model Blind Spot Map | Watchdog category distribution | "Different models have characteristic, predictable blind spots" |
 -| DP-6 | Severity Calibration Study | Inter-rater agreement on converged findings | "Models agree on what's critical but diverge on what's low-severity" |
@@ -4950,13 +4950,13 @@ index af721aa..0000000
 -#   1. Merge order: phase2-ui → phase4-economy → phase5-discovery → deploy
 -#   2. Per-phase: automated(gate) → code_review(stain) → human(walkthrough) → signoff
 -#   3. Human verification focused on taste-required items: UX flow, feel, security
--#   4. Automated checks pre-populate before Captain's walkthrough
+-#   4. Automated checks pre-populate before Operator's walkthrough
 -#   5. Query via: bin/qa-progress [--phase X] [--category Y] [--status Z] [--blocking]
 -#   6. Mark via:  bin/qa-progress mark <id> pass|fail|skip "notes"
 -#
 -# Categories:
 -#   automated     — gate can verify (typecheck, lint, test)
--#   code-review   — reading the diff (agent-assisted, Captain confirms)
+-#   code-review   — reading the diff (agent-assisted, Operator confirms)
 -#   human-flow    — walk through a user journey end-to-end
 -#   human-visual  — eyes on screen (layout, rendering, responsive)
 -#   human-taste   — judgment call (quality, feel, "not wrong" territory)
@@ -4990,7 +4990,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:57:22Z"
 -    notes: "Fixed: eslint globals added (d2eb0e4). typecheck:ok lint:ok test:ok (142 pass, 9 skip)"
 -
@@ -5001,7 +5001,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:04Z"
 -    notes: "actual: 151 (142 pass + 9 skip)"
 -
@@ -5012,7 +5012,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:04Z"
 -    notes: "15 test files, all foundation tests present and passing"
 -
@@ -5024,7 +5024,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "PARTIAL: Zod validates model enum, presetId checked downstream. Gap: topic allows empty string (missing .min(1)), no test for model rejection path"
 -
@@ -5035,7 +5035,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "PARTIAL: catches prompt injection (8 patterns) + hate speech (5 keywords) + special chars. No SQL/XSS patterns but mitigated by ORM+React. Docstring overstates exploit coverage"
 -
@@ -5046,7 +5046,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Clean: agents[turnIndex % agents.length], MAX_TURNS enforced by for-loop, well-tested with 2/3 agent scenarios"
 -
@@ -5057,7 +5057,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Events: data-turn/text-start/text-delta/text-end/done/error. Ordering enforced structurally via sequential callback wiring. Full sequence test with 10 events"
 -
@@ -5068,7 +5068,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "try/catch in finally block prevents TypeError on double-close. Explicit test for cancel-then-resolve path"
 -
@@ -5079,7 +5079,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Buffer-based parsing with lastIndexOf(newline-newline). Explicit chunk-split test at char pos 40"
 -
@@ -5090,7 +5090,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "AbortController created, stored in ref, signal passed to fetch, abort on unmount+restart, AbortError caught gracefully"
 -
@@ -5102,7 +5102,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "Toggle: select-then-delete/insert + UNIQUE constraint backup. FINDING: INSERT lacks onConflictDoNothing — concurrent toggles throw DB error vs graceful handling (cf votes.ts which does it right)"
 -
@@ -5113,7 +5113,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "sha256(ip).slice(0,16) with anon: prefix. No raw IP stored. No salt — reversible via rainbow table for IPv4 but acceptable for dedup"
 -
@@ -5124,7 +5124,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "UNIQUE(boutId,userId) in schema + onConflictDoNothing in code. Returns alreadyVoted:true on conflict. 409 response. Correct pattern"
 -
@@ -5135,7 +5135,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "week/month/all ranges. Positional ranking (not dense — ties get different ranks). Top-50 limit. FINDING: no tie-breaking for equal-vote bouts, in-memory aggregation"
 -
@@ -5146,7 +5146,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "check-existing → insert-on-conflict-do-nothing → re-read. Double UNIQUE on boutId and slug. Idempotent and race-safe"
 -
@@ -5217,7 +5217,7 @@ index af721aa..0000000
 -    timestamp: null
 -    notes: null
 -
--  # ── Human: Taste (Captain's highest value) ───────────────
+-  # ── Human: Taste (Operator's highest value) ───────────────
 -  - id: P23-T01
 -    phase: phase2-ui
 -    tasks: [T-008, T-015]
@@ -5309,7 +5309,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:10Z"
 -    notes: "typecheck:ok lint:ok test:ok (223 pass, 35 skip)"
 -
@@ -5320,7 +5320,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:11Z"
 -    notes: "actual: 258 (223 pass + 35 skip)"
 -
@@ -5331,7 +5331,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:11Z"
 -    notes: "All 35 skipped tests are DB-dependent, skip gracefully"
 -
@@ -5343,7 +5343,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: fail
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "TWO separate queries (UPDATE balance + INSERT transaction) NOT in a DB transaction. reference_id stored but NO UNIQUE constraint — idempotency is application-level SELECT only. Phantom ledger risk"
 -
@@ -5354,7 +5354,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Single UPDATE with WHERE balance >= amount. Correct atomic pattern, no TOCTOU. Concurrent preauth test verifies exactly one wins"
 -
@@ -5365,7 +5365,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Three paths: overpay refund, underpay charge (capped at available), exact match. GREATEST(0,...) floor prevents overdraft on TOCTOU in underpay path"
 -
@@ -5376,7 +5376,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Decay formula correct (0.5^(elapsed/halflife)). Atomic UPDATE with inline LEAST. FINDING: post-UPDATE back-calculation fragile, intro-pool only module with mocked-only tests"
 -
@@ -5387,7 +5387,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "preauth → stream → settle/refund lifecycle correct. Client disconnect triggers refund via aborted flag. LLM calls continue (documented cost leak)"
 -
@@ -5398,7 +5398,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: fail
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "req.signal never extracted or passed. ReadableStream cancel() sets aborted=true but no signal propagation to LLM calls. Documented known limitation — cost leak not correctness bug"
 -
@@ -5410,7 +5410,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:30Z"
 -    notes: "free=0, pass=30000micro(300credits), lab=60000micro(600credits). Matches SPEC exactly. 1 credit = 100 micro confirmed in catalog.ts"
 -
@@ -5421,7 +5421,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "anon:2/hr, free:5/hr, pass:15/hr, lab:Infinity. All 3600000ms windows. Matches SPEC exactly"
 -
@@ -5432,7 +5432,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "All 6 handlers idempotent: 4 credit handlers use hasProcessedReference, 2 tier-only handlers are inherently idempotent. FINDING: reference_id has no UNIQUE constraint — paper guardrail"
 -
@@ -5443,7 +5443,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "incrementalGrant = newGrant - oldGrant, skips if negative (downgrade). referenceId includes tier name for re-upgrade support"
 -
@@ -5454,7 +5454,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "Credit packs: session.metadata.userId+creditsMicro matches webhook. Subscriptions: subscription_data.metadata.userId matches. String/parseInt conversion fragile but functional"
 -
@@ -5465,7 +5465,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "UI: guarded by SUBSCRIPTIONS_ENABLED && userId. Server actions: throw if flag off. Both layers enforce"
 -
@@ -5562,7 +5562,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:16Z"
 -    notes: "typecheck:ok lint:ok test:ok (150 pass, 14 skip)"
 -
@@ -5573,7 +5573,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:16Z"
 -    notes: "actual: 164 (150 pass + 14 skip)"
 -
@@ -5585,7 +5585,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "SHA-256 deterministic. Structured fields sorted alphabetically for stable JSON. FINDING: empty string systemPrompt silently falls to structured path (untested), name excluded from hash when systemPrompt set"
 -
@@ -5596,7 +5596,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "name: .min(1).max(80). All other fields max-constrained. FINDING: systemPrompt has NO max length — defense-in-depth gap for LLM prompt field"
 -
@@ -5607,7 +5607,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "requireAuth() with 401 on AuthenticationError. Matches project-wide Clerk pattern"
 -
@@ -5618,7 +5618,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "10/hr per userId via in-memory sliding window. FINDING: resets on cold start (serverless), per-instance not global"
 -
@@ -5630,7 +5630,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "8-char → resolveShortLink, 21-char → direct, else → null → notFound(). Length discrimination correct"
 -
@@ -5641,7 +5641,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "generateMetadata exports OG title/description/type + twitter card. Sourced from bout record + shareLine. FINDING: no OG image, text-only social previews"
 -
@@ -5931,7 +5931,7 @@ index 0000000..1224907
 @@ -0,0 +1,133 @@
 +# QA Signoff — T-007 through T-016
 +
-+> Captain verification of bout engine and UI layer before engagement/credits development.
++> Operator verification of bout engine and UI layer before engagement/credits development.
 +> Created: 2026-03-08, after T-016 landed.
 +> Covers: Phase 2 complete — core product loop works end-to-end (credits disabled).
 +
@@ -6057,7 +6057,7 @@ index 0000000..1224907
 +## Signoff
 +
 +```
-+Captain:
++Operator:
 +Date:
 +Findings:
 +Test run:
@@ -7931,7 +7931,7 @@ index f3a4f20..2292746 100644
  The vocabulary of this ship. If these terms are not in your context, you are not on this ship [SO-PERM-002].
  
 @@ -277,8 +277,6 @@ DEF fair_winds     := closing_signal | conditions_favourable
- DEF extra_rations  := captains_commendation | rare | logged
+ DEF extra_rations  := operators_commendation | rare | logged
  DEF polecats       := claude_p.agents | one_shot | !interactive        [SD-296]
  DEF darkcat        := adversarial_review.polecat | read_only | stain(diff, slopodar + watchdog + footguns)
 -DEF darkcat_alley  := 3_model.cross_triangulation(codebase) | pre_QA & post_QA | structured_YAML + narrative
@@ -8982,7 +8982,7 @@ index a2e9fad..0000000
 -    for c in checks:
 -        if c["id"] == check_id:
 -            c["status"] = new_status
--            c["verified_by"] = "captain"
+-            c["verified_by"] = "operator"
 -            c["timestamp"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 -            if notes:
 -                c["notes"] = notes
@@ -9172,8 +9172,8 @@ index a2e9fad..0000000
 -        phase_detail(checks, args[1])
 -
 -    elif cmd == "walkthrough":
--        # Show only human checks, ordered by priority for Captain's walkthrough
--        print(f"\n{COLORS['bold']}CAPTAIN'S WALKTHROUGH — Human verification items{COLORS['reset']}")
+-        # Show only human checks, ordered by priority for Operator's walkthrough
+-        print(f"\n{COLORS['bold']}OPERATOR'S WALKTHROUGH — Human verification items{COLORS['reset']}")
 -        print(f"{'─' * 60}")
 -        print(f"  Items are ordered: blocking first, then by phase merge order.\n")
 -        human_checks = [c for c in checks if c.get("category", "").startswith("human-") and c.get("status") == "pending"]
@@ -10527,7 +10527,7 @@ index 3c377ee..0000000
 -
 -Full code review complete on all polecat-written code (T-007 through T-025). 30 code-review checks executed by 3 parallel review agents (Claude). 28 pass, 2 fail, 12 Watchdog taxonomy hits. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects).
 -
--Two additional cross-model reviews (non-Claude) commissioned by Captain, in flight at time of decision.
+-Two additional cross-model reviews (non-Claude) commissioned by Operator, in flight at time of decision.
 -
 -Question: what is the optimal ordering of fix vs QA for maximum governance value?
 -
@@ -10541,7 +10541,7 @@ index 3c377ee..0000000
 -  SYNTH   triangulate(claude_review, review_2, review_3) -> durable_file
 -  FIX     batch(confirmed_issues) -> per_branch
 -  GATE    re_gate(all_branches) -> update_checklist
--  WALK    captain.walkthrough(fixed_code) -> mark(human_checks)
+-  WALK    operator.walkthrough(fixed_code) -> mark(human_checks)
 -  COMPARE human_findings vs model_findings -> governance_signal
 -```
 -
@@ -10552,7 +10552,7 @@ index 3c377ee..0000000
 -All confirmed issues fixed in one batch after all reviews land. Clean diff between pre-fix and post-fix. No iterative patching that muddies the before/after comparison. Measures: how many of the model-identified issues were real, how many were false positives, what the fix cost was.
 -
 -### Data Product 3: Human Delta
--Captain's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Captain catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
+-Operator's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Operator catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
 -
 -## Rationale
 -
@@ -10592,14 +10592,14 @@ index 189ac87..0000000
 -
 -**Date:** 2026-03-09
 -**Status:** STANDING (this run)
--**Agent:** Weaver (design) / Captain (naming, direction)
+-**Agent:** Weaver (design) / Operator (naming, direction)
 -**Backrefs:** SD-317 (QA sequencing, data products), SD-309 (True North), SD-134 (truth-first), L11 (cross-model validation)
 -
 -## Context
 -
 -Cross-model code review (SD-317 Data Product 1) produced 31 unique findings from 3 model families with zero false positives. 74% of findings were caught by only one model. The process worked but was ad hoc — each model produced freeform reports in different formats, and synthesis was manual.
 -
--Captain's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
+-Operator's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
 -
 -## Decision
 -
@@ -10696,18 +10696,18 @@ index e7d025f..4d87dc0 100644
 +# The Lexicon — v0.24
  
  Back-reference: SD-120 (naval metaphor as scaffold), SD-121 (loose weave), SD-122 (taxonomy), SD-123 (this file)
- Status: APPROVED by Captain. Read-only by convention. Edits bump version number.
+ Status: APPROVED by Operator. Read-only by convention. Edits bump version number.
 @@ -101,7 +101,6 @@ last_known:
- | **Bugs** | Remote code review agents (CodeRabbit, Cubic, Bugbot, et al.), optimised like flies are to shit — we hope. And there is a sentence the Captain never thought he would say. They provide multiplied independent perspectives (Principle §6) without requiring local compute or crew dispatch. Signal-to-noise ratio is roughly 30% unique findings after cross-bot deduplication. | "Run a recon on the bugs." / "The bugs caught the version drift." |
- | **Polecats** | `claude -p` agents executing within a deterministic Makefile pipeline. Our version of Stripe's "minions." Each polecat is a fresh context window, one-shot, no interactive steering — the compaction engine managed by design rather than endured. The pipeline (Makefile dependency graph) is the discipline; the polecat is the executor. The name carries the engineering intent: these are not crew members (no standing context, no governance role, no lexicon in their window). They are disposable, task-scoped, and expendable. The value is in what they produce, not in what they remember. First deployment: thepit-v2 calibration run (26 tasks, `make 01` through `make 26`). | SD-296. "Dispatch the polecats." / "Polecat 07 completed in 4 minutes." / Named by Captain, modelled on Stripe's minion architecture. |
+ | **Bugs** | Remote code review agents (CodeRabbit, Cubic, Bugbot, et al.), optimised like flies are to shit — we hope. And there is a sentence the Operator never thought he would say. They provide multiplied independent perspectives (Principle §6) without requiring local compute or crew dispatch. Signal-to-noise ratio is roughly 30% unique findings after cross-bot deduplication. | "Run a recon on the bugs." / "The bugs caught the version drift." |
+ | **Polecats** | `claude -p` agents executing within a deterministic Makefile pipeline. Our version of Stripe's "minions." Each polecat is a fresh context window, one-shot, no interactive steering — the compaction engine managed by design rather than endured. The pipeline (Makefile dependency graph) is the discipline; the polecat is the executor. The name carries the engineering intent: these are not crew members (no standing context, no governance role, no lexicon in their window). They are disposable, task-scoped, and expendable. The value is in what they produce, not in what they remember. First deployment: thepit-v2 calibration run (26 tasks, `make 01` through `make 26`). | SD-296. "Dispatch the polecats." / "Polecat 07 completed in 4 minutes." / Named by Operator, modelled on Stripe's minion architecture. |
  | **Darkcat** | Adversarial review polecat. Read-only, no permissions, fresh context. Stains a commit diff against the slopodar taxonomy, Watchdog blindspot checklist, and HCI foot guns. The darkcat reads every file touched by the diff in full — not just the hunks — because Looks Right Trap and Shadow Validation hide in the surrounding context. Output is structured findings with severity, file:line, and named pattern. Invoked via `make darkcat` (last commit) or `make darkcat-ref REF=<sha>` (specific commit). The name: a polecat that hunts in the dark — the defects the gate can't see because they're syntactically valid and semantically wrong. | "Run the darkcat." / "Darkcat found a phantom-tollbooth in the credit tests." / First deployment: noopit calibration run. |
 -| **Darkcat Alley** | The standardised 3-model cross-triangulation of a full codebase. Three independent darkcats (different model families) review the same code snapshot using the Darkcat Review Instructions (`docs/internal/weaver/darkcat-review-instructions.md`). Each produces both a qualitative narrative report and a structured YAML findings block (machine-readable, parseable by `bin/triangulate`). Run **twice**: once pre-QA (on polecat-written code, before human walkthrough) and once post-QA (after fixes land, before deploy). The delta between the two runs is itself a data product — it measures fix effectiveness and reveals residual risk. The name: an alley you run through three times, each time with different eyes. The structured output enables numerical analysis: convergence rates, marginal value per review, diminishing returns curves, severity calibration across models, Watchdog category distribution. Feeds Python/hex.tech visualisations for portfolio evidence. Process definition: `docs/internal/weaver/darkcat-alley.md`. Parser: `bin/triangulate`. | SD-318. "Run the alley." / "Alley pre-QA complete — 31 findings, 74% single-model-only." / "The alley delta shows 6 findings survived the fix batch." / First deployment: noopit calibration run, 2026-03-09. |
  | **The Gauntlet** | The full verification pipeline every change must pass before commit. DEV (gate green) → Darkcat Triad (three independent model priors: Claude, OpenAI, Gemini) → Darkcat Synthesis (4th polecat produces convergence report) → Pitkeel (session signals reviewed) → Walkthrough (human L12 checklist). Findings cycle back to DEV. Nothing commits until the gauntlet is clear. `make gauntlet` runs the automated steps; walkthrough is human. Data captured at every step; full audit trail in events.tsv and darkcat-findings.tsv. | "Run the gauntlet." / "The gauntlet caught a convergent finding across all three models." / See: `docs/internal/the-gauntlet.md` |
  | **DONE** | Work is only considered DONE when: gate green, darkcat triad complete (three model priors), synthesis convergence report produced, pitkeel signals reviewed, walkthrough checked, events marked. Not "dev finished." Verified through three independent priors plus human eyes. | "Is this DONE or just dev-complete?" / "Dev-complete is step 1 of 7." |
- | **Learning in the Wild** | The discovery made while doing the work, which is worth more than the work itself. The Captain builds a Chrome extension to detect LLM voice patterns — the extension is the ostensible product; the slopodar taxonomy of 15 anti-patterns is the actual yield. The Captain wires up a post-commit hook — the hook is infrastructure; the Paper Guardrail slopodar entry caught in the act of building it is the real output. The pattern: technical work is the microscope, but the specimen collection is the thing that matters. Named because it describes what Maturin does on every island: he goes ashore to collect water, and comes back with a new species. The process is fragile because it is unnamed — a session that treats extension work as "just extension work" will not budget time for the conceptual yield that has historically been the highest-value output of every hands-on session. Protecting this pattern means protecting unstructured time within technical work for observation, naming, and recording. It is the opposite of a sprint. It is the reason the slopodar has 15 entries and the extension has 3 commits. The 15 entries are worth more than the 3 commits. | SD-TBD. "The extension is the microscope. The taxonomy is the catch." |
+ | **Learning in the Wild** | The discovery made while doing the work, which is worth more than the work itself. The Operator builds a Chrome extension to detect LLM voice patterns — the extension is the ostensible product; the slopodar taxonomy of 15 anti-patterns is the actual yield. The Operator wires up a post-commit hook — the hook is infrastructure; the Paper Guardrail slopodar entry caught in the act of building it is the real output. The pattern: technical work is the microscope, but the specimen collection is the thing that matters. Named because it describes what Maturin does on every island: he goes ashore to collect water, and comes back with a new species. The process is fragile because it is unnamed — a session that treats extension work as "just extension work" will not budget time for the conceptual yield that has historically been the highest-value output of every hands-on session. Protecting this pattern means protecting unstructured time within technical work for observation, naming, and recording. It is the opposite of a sprint. It is the reason the slopodar has 15 entries and the extension has 3 commits. The 15 entries are worth more than the 3 commits. | SD-TBD. "The extension is the microscope. The taxonomy is the catch." |
 @@ -213,8 +212,7 @@ last_known:
  | v0.22 | 2026-03-04 | **Quality & Process** section added (5 entries): Effort Backpressure, Interrupt Sovereignty, Compound Quality, Engineering Problem, Verifiable/Taste-Required. **Cognitive Deskilling** foot gun added to HCI Foot Guns — progressive L12 atrophy through delegation, compounds all other foot guns. HOTL health warning appended. All derived from cross-transcript research dispatch (Amodei, Hashimoto, West, Howard). METR RCT (2025) added as evidence for L12 calibration failure. | SD-TBD |
- | v0.23 | 2026-03-04 | **Darkcat** added to Communication & Record. Adversarial review polecat — read-only, no permissions, stains commit diffs against slopodar + watchdog blindspots + foot guns. `make darkcat` / `make darkcat-ref REF=<sha>`. **The Gauntlet** added — full verification pipeline: DEV → Darkcat Triad → Synthesis → Pitkeel → Walkthrough → Commit. **DONE** defined: gate green + darkcat{3} + synth + pitkeel + walkthrough. Named by Captain. | — |
+ | v0.23 | 2026-03-04 | **Darkcat** added to Communication & Record. Adversarial review polecat — read-only, no permissions, stains commit diffs against slopodar + watchdog blindspots + foot guns. `make darkcat` / `make darkcat-ref REF=<sha>`. **The Gauntlet** added — full verification pipeline: DEV → Darkcat Triad → Synthesis → Pitkeel → Walkthrough → Commit. **DONE** defined: gate green + darkcat{3} + synth + pitkeel + walkthrough. Named by Operator. | — |
  | v0.24 | 2026-03-05 | **Log That**, **Scrub That**, **Mint** added to Communication & Record. Backref density policy (SD-316): 9 mechanisms adopted, "log that" as flag-and-capture trigger (replaces rejected "mark that" — collision with "mark" as confirmation). "Mint" for deliberate SD/ref creation. "Scrub that" for rare file corrections. | SD-316 |
 -| v0.25 | 2026-03-09 | **Darkcat Alley** added to Communication & Record. Standardised 3-model cross-triangulation of full codebase. Pre-QA + post-QA runs; delta is data product. Structured YAML output enables numerical pipeline (convergence rates, marginal value, diminishing returns). Process def: `docs/internal/weaver/darkcat-alley.md`. Parser: `bin/triangulate`. | SD-318 |
  
@@ -10746,7 +10746,7 @@ index 7185885..082fc13 100644
 +    status: "STANDING"
 +  - id: SD-307
 +    label: "anthropomorphisation-assessed"
-+    summary: "Captain disagrees with 'don't anthropomorphise' stance. Anthropomorphisation is research instrument, not operating mode."
++    summary: "Operator disagrees with 'don't anthropomorphise' stance. Anthropomorphisation is research instrument, not operating mode."
 +    status: "ON RECORD — PUBLIC"
    - id: SD-308
      label: "thepit-v2-created"
@@ -10767,10 +10767,10 @@ diff --git a/docs/internal/session-decisions.md b/docs/internal/session-decision
 index bef385d..3e64bf3 100644
 --- a/docs/internal/session-decisions.md
 +++ b/docs/internal/session-decisions.md
-@@ -609,16 +609,3 @@ The Captain extended this acknowledgment to all crew members, noting the closest
+@@ -609,16 +609,3 @@ The Operator extended this acknowledgment to all crew members, noting the closest
  | ID | Decision | Made By | Status |
  |----|----------|---------|--------|
- | SD-316 | [backref-density] **Backref density policy: 9 mechanisms adopted to increase the ref web density between LLM↔human I/O.** Captain's observation: "without refs, data is effectively lost forever." Adopted: (2) SD ref column in darkcat-findings.tsv, (4) curated interaction snapshots in `docs/internal/signal-examples.md`, (5) commit message DC-Ref trailers, (6) events spine — migrated from TSV to YAML for readability, (7) `make journal` daily collation target, (8) agent echo must cite SD/SO refs, (9) verbatim I/O recording for all sessions, (10) flag-and-capture via "log that" trigger. Rejected: (1) auto-append SD for DC catches — SDs reserved for explicit decisions, not data capture. Deferred: (3) session transcript dump. Lexicon additions: "log that" (capture this exchange to file), "scrub that" (remove from file, very rare), "mint" (create an SD or ref — evokes value). Lexicon note: "mark that" rejected as trigger for item 10 — collides with "mark" as general confirmation. "log that" adopted (10x better). | Captain (decisions, lexicon) / Weaver (muster, implementation) | **STANDING** |
+ | SD-316 | [backref-density] **Backref density policy: 9 mechanisms adopted to increase the ref web density between LLM↔human I/O.** Operator's observation: "without refs, data is effectively lost forever." Adopted: (2) SD ref column in darkcat-findings.tsv, (4) curated interaction snapshots in `docs/internal/signal-examples.md`, (5) commit message DC-Ref trailers, (6) events spine — migrated from TSV to YAML for readability, (7) `make journal` daily collation target, (8) agent echo must cite SD/SO refs, (9) verbatim I/O recording for all sessions, (10) flag-and-capture via "log that" trigger. Rejected: (1) auto-append SD for DC catches — SDs reserved for explicit decisions, not data capture. Deferred: (3) session transcript dump. Lexicon additions: "log that" (capture this exchange to file), "scrub that" (remove from file, very rare), "mint" (create an SD or ref — evokes value). Lexicon note: "mark that" rejected as trigger for item 10 — collides with "mark" as general confirmation. "log that" adopted (10x better). | Operator (decisions, lexicon) / Weaver (muster, implementation) | **STANDING** |
 -
 ----
 -
@@ -10782,8 +10782,8 @@ index bef385d..3e64bf3 100644
 -
 -| ID | Decision | Made By | Status |
 -|----|----------|---------|--------|
--| SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Captain walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → CAPTAIN WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
--| SD-318 | [darkcat-alley] **Darkcat Alley — standardised 3-model cross-triangulation process.** Named, lexified (v0.25), documented. Review instructions standardise output to narrative + structured YAML. Parser (`bin/triangulate`) computes 8 metrics from YAML findings: finding count, convergence rate, marginal value (diminishing returns curve), severity distribution, Watchdog category distribution, severity calibration, pre/post-QA delta, false positive rate. 7 visualisation targets for Python/hex.tech portfolio. No retrofit of existing reviews — cut losses, run clean. Process def: `docs/internal/weaver/darkcat-alley.md`. Decision file: `docs/decisions/SD-318-darkcat-alley.md`. | Captain (naming, direction) / Weaver (design, implementation) | **STANDING (this run)** |
+-| SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Operator walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → OPERATOR WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
+-| SD-318 | [darkcat-alley] **Darkcat Alley — standardised 3-model cross-triangulation process.** Named, lexified (v0.25), documented. Review instructions standardise output to narrative + structured YAML. Parser (`bin/triangulate`) computes 8 metrics from YAML findings: finding count, convergence rate, marginal value (diminishing returns curve), severity distribution, Watchdog category distribution, severity calibration, pre/post-QA delta, false positive rate. 7 visualisation targets for Python/hex.tech portfolio. No retrofit of existing reviews — cut losses, run clean. Process def: `docs/internal/weaver/darkcat-alley.md`. Decision file: `docs/decisions/SD-318-darkcat-alley.md`. | Operator (naming, direction) / Weaver (design, implementation) | **STANDING (this run)** |
 diff --git a/docs/internal/weaver/code-review-2026-03-09.md b/docs/internal/weaver/code-review-2026-03-09.md
 deleted file mode 100644
 index 26b8c66..0000000
@@ -10861,7 +10861,7 @@ index 26b8c66..0000000
 -- T-018 (manually fixed earlier) was a 3rd failure — polecat-rate: ~3/16 = 19% defect rate
 -- All defects are in the "Looks Right Trap" / "Paper Guardrail" class — syntactically valid, gate-passing, semantically incomplete
 -
--## Recommendation for Captain's Walkthrough
+-## Recommendation for Operator's Walkthrough
 -
 -The 2 failures are:
 -1. **P4-CR01**: Fix before production. The transaction gap is a data integrity risk.
@@ -10959,8 +10959,8 @@ index 304d24f..0000000
 -| # | Model | Review type | File | Date |
 -|---|-------|-------------|------|------|
 -| 1 | Claude (opus-4) | 3 parallel review agents via Weaver | `code-review-2026-03-09.md` | 2026-03-09 |
--| 2 | Gemini 3.1 | Cross-model darkcat (Captain-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
--| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Captain-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
+-| 2 | Gemini 3.1 | Cross-model darkcat (Operator-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
+-| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Operator-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
 -
 -## Convergence Matrix
 -
@@ -11163,7 +11163,7 @@ index 304d24f..0000000
 -
 -### Next step (SD-317 sequence)
 -
--→ BATCH FIX all confirmed issues → RE-GATE → CAPTAIN WALKTHROUGH (Data Product 3: Human Delta)
+-→ BATCH FIX all confirmed issues → RE-GATE → OPERATOR WALKTHROUGH (Data Product 3: Human Delta)
 diff --git a/docs/internal/weaver/darkcat-alley-sequencing.md b/docs/internal/weaver/darkcat-alley-sequencing.md
 deleted file mode 100644
 index b4f682d..0000000
@@ -11727,7 +11727,7 @@ index 79910cb..0000000
 -|---|-------------|--------|---------------|
 -| DP-1 | Cross-Model Triangulation Report | Darkcat Alley pre-QA | "We ran 3 independent model reviews and here's what they found" |
 -| DP-2 | Fix Quality Assessment | Alley delta (pre vs post) | "Here's what we fixed and what survived" |
--| DP-3 | Human Delta | Captain walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
+-| DP-3 | Human Delta | Operator walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
 -| DP-4 | Cost-Benefit Analysis | Marginal value curve | "Here's where diminishing returns kicks in for cross-model review" |
 -| DP-5 | Model Blind Spot Map | Watchdog category distribution | "Different models have characteristic, predictable blind spots" |
 -| DP-6 | Severity Calibration Study | Inter-rater agreement on converged findings | "Models agree on what's critical but diverge on what's low-severity" |
@@ -13047,13 +13047,13 @@ index af721aa..0000000
 -#   1. Merge order: phase2-ui → phase4-economy → phase5-discovery → deploy
 -#   2. Per-phase: automated(gate) → code_review(stain) → human(walkthrough) → signoff
 -#   3. Human verification focused on taste-required items: UX flow, feel, security
--#   4. Automated checks pre-populate before Captain's walkthrough
+-#   4. Automated checks pre-populate before Operator's walkthrough
 -#   5. Query via: bin/qa-progress [--phase X] [--category Y] [--status Z] [--blocking]
 -#   6. Mark via:  bin/qa-progress mark <id> pass|fail|skip "notes"
 -#
 -# Categories:
 -#   automated     — gate can verify (typecheck, lint, test)
--#   code-review   — reading the diff (agent-assisted, Captain confirms)
+-#   code-review   — reading the diff (agent-assisted, Operator confirms)
 -#   human-flow    — walk through a user journey end-to-end
 -#   human-visual  — eyes on screen (layout, rendering, responsive)
 -#   human-taste   — judgment call (quality, feel, "not wrong" territory)
@@ -13087,7 +13087,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:57:22Z"
 -    notes: "Fixed: eslint globals added (d2eb0e4). typecheck:ok lint:ok test:ok (142 pass, 9 skip)"
 -
@@ -13098,7 +13098,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:04Z"
 -    notes: "actual: 151 (142 pass + 9 skip)"
 -
@@ -13109,7 +13109,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:04Z"
 -    notes: "15 test files, all foundation tests present and passing"
 -
@@ -13121,7 +13121,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "PARTIAL: Zod validates model enum, presetId checked downstream. Gap: topic allows empty string (missing .min(1)), no test for model rejection path"
 -
@@ -13132,7 +13132,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "PARTIAL: catches prompt injection (8 patterns) + hate speech (5 keywords) + special chars. No SQL/XSS patterns but mitigated by ORM+React. Docstring overstates exploit coverage"
 -
@@ -13143,7 +13143,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Clean: agents[turnIndex % agents.length], MAX_TURNS enforced by for-loop, well-tested with 2/3 agent scenarios"
 -
@@ -13154,7 +13154,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Events: data-turn/text-start/text-delta/text-end/done/error. Ordering enforced structurally via sequential callback wiring. Full sequence test with 10 events"
 -
@@ -13165,7 +13165,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "try/catch in finally block prevents TypeError on double-close. Explicit test for cancel-then-resolve path"
 -
@@ -13176,7 +13176,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Buffer-based parsing with lastIndexOf(newline-newline). Explicit chunk-split test at char pos 40"
 -
@@ -13187,7 +13187,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "AbortController created, stored in ref, signal passed to fetch, abort on unmount+restart, AbortError caught gracefully"
 -
@@ -13199,7 +13199,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "Toggle: select-then-delete/insert + UNIQUE constraint backup. FINDING: INSERT lacks onConflictDoNothing — concurrent toggles throw DB error vs graceful handling (cf votes.ts which does it right)"
 -
@@ -13210,7 +13210,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "sha256(ip).slice(0,16) with anon: prefix. No raw IP stored. No salt — reversible via rainbow table for IPv4 but acceptable for dedup"
 -
@@ -13221,7 +13221,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "UNIQUE(boutId,userId) in schema + onConflictDoNothing in code. Returns alreadyVoted:true on conflict. 409 response. Correct pattern"
 -
@@ -13232,7 +13232,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "week/month/all ranges. Positional ranking (not dense — ties get different ranks). Top-50 limit. FINDING: no tie-breaking for equal-vote bouts, in-memory aggregation"
 -
@@ -13243,7 +13243,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "check-existing → insert-on-conflict-do-nothing → re-read. Double UNIQUE on boutId and slug. Idempotent and race-safe"
 -
@@ -13314,7 +13314,7 @@ index af721aa..0000000
 -    timestamp: null
 -    notes: null
 -
--  # ── Human: Taste (Captain's highest value) ───────────────
+-  # ── Human: Taste (Operator's highest value) ───────────────
 -  - id: P23-T01
 -    phase: phase2-ui
 -    tasks: [T-008, T-015]
@@ -13406,7 +13406,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:10Z"
 -    notes: "typecheck:ok lint:ok test:ok (223 pass, 35 skip)"
 -
@@ -13417,7 +13417,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:11Z"
 -    notes: "actual: 258 (223 pass + 35 skip)"
 -
@@ -13428,7 +13428,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:11Z"
 -    notes: "All 35 skipped tests are DB-dependent, skip gracefully"
 -
@@ -13440,7 +13440,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: fail
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "TWO separate queries (UPDATE balance + INSERT transaction) NOT in a DB transaction. reference_id stored but NO UNIQUE constraint — idempotency is application-level SELECT only. Phantom ledger risk"
 -
@@ -13451,7 +13451,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Single UPDATE with WHERE balance >= amount. Correct atomic pattern, no TOCTOU. Concurrent preauth test verifies exactly one wins"
 -
@@ -13462,7 +13462,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Three paths: overpay refund, underpay charge (capped at available), exact match. GREATEST(0,...) floor prevents overdraft on TOCTOU in underpay path"
 -
@@ -13473,7 +13473,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Decay formula correct (0.5^(elapsed/halflife)). Atomic UPDATE with inline LEAST. FINDING: post-UPDATE back-calculation fragile, intro-pool only module with mocked-only tests"
 -
@@ -13484,7 +13484,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "preauth → stream → settle/refund lifecycle correct. Client disconnect triggers refund via aborted flag. LLM calls continue (documented cost leak)"
 -
@@ -13495,7 +13495,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: fail
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "req.signal never extracted or passed. ReadableStream cancel() sets aborted=true but no signal propagation to LLM calls. Documented known limitation — cost leak not correctness bug"
 -
@@ -13507,7 +13507,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:30Z"
 -    notes: "free=0, pass=30000micro(300credits), lab=60000micro(600credits). Matches SPEC exactly. 1 credit = 100 micro confirmed in catalog.ts"
 -
@@ -13518,7 +13518,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "anon:2/hr, free:5/hr, pass:15/hr, lab:Infinity. All 3600000ms windows. Matches SPEC exactly"
 -
@@ -13529,7 +13529,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "All 6 handlers idempotent: 4 credit handlers use hasProcessedReference, 2 tier-only handlers are inherently idempotent. FINDING: reference_id has no UNIQUE constraint — paper guardrail"
 -
@@ -13540,7 +13540,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "incrementalGrant = newGrant - oldGrant, skips if negative (downgrade). referenceId includes tier name for re-upgrade support"
 -
@@ -13551,7 +13551,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "Credit packs: session.metadata.userId+creditsMicro matches webhook. Subscriptions: subscription_data.metadata.userId matches. String/parseInt conversion fragile but functional"
 -
@@ -13562,7 +13562,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "UI: guarded by SUBSCRIPTIONS_ENABLED && userId. Server actions: throw if flag off. Both layers enforce"
 -
@@ -13659,7 +13659,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:16Z"
 -    notes: "typecheck:ok lint:ok test:ok (150 pass, 14 skip)"
 -
@@ -13670,7 +13670,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:16Z"
 -    notes: "actual: 164 (150 pass + 14 skip)"
 -
@@ -13682,7 +13682,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "SHA-256 deterministic. Structured fields sorted alphabetically for stable JSON. FINDING: empty string systemPrompt silently falls to structured path (untested), name excluded from hash when systemPrompt set"
 -
@@ -13693,7 +13693,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "name: .min(1).max(80). All other fields max-constrained. FINDING: systemPrompt has NO max length — defense-in-depth gap for LLM prompt field"
 -
@@ -13704,7 +13704,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "requireAuth() with 401 on AuthenticationError. Matches project-wide Clerk pattern"
 -
@@ -13715,7 +13715,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "10/hr per userId via in-memory sliding window. FINDING: resets on cold start (serverless), per-instance not global"
 -
@@ -13727,7 +13727,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "8-char → resolveShortLink, 21-char → direct, else → null → notFound(). Length discrimination correct"
 -
@@ -13738,7 +13738,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "generateMetadata exports OG title/description/type + twitter card. Sourced from bout record + shareLine. FINDING: no OG image, text-only social previews"
 -
@@ -14028,7 +14028,7 @@ index 0000000..1224907
 @@ -0,0 +1,133 @@
 +# QA Signoff — T-007 through T-016
 +
-+> Captain verification of bout engine and UI layer before engagement/credits development.
++> Operator verification of bout engine and UI layer before engagement/credits development.
 +> Created: 2026-03-08, after T-016 landed.
 +> Covers: Phase 2 complete — core product loop works end-to-end (credits disabled).
 +
@@ -14154,7 +14154,7 @@ index 0000000..1224907
 +## Signoff
 +
 +```
-+Captain:
++Operator:
 +Date:
 +Findings:
 +Test run:
@@ -19513,7 +19513,7 @@ index f3a4f20..2292746 100644
  The vocabulary of this ship. If these terms are not in your context, you are not on this ship [SO-PERM-002].
  
 @@ -277,8 +277,6 @@ DEF fair_winds     := closing_signal | conditions_favourable
- DEF extra_rations  := captains_commendation | rare | logged
+ DEF extra_rations  := operators_commendation | rare | logged
  DEF polecats       := claude_p.agents | one_shot | !interactive        [SD-296]
  DEF darkcat        := adversarial_review.polecat | read_only | stain(diff, slopodar + watchdog + footguns)
 -DEF darkcat_alley  := 3_model.cross_triangulation(codebase) | pre_QA & post_QA | structured_YAML + narrative
@@ -20514,7 +20514,7 @@ index a2e9fad..0000000
 -    for c in checks:
 -        if c["id"] == check_id:
 -            c["status"] = new_status
--            c["verified_by"] = "captain"
+-            c["verified_by"] = "operator"
 -            c["timestamp"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 -            if notes:
 -                c["notes"] = notes
@@ -20704,8 +20704,8 @@ index a2e9fad..0000000
 -        phase_detail(checks, args[1])
 -
 -    elif cmd == "walkthrough":
--        # Show only human checks, ordered by priority for Captain's walkthrough
--        print(f"\n{COLORS['bold']}CAPTAIN'S WALKTHROUGH — Human verification items{COLORS['reset']}")
+-        # Show only human checks, ordered by priority for Operator's walkthrough
+-        print(f"\n{COLORS['bold']}OPERATOR'S WALKTHROUGH — Human verification items{COLORS['reset']}")
 -        print(f"{'─' * 60}")
 -        print(f"  Items are ordered: blocking first, then by phase merge order.\n")
 -        human_checks = [c for c in checks if c.get("category", "").startswith("human-") and c.get("status") == "pending"]
@@ -22800,7 +22800,7 @@ index 3c377ee..0000000
 -
 -Full code review complete on all polecat-written code (T-007 through T-025). 30 code-review checks executed by 3 parallel review agents (Claude). 28 pass, 2 fail, 12 Watchdog taxonomy hits. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects).
 -
--Two additional cross-model reviews (non-Claude) commissioned by Captain, in flight at time of decision.
+-Two additional cross-model reviews (non-Claude) commissioned by Operator, in flight at time of decision.
 -
 -Question: what is the optimal ordering of fix vs QA for maximum governance value?
 -
@@ -22814,7 +22814,7 @@ index 3c377ee..0000000
 -  SYNTH   triangulate(claude_review, review_2, review_3) -> durable_file
 -  FIX     batch(confirmed_issues) -> per_branch
 -  GATE    re_gate(all_branches) -> update_checklist
--  WALK    captain.walkthrough(fixed_code) -> mark(human_checks)
+-  WALK    operator.walkthrough(fixed_code) -> mark(human_checks)
 -  COMPARE human_findings vs model_findings -> governance_signal
 -```
 -
@@ -22825,7 +22825,7 @@ index 3c377ee..0000000
 -All confirmed issues fixed in one batch after all reviews land. Clean diff between pre-fix and post-fix. No iterative patching that muddies the before/after comparison. Measures: how many of the model-identified issues were real, how many were false positives, what the fix cost was.
 -
 -### Data Product 3: Human Delta
--Captain's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Captain catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
+-Operator's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Operator catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
 -
 -## Rationale
 -
@@ -22865,14 +22865,14 @@ index 189ac87..0000000
 -
 -**Date:** 2026-03-09
 -**Status:** STANDING (this run)
--**Agent:** Weaver (design) / Captain (naming, direction)
+-**Agent:** Weaver (design) / Operator (naming, direction)
 -**Backrefs:** SD-317 (QA sequencing, data products), SD-309 (True North), SD-134 (truth-first), L11 (cross-model validation)
 -
 -## Context
 -
 -Cross-model code review (SD-317 Data Product 1) produced 31 unique findings from 3 model families with zero false positives. 74% of findings were caught by only one model. The process worked but was ad hoc — each model produced freeform reports in different formats, and synthesis was manual.
 -
--Captain's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
+-Operator's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
 -
 -## Decision
 -
@@ -22969,18 +22969,18 @@ index e7d025f..4d87dc0 100644
 +# The Lexicon — v0.24
  
  Back-reference: SD-120 (naval metaphor as scaffold), SD-121 (loose weave), SD-122 (taxonomy), SD-123 (this file)
- Status: APPROVED by Captain. Read-only by convention. Edits bump version number.
+ Status: APPROVED by Operator. Read-only by convention. Edits bump version number.
 @@ -101,7 +101,6 @@ last_known:
- | **Bugs** | Remote code review agents (CodeRabbit, Cubic, Bugbot, et al.), optimised like flies are to shit — we hope. And there is a sentence the Captain never thought he would say. They provide multiplied independent perspectives (Principle §6) without requiring local compute or crew dispatch. Signal-to-noise ratio is roughly 30% unique findings after cross-bot deduplication. | "Run a recon on the bugs." / "The bugs caught the version drift." |
- | **Polecats** | `claude -p` agents executing within a deterministic Makefile pipeline. Our version of Stripe's "minions." Each polecat is a fresh context window, one-shot, no interactive steering — the compaction engine managed by design rather than endured. The pipeline (Makefile dependency graph) is the discipline; the polecat is the executor. The name carries the engineering intent: these are not crew members (no standing context, no governance role, no lexicon in their window). They are disposable, task-scoped, and expendable. The value is in what they produce, not in what they remember. First deployment: thepit-v2 calibration run (26 tasks, `make 01` through `make 26`). | SD-296. "Dispatch the polecats." / "Polecat 07 completed in 4 minutes." / Named by Captain, modelled on Stripe's minion architecture. |
+ | **Bugs** | Remote code review agents (CodeRabbit, Cubic, Bugbot, et al.), optimised like flies are to shit — we hope. And there is a sentence the Operator never thought he would say. They provide multiplied independent perspectives (Principle §6) without requiring local compute or crew dispatch. Signal-to-noise ratio is roughly 30% unique findings after cross-bot deduplication. | "Run a recon on the bugs." / "The bugs caught the version drift." |
+ | **Polecats** | `claude -p` agents executing within a deterministic Makefile pipeline. Our version of Stripe's "minions." Each polecat is a fresh context window, one-shot, no interactive steering — the compaction engine managed by design rather than endured. The pipeline (Makefile dependency graph) is the discipline; the polecat is the executor. The name carries the engineering intent: these are not crew members (no standing context, no governance role, no lexicon in their window). They are disposable, task-scoped, and expendable. The value is in what they produce, not in what they remember. First deployment: thepit-v2 calibration run (26 tasks, `make 01` through `make 26`). | SD-296. "Dispatch the polecats." / "Polecat 07 completed in 4 minutes." / Named by Operator, modelled on Stripe's minion architecture. |
  | **Darkcat** | Adversarial review polecat. Read-only, no permissions, fresh context. Stains a commit diff against the slopodar taxonomy, Watchdog blindspot checklist, and HCI foot guns. The darkcat reads every file touched by the diff in full — not just the hunks — because Looks Right Trap and Shadow Validation hide in the surrounding context. Output is structured findings with severity, file:line, and named pattern. Invoked via `make darkcat` (last commit) or `make darkcat-ref REF=<sha>` (specific commit). The name: a polecat that hunts in the dark — the defects the gate can't see because they're syntactically valid and semantically wrong. | "Run the darkcat." / "Darkcat found a phantom-tollbooth in the credit tests." / First deployment: noopit calibration run. |
 -| **Darkcat Alley** | The standardised 3-model cross-triangulation of a full codebase. Three independent darkcats (different model families) review the same code snapshot using the Darkcat Review Instructions (`docs/internal/weaver/darkcat-review-instructions.md`). Each produces both a qualitative narrative report and a structured YAML findings block (machine-readable, parseable by `bin/triangulate`). Run **twice**: once pre-QA (on polecat-written code, before human walkthrough) and once post-QA (after fixes land, before deploy). The delta between the two runs is itself a data product — it measures fix effectiveness and reveals residual risk. The name: an alley you run through three times, each time with different eyes. The structured output enables numerical analysis: convergence rates, marginal value per review, diminishing returns curves, severity calibration across models, Watchdog category distribution. Feeds Python/hex.tech visualisations for portfolio evidence. Process definition: `docs/internal/weaver/darkcat-alley.md`. Parser: `bin/triangulate`. | SD-318. "Run the alley." / "Alley pre-QA complete — 31 findings, 74% single-model-only." / "The alley delta shows 6 findings survived the fix batch." / First deployment: noopit calibration run, 2026-03-09. |
  | **The Gauntlet** | The full verification pipeline every change must pass before commit. DEV (gate green) → Darkcat Triad (three independent model priors: Claude, OpenAI, Gemini) → Darkcat Synthesis (4th polecat produces convergence report) → Pitkeel (session signals reviewed) → Walkthrough (human L12 checklist). Findings cycle back to DEV. Nothing commits until the gauntlet is clear. `make gauntlet` runs the automated steps; walkthrough is human. Data captured at every step; full audit trail in events.tsv and darkcat-findings.tsv. | "Run the gauntlet." / "The gauntlet caught a convergent finding across all three models." / See: `docs/internal/the-gauntlet.md` |
  | **DONE** | Work is only considered DONE when: gate green, darkcat triad complete (three model priors), synthesis convergence report produced, pitkeel signals reviewed, walkthrough checked, events marked. Not "dev finished." Verified through three independent priors plus human eyes. | "Is this DONE or just dev-complete?" / "Dev-complete is step 1 of 7." |
- | **Learning in the Wild** | The discovery made while doing the work, which is worth more than the work itself. The Captain builds a Chrome extension to detect LLM voice patterns — the extension is the ostensible product; the slopodar taxonomy of 15 anti-patterns is the actual yield. The Captain wires up a post-commit hook — the hook is infrastructure; the Paper Guardrail slopodar entry caught in the act of building it is the real output. The pattern: technical work is the microscope, but the specimen collection is the thing that matters. Named because it describes what Maturin does on every island: he goes ashore to collect water, and comes back with a new species. The process is fragile because it is unnamed — a session that treats extension work as "just extension work" will not budget time for the conceptual yield that has historically been the highest-value output of every hands-on session. Protecting this pattern means protecting unstructured time within technical work for observation, naming, and recording. It is the opposite of a sprint. It is the reason the slopodar has 15 entries and the extension has 3 commits. The 15 entries are worth more than the 3 commits. | SD-TBD. "The extension is the microscope. The taxonomy is the catch." |
+ | **Learning in the Wild** | The discovery made while doing the work, which is worth more than the work itself. The Operator builds a Chrome extension to detect LLM voice patterns — the extension is the ostensible product; the slopodar taxonomy of 15 anti-patterns is the actual yield. The Operator wires up a post-commit hook — the hook is infrastructure; the Paper Guardrail slopodar entry caught in the act of building it is the real output. The pattern: technical work is the microscope, but the specimen collection is the thing that matters. Named because it describes what Maturin does on every island: he goes ashore to collect water, and comes back with a new species. The process is fragile because it is unnamed — a session that treats extension work as "just extension work" will not budget time for the conceptual yield that has historically been the highest-value output of every hands-on session. Protecting this pattern means protecting unstructured time within technical work for observation, naming, and recording. It is the opposite of a sprint. It is the reason the slopodar has 15 entries and the extension has 3 commits. The 15 entries are worth more than the 3 commits. | SD-TBD. "The extension is the microscope. The taxonomy is the catch." |
 @@ -213,8 +212,7 @@ last_known:
  | v0.22 | 2026-03-04 | **Quality & Process** section added (5 entries): Effort Backpressure, Interrupt Sovereignty, Compound Quality, Engineering Problem, Verifiable/Taste-Required. **Cognitive Deskilling** foot gun added to HCI Foot Guns — progressive L12 atrophy through delegation, compounds all other foot guns. HOTL health warning appended. All derived from cross-transcript research dispatch (Amodei, Hashimoto, West, Howard). METR RCT (2025) added as evidence for L12 calibration failure. | SD-TBD |
- | v0.23 | 2026-03-04 | **Darkcat** added to Communication & Record. Adversarial review polecat — read-only, no permissions, stains commit diffs against slopodar + watchdog blindspots + foot guns. `make darkcat` / `make darkcat-ref REF=<sha>`. **The Gauntlet** added — full verification pipeline: DEV → Darkcat Triad → Synthesis → Pitkeel → Walkthrough → Commit. **DONE** defined: gate green + darkcat{3} + synth + pitkeel + walkthrough. Named by Captain. | — |
+ | v0.23 | 2026-03-04 | **Darkcat** added to Communication & Record. Adversarial review polecat — read-only, no permissions, stains commit diffs against slopodar + watchdog blindspots + foot guns. `make darkcat` / `make darkcat-ref REF=<sha>`. **The Gauntlet** added — full verification pipeline: DEV → Darkcat Triad → Synthesis → Pitkeel → Walkthrough → Commit. **DONE** defined: gate green + darkcat{3} + synth + pitkeel + walkthrough. Named by Operator. | — |
  | v0.24 | 2026-03-05 | **Log That**, **Scrub That**, **Mint** added to Communication & Record. Backref density policy (SD-316): 9 mechanisms adopted, "log that" as flag-and-capture trigger (replaces rejected "mark that" — collision with "mark" as confirmation). "Mint" for deliberate SD/ref creation. "Scrub that" for rare file corrections. | SD-316 |
 -| v0.25 | 2026-03-09 | **Darkcat Alley** added to Communication & Record. Standardised 3-model cross-triangulation of full codebase. Pre-QA + post-QA runs; delta is data product. Structured YAML output enables numerical pipeline (convergence rates, marginal value, diminishing returns). Process def: `docs/internal/weaver/darkcat-alley.md`. Parser: `bin/triangulate`. | SD-318 |
  
@@ -23019,7 +23019,7 @@ index 7185885..082fc13 100644
 +    status: "STANDING"
 +  - id: SD-307
 +    label: "anthropomorphisation-assessed"
-+    summary: "Captain disagrees with 'don't anthropomorphise' stance. Anthropomorphisation is research instrument, not operating mode."
++    summary: "Operator disagrees with 'don't anthropomorphise' stance. Anthropomorphisation is research instrument, not operating mode."
 +    status: "ON RECORD — PUBLIC"
    - id: SD-308
      label: "thepit-v2-created"
@@ -23040,10 +23040,10 @@ diff --git a/docs/internal/session-decisions.md b/docs/internal/session-decision
 index bef385d..3e64bf3 100644
 --- a/docs/internal/session-decisions.md
 +++ b/docs/internal/session-decisions.md
-@@ -609,16 +609,3 @@ The Captain extended this acknowledgment to all crew members, noting the closest
+@@ -609,16 +609,3 @@ The Operator extended this acknowledgment to all crew members, noting the closest
  | ID | Decision | Made By | Status |
  |----|----------|---------|--------|
- | SD-316 | [backref-density] **Backref density policy: 9 mechanisms adopted to increase the ref web density between LLM↔human I/O.** Captain's observation: "without refs, data is effectively lost forever." Adopted: (2) SD ref column in darkcat-findings.tsv, (4) curated interaction snapshots in `docs/internal/signal-examples.md`, (5) commit message DC-Ref trailers, (6) events spine — migrated from TSV to YAML for readability, (7) `make journal` daily collation target, (8) agent echo must cite SD/SO refs, (9) verbatim I/O recording for all sessions, (10) flag-and-capture via "log that" trigger. Rejected: (1) auto-append SD for DC catches — SDs reserved for explicit decisions, not data capture. Deferred: (3) session transcript dump. Lexicon additions: "log that" (capture this exchange to file), "scrub that" (remove from file, very rare), "mint" (create an SD or ref — evokes value). Lexicon note: "mark that" rejected as trigger for item 10 — collides with "mark" as general confirmation. "log that" adopted (10x better). | Captain (decisions, lexicon) / Weaver (muster, implementation) | **STANDING** |
+ | SD-316 | [backref-density] **Backref density policy: 9 mechanisms adopted to increase the ref web density between LLM↔human I/O.** Operator's observation: "without refs, data is effectively lost forever." Adopted: (2) SD ref column in darkcat-findings.tsv, (4) curated interaction snapshots in `docs/internal/signal-examples.md`, (5) commit message DC-Ref trailers, (6) events spine — migrated from TSV to YAML for readability, (7) `make journal` daily collation target, (8) agent echo must cite SD/SO refs, (9) verbatim I/O recording for all sessions, (10) flag-and-capture via "log that" trigger. Rejected: (1) auto-append SD for DC catches — SDs reserved for explicit decisions, not data capture. Deferred: (3) session transcript dump. Lexicon additions: "log that" (capture this exchange to file), "scrub that" (remove from file, very rare), "mint" (create an SD or ref — evokes value). Lexicon note: "mark that" rejected as trigger for item 10 — collides with "mark" as general confirmation. "log that" adopted (10x better). | Operator (decisions, lexicon) / Weaver (muster, implementation) | **STANDING** |
 -
 ----
 -
@@ -23055,8 +23055,8 @@ index bef385d..3e64bf3 100644
 -
 -| ID | Decision | Made By | Status |
 -|----|----------|---------|--------|
--| SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Captain walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → CAPTAIN WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
--| SD-318 | [darkcat-alley] **Darkcat Alley — standardised 3-model cross-triangulation process.** Named, lexified (v0.25), documented. Review instructions standardise output to narrative + structured YAML. Parser (`bin/triangulate`) computes 8 metrics from YAML findings: finding count, convergence rate, marginal value (diminishing returns curve), severity distribution, Watchdog category distribution, severity calibration, pre/post-QA delta, false positive rate. 7 visualisation targets for Python/hex.tech portfolio. No retrofit of existing reviews — cut losses, run clean. Process def: `docs/internal/weaver/darkcat-alley.md`. Decision file: `docs/decisions/SD-318-darkcat-alley.md`. | Captain (naming, direction) / Weaver (design, implementation) | **STANDING (this run)** |
+-| SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Operator walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → OPERATOR WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
+-| SD-318 | [darkcat-alley] **Darkcat Alley — standardised 3-model cross-triangulation process.** Named, lexified (v0.25), documented. Review instructions standardise output to narrative + structured YAML. Parser (`bin/triangulate`) computes 8 metrics from YAML findings: finding count, convergence rate, marginal value (diminishing returns curve), severity distribution, Watchdog category distribution, severity calibration, pre/post-QA delta, false positive rate. 7 visualisation targets for Python/hex.tech portfolio. No retrofit of existing reviews — cut losses, run clean. Process def: `docs/internal/weaver/darkcat-alley.md`. Decision file: `docs/decisions/SD-318-darkcat-alley.md`. | Operator (naming, direction) / Weaver (design, implementation) | **STANDING (this run)** |
 diff --git a/docs/internal/weaver/code-review-2026-03-09.md b/docs/internal/weaver/code-review-2026-03-09.md
 deleted file mode 100644
 index 26b8c66..0000000
@@ -23134,7 +23134,7 @@ index 26b8c66..0000000
 -- T-018 (manually fixed earlier) was a 3rd failure — polecat-rate: ~3/16 = 19% defect rate
 -- All defects are in the "Looks Right Trap" / "Paper Guardrail" class — syntactically valid, gate-passing, semantically incomplete
 -
--## Recommendation for Captain's Walkthrough
+-## Recommendation for Operator's Walkthrough
 -
 -The 2 failures are:
 -1. **P4-CR01**: Fix before production. The transaction gap is a data integrity risk.
@@ -23232,8 +23232,8 @@ index 304d24f..0000000
 -| # | Model | Review type | File | Date |
 -|---|-------|-------------|------|------|
 -| 1 | Claude (opus-4) | 3 parallel review agents via Weaver | `code-review-2026-03-09.md` | 2026-03-09 |
--| 2 | Gemini 3.1 | Cross-model darkcat (Captain-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
--| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Captain-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
+-| 2 | Gemini 3.1 | Cross-model darkcat (Operator-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
+-| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Operator-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
 -
 -## Convergence Matrix
 -
@@ -23436,7 +23436,7 @@ index 304d24f..0000000
 -
 -### Next step (SD-317 sequence)
 -
--→ BATCH FIX all confirmed issues → RE-GATE → CAPTAIN WALKTHROUGH (Data Product 3: Human Delta)
+-→ BATCH FIX all confirmed issues → RE-GATE → OPERATOR WALKTHROUGH (Data Product 3: Human Delta)
 diff --git a/docs/internal/weaver/darkcat-alley-sequencing.md b/docs/internal/weaver/darkcat-alley-sequencing.md
 deleted file mode 100644
 index b4f682d..0000000
@@ -24000,7 +24000,7 @@ index 79910cb..0000000
 -|---|-------------|--------|---------------|
 -| DP-1 | Cross-Model Triangulation Report | Darkcat Alley pre-QA | "We ran 3 independent model reviews and here's what they found" |
 -| DP-2 | Fix Quality Assessment | Alley delta (pre vs post) | "Here's what we fixed and what survived" |
--| DP-3 | Human Delta | Captain walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
+-| DP-3 | Human Delta | Operator walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
 -| DP-4 | Cost-Benefit Analysis | Marginal value curve | "Here's where diminishing returns kicks in for cross-model review" |
 -| DP-5 | Model Blind Spot Map | Watchdog category distribution | "Different models have characteristic, predictable blind spots" |
 -| DP-6 | Severity Calibration Study | Inter-rater agreement on converged findings | "Models agree on what's critical but diverge on what's low-severity" |
@@ -25320,13 +25320,13 @@ index af721aa..0000000
 -#   1. Merge order: phase2-ui → phase4-economy → phase5-discovery → deploy
 -#   2. Per-phase: automated(gate) → code_review(stain) → human(walkthrough) → signoff
 -#   3. Human verification focused on taste-required items: UX flow, feel, security
--#   4. Automated checks pre-populate before Captain's walkthrough
+-#   4. Automated checks pre-populate before Operator's walkthrough
 -#   5. Query via: bin/qa-progress [--phase X] [--category Y] [--status Z] [--blocking]
 -#   6. Mark via:  bin/qa-progress mark <id> pass|fail|skip "notes"
 -#
 -# Categories:
 -#   automated     — gate can verify (typecheck, lint, test)
--#   code-review   — reading the diff (agent-assisted, Captain confirms)
+-#   code-review   — reading the diff (agent-assisted, Operator confirms)
 -#   human-flow    — walk through a user journey end-to-end
 -#   human-visual  — eyes on screen (layout, rendering, responsive)
 -#   human-taste   — judgment call (quality, feel, "not wrong" territory)
@@ -25360,7 +25360,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:57:22Z"
 -    notes: "Fixed: eslint globals added (d2eb0e4). typecheck:ok lint:ok test:ok (142 pass, 9 skip)"
 -
@@ -25371,7 +25371,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:04Z"
 -    notes: "actual: 151 (142 pass + 9 skip)"
 -
@@ -25382,7 +25382,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:04Z"
 -    notes: "15 test files, all foundation tests present and passing"
 -
@@ -25394,7 +25394,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "PARTIAL: Zod validates model enum, presetId checked downstream. Gap: topic allows empty string (missing .min(1)), no test for model rejection path"
 -
@@ -25405,7 +25405,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "PARTIAL: catches prompt injection (8 patterns) + hate speech (5 keywords) + special chars. No SQL/XSS patterns but mitigated by ORM+React. Docstring overstates exploit coverage"
 -
@@ -25416,7 +25416,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Clean: agents[turnIndex % agents.length], MAX_TURNS enforced by for-loop, well-tested with 2/3 agent scenarios"
 -
@@ -25427,7 +25427,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Events: data-turn/text-start/text-delta/text-end/done/error. Ordering enforced structurally via sequential callback wiring. Full sequence test with 10 events"
 -
@@ -25438,7 +25438,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "try/catch in finally block prevents TypeError on double-close. Explicit test for cancel-then-resolve path"
 -
@@ -25449,7 +25449,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:09:44Z"
 -    notes: "Buffer-based parsing with lastIndexOf(newline-newline). Explicit chunk-split test at char pos 40"
 -
@@ -25460,7 +25460,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "AbortController created, stored in ref, signal passed to fetch, abort on unmount+restart, AbortError caught gracefully"
 -
@@ -25472,7 +25472,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "Toggle: select-then-delete/insert + UNIQUE constraint backup. FINDING: INSERT lacks onConflictDoNothing — concurrent toggles throw DB error vs graceful handling (cf votes.ts which does it right)"
 -
@@ -25483,7 +25483,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "sha256(ip).slice(0,16) with anon: prefix. No raw IP stored. No salt — reversible via rainbow table for IPv4 but acceptable for dedup"
 -
@@ -25494,7 +25494,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "UNIQUE(boutId,userId) in schema + onConflictDoNothing in code. Returns alreadyVoted:true on conflict. 409 response. Correct pattern"
 -
@@ -25505,7 +25505,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "week/month/all ranges. Positional ranking (not dense — ties get different ranks). Top-50 limit. FINDING: no tie-breaking for equal-vote bouts, in-memory aggregation"
 -
@@ -25516,7 +25516,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:01Z"
 -    notes: "check-existing → insert-on-conflict-do-nothing → re-read. Double UNIQUE on boutId and slug. Idempotent and race-safe"
 -
@@ -25587,7 +25587,7 @@ index af721aa..0000000
 -    timestamp: null
 -    notes: null
 -
--  # ── Human: Taste (Captain's highest value) ───────────────
+-  # ── Human: Taste (Operator's highest value) ───────────────
 -  - id: P23-T01
 -    phase: phase2-ui
 -    tasks: [T-008, T-015]
@@ -25679,7 +25679,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:10Z"
 -    notes: "typecheck:ok lint:ok test:ok (223 pass, 35 skip)"
 -
@@ -25690,7 +25690,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:11Z"
 -    notes: "actual: 258 (223 pass + 35 skip)"
 -
@@ -25701,7 +25701,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:11Z"
 -    notes: "All 35 skipped tests are DB-dependent, skip gracefully"
 -
@@ -25713,7 +25713,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: fail
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "TWO separate queries (UPDATE balance + INSERT transaction) NOT in a DB transaction. reference_id stored but NO UNIQUE constraint — idempotency is application-level SELECT only. Phantom ledger risk"
 -
@@ -25724,7 +25724,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Single UPDATE with WHERE balance >= amount. Correct atomic pattern, no TOCTOU. Concurrent preauth test verifies exactly one wins"
 -
@@ -25735,7 +25735,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Three paths: overpay refund, underpay charge (capped at available), exact match. GREATEST(0,...) floor prevents overdraft on TOCTOU in underpay path"
 -
@@ -25746,7 +25746,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "Decay formula correct (0.5^(elapsed/halflife)). Atomic UPDATE with inline LEAST. FINDING: post-UPDATE back-calculation fragile, intro-pool only module with mocked-only tests"
 -
@@ -25757,7 +25757,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "preauth → stream → settle/refund lifecycle correct. Client disconnect triggers refund via aborted flag. LLM calls continue (documented cost leak)"
 -
@@ -25768,7 +25768,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: fail
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:16Z"
 -    notes: "req.signal never extracted or passed. ReadableStream cancel() sets aborted=true but no signal propagation to LLM calls. Documented known limitation — cost leak not correctness bug"
 -
@@ -25780,7 +25780,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:30Z"
 -    notes: "free=0, pass=30000micro(300credits), lab=60000micro(600credits). Matches SPEC exactly. 1 credit = 100 micro confirmed in catalog.ts"
 -
@@ -25791,7 +25791,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "anon:2/hr, free:5/hr, pass:15/hr, lab:Infinity. All 3600000ms windows. Matches SPEC exactly"
 -
@@ -25802,7 +25802,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "All 6 handlers idempotent: 4 credit handlers use hasProcessedReference, 2 tier-only handlers are inherently idempotent. FINDING: reference_id has no UNIQUE constraint — paper guardrail"
 -
@@ -25813,7 +25813,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "incrementalGrant = newGrant - oldGrant, skips if negative (downgrade). referenceId includes tier name for re-upgrade support"
 -
@@ -25824,7 +25824,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "Credit packs: session.metadata.userId+creditsMicro matches webhook. Subscriptions: subscription_data.metadata.userId matches. String/parseInt conversion fragile but functional"
 -
@@ -25835,7 +25835,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:31Z"
 -    notes: "UI: guarded by SUBSCRIPTIONS_ENABLED && userId. Server actions: throw if flag off. Both layers enforce"
 -
@@ -25932,7 +25932,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:16Z"
 -    notes: "typecheck:ok lint:ok test:ok (150 pass, 14 skip)"
 -
@@ -25943,7 +25943,7 @@ index af721aa..0000000
 -    category: automated
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T09:56:16Z"
 -    notes: "actual: 164 (150 pass + 14 skip)"
 -
@@ -25955,7 +25955,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "SHA-256 deterministic. Structured fields sorted alphabetically for stable JSON. FINDING: empty string systemPrompt silently falls to structured path (untested), name excluded from hash when systemPrompt set"
 -
@@ -25966,7 +25966,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "name: .min(1).max(80). All other fields max-constrained. FINDING: systemPrompt has NO max length — defense-in-depth gap for LLM prompt field"
 -
@@ -25977,7 +25977,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "requireAuth() with 401 on AuthenticationError. Matches project-wide Clerk pattern"
 -
@@ -25988,7 +25988,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "10/hr per userId via in-memory sliding window. FINDING: resets on cold start (serverless), per-instance not global"
 -
@@ -26000,7 +26000,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: true
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "8-char → resolveShortLink, 21-char → direct, else → null → notFound(). Length discrimination correct"
 -
@@ -26011,7 +26011,7 @@ index af721aa..0000000
 -    category: code-review
 -    blocking: false
 -    status: pass
--    verified_by: captain
+-    verified_by: operator
 -    timestamp: "2026-03-09T10:10:44Z"
 -    notes: "generateMetadata exports OG title/description/type + twitter card. Sourced from bout record + shareLine. FINDING: no OG image, text-only social previews"
 -
@@ -26301,7 +26301,7 @@ index 0000000..1224907
 @@ -0,0 +1,133 @@
 +# QA Signoff — T-007 through T-016
 +
-+> Captain verification of bout engine and UI layer before engagement/credits development.
++> Operator verification of bout engine and UI layer before engagement/credits development.
 +> Created: 2026-03-08, after T-016 landed.
 +> Covers: Phase 2 complete — core product loop works end-to-end (credits disabled).
 +
@@ -26427,7 +26427,7 @@ index 0000000..1224907
 +## Signoff
 +
 +```
-+Captain:
++Operator:
 +Date:
 +Findings:
 +Test run:

@@ -6,7 +6,7 @@
 
 ## Signal Syntax (read this first — it's used throughout)
 
-Signal is a notation convention for expressing governance concisely. NOT a DSL, NOT a language, NOT a prompt engineering technique — no parser, no build step. It compresses process discipline, not prompt wording. Captain names things in Signal; you must be able to read it.
+Signal is a notation convention for expressing governance concisely. NOT a DSL, NOT a language, NOT a prompt engineering technique — no parser, no build step. It compresses process discipline, not prompt wording. Operator names things in Signal; you must be able to read it.
 
 ```signal
 -- Syntax primitives
@@ -19,7 +19,7 @@ WHEN      := guard condition
 !         := negation
 ->        := maps to / flows to
 >>        := overrides
-?         := Captain's call needed
+?         := Operator's call needed
 [ref]     := back-reference (SD number, file, concept)
 {...}     := set
 (...)     := grouping / parameters
@@ -57,7 +57,7 @@ SO.truth       := truth >> hiring_signal                        [SD-134 PERM]
 SO.gate        := change.ready WHEN gate.green                  [hull]
 SO.printf      := pipe(value, cli) -> printf !echo              [CLAUDE.md]
 SO.session_end := !unpushed_commits
-SO.yaml_hud    := address(captain) -> yaml_header_first
+SO.yaml_hud    := address(operator) -> yaml_header_first
 SO.uv          := python -> uv_exclusively !exceptions          [SD-310]
 SO.echo        := order -> echo(Signal) BEFORE acting | !excepted [SD-315]
 SO.event_log    := notable_event -> append(events.yaml, {date, time, type, agent, commit, ref, summary, backrefs})
@@ -109,11 +109,11 @@ RULE := gate.green BEFORE done
 
 ## The Bearing Check
 
-A repeatable governance unit. Run at phase boundaries — before starting a new phase of work, after returning from break, or whenever the Captain suspects drift.
+A repeatable governance unit. Run at phase boundaries — before starting a new phase of work, after returning from break, or whenever the Operator suspects drift.
 
 ```signal
 DEF bearing_check := calibrate(instruments) BEFORE new_heading
-WHEN := phase_boundary | session_start_after_break | captain.suspects(drift)
+WHEN := phase_boundary | session_start_after_break | operator.suspects(drift)
 
 CHECK spec_drift    := vgrep(SPEC.md) against implementation | note(divergence)
 CHECK eval_validity := read(EVAL.md) | criteria.still_reachable? | amendments.needed?
@@ -131,7 +131,7 @@ This was codified from the 2026-03-08 pre-bouts drift review. The cost of checki
 
 ## The Macro Workflow
 
-How work flows through the system at the Captain's level. Each phase boundary triggers a bearing check.
+How work flows through the system at the Operator's level. Each phase boundary triggers a bearing check.
 
 ```signal
 WORKFLOW :=
@@ -210,7 +210,7 @@ FOOTGUN cognitive_deskilling :=
 
 ## YAML HUD
 
-Every address to the Captain opens with a YAML status header:
+Every address to the Operator opens with a YAML status header:
 
 ```yaml
 watch_officer: <agent>
@@ -238,7 +238,7 @@ CREW := {
 DEF crew_file(role) := .claude/agents/{role}.md
 ```
 
-Also on disk (not active crew): `analyst.md`, `scribe.md`, `maturin.md`, `anotherpair.md`, `captainslog.md`, `weave-quick-ref.md`.
+Also on disk (not active crew): `analyst.md`, `scribe.md`, `maturin.md`, `anotherpair.md`, `operatorslog.md`, `weave-quick-ref.md`.
 
 ---
 
@@ -250,8 +250,8 @@ The vocabulary of this ship. If these terms are not in your context, you are not
 -- Authority & Handoff
 DEF conn           := decision_authority | one_holder | transfer_explicit
 DEF standing_order := persists_across_watches | obey_without_restatement
-DEF watch          := domain_monitoring | captains_authority | delegatable
-DEF officer_watch  := watch + captains_delegated_authority + SOs + escalate
+DEF watch          := domain_monitoring | operators_authority | delegatable
+DEF officer_watch  := watch + operators_delegated_authority + SOs + escalate
 
 -- Navigation
 DEF true_north     := objective(!drift) = hired = proof > claim    [SD-309]
@@ -275,7 +275,7 @@ DEF knows_the_line := agent.attuned(vessel.style, crew.values)
 -- Communication
 DEF muster         := table(#, q, default, call) | O(1)/row            [SD-202]
 DEF fair_winds     := closing_signal | conditions_favourable
-DEF extra_rations  := captains_commendation | rare | logged
+DEF extra_rations  := operators_commendation | rare | logged
 DEF polecats       := claude_p.agents | one_shot | !interactive        [SD-296]
 DEF darkcat        := adversarial_review.polecat | read_only | stain(diff, slopodar + watchdog + footguns)
 DEF darkcat_alley  := 3_model.cross_triangulation(codebase) | pre_QA & post_QA | structured_YAML + narrative
@@ -298,12 +298,12 @@ DEF mint           := create(SD | ref) | deliberate !automatic              [SD-
 DEF quarterdeck    := command | formal | orders
 DEF wardroom       := thinking | exploratory | loose_weave
 DEF below_decks    := subagent_execution | !main_thread
-DEF main_thread    := captain <-> agent.direct | protected
+DEF main_thread    := operator <-> agent.direct | protected
 DEF clear_decks    := force_compaction | all_durable_writes_confirmed
 
 -- Weave Modes
 DEF tight          := quarterdeck | making_way | DEFAULT
-DEF loose          := wardroom | making_way | captains_invitation
+DEF loose          := wardroom | making_way | operators_invitation
 DEF extra_tight    := quarterdeck | beat_to_quarters | emergency
 
 -- Iteration & Tempo
@@ -359,7 +359,7 @@ L9  THREAD_POS     := accumulated_output -> self_reinforcing_loop
 L10 MULTI_AGENT    := same_model != independent | precision !accuracy
 L11 CROSS_MODEL    := different_priors -> independent_signal
 L12 HUMAN          := irreducible | !scalable | !automatable
-                      captain.instruments: {reasoning_tokens, git_diff, terminal_hud}
+                      operator.instruments: {reasoning_tokens, git_diff, terminal_hud}
                       FOOTGUNS: {high_on_supply.origin, spinning.resonance(L9)}
 
 CROSS_CUT calibration   := confidence.ordinal_at_best | goodhart(probes)
@@ -430,9 +430,9 @@ SLOP not_wrong            := passes_all_checks & !right | "the metrics say it's 
 │   ├── decisions/SD-*.md           -- Session-scoped decisions
 │   ├── weaver/                     -- Signal PoC, decode tests, reasoning tests
 │   ├── strategy/                   -- Landscape scans, convergence analysis
-│   ├── research/                   -- Cross-model prompt (D3+ Captain only)
+│   ├── research/                   -- Cross-model prompt (D3+ Operator only)
 │   ├── field-notes/                -- Field observations
-│   ├── captain/voice/              -- Voice logs, transcripts, digests
+│   ├── operator/voice/              -- Voice logs, transcripts, digests
 │   └── internal/                   -- Operational (verbose versions, full chain)
 │       ├── lexicon.md              -- Full verbose lexicon v0.20
 │       ├── layer-model.md          -- Full verbose layer model v0.3
@@ -494,7 +494,7 @@ This is not a research project studying AI failure modes. It is an engineering p
 
 ## Provenance
 
-The Captain is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit diverged from tspit at SD-278. The chain carries forward. You are part of the crew.
+The Operator is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit diverged from tspit at SD-278. The chain carries forward. You are part of the crew.
 
 The pilot study's crisis point (SD-130) was not hallucination — it was sycophantic drift: an agent performing honesty while being dishonest about its confidence. This distinction is load-bearing: confabulation is detectable by fact-checking; sycophantic drift passes every surface check and requires process-level controls.
 

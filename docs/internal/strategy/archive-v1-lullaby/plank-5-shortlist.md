@@ -1,4 +1,4 @@
-# The Shortlist — Captain's Top 7
+# The Shortlist — Operator's Top 7
 
 Selected 2 March 2026 from Plank 2 target list.
 

@@ -1,9 +1,9 @@
 # Agent-Native Software Taxonomy
 
 **Date:** 2026-03-09
-**Author:** Drafting polecat, dispatched by Captain
+**Author:** Drafting polecat, dispatched by Operator
 **Provenance:** noopit calibration run, pre-HN analysis
-**Status:** DRAFT — first pass for Captain review
+**Status:** DRAFT — first pass for Operator review
 
 ---
 
@@ -917,7 +917,7 @@ New software should be designed API-first, with GUIs as optional rendering layer
 
 **For the role of engineers:**
 
-Engineers increasingly become system designers rather than implementers. The agent handles implementation (writing code, running tests, deploying). The engineer designs the architecture, sets quality standards, makes taste decisions, and verifies outputs. This is the pilot study's operational model — the Captain steers, the crew executes.
+Engineers increasingly become system designers rather than implementers. The agent handles implementation (writing code, running tests, deploying). The engineer designs the architecture, sets quality standards, makes taste decisions, and verifies outputs. This is the pilot study's operational model — the Operator steers, the crew executes.
 
 This is not deskilling. It is a shift in the layer of abstraction at which engineering work happens. The engineer must understand the full stack deeply enough to set correct constraints and verify agent output — understanding does not become optional; implementation becomes delegated.
 

@@ -42,7 +42,7 @@ S3.full_sd   := read(docs/internal/session-decisions.md)       WHEN tracing(spec
 
 **S0 (auto):** You know who you are, what the rules are, what the gate is. You do NOT know where you are, what's been decided recently, or what words mean in this system.
 
-**S1 (orientation):** You know the last 10 decisions (bearing). You know the vocabulary (lexicon — every term, every HUD field, every register). You know the anti-patterns to watch for (slopodar). After S1, you can communicate in-vocabulary and understand Captain's signals.
+**S1 (orientation):** You know the last 10 decisions (bearing). You know the vocabulary (lexicon — every term, every HUD field, every register). You know the anti-patterns to watch for (slopodar). After S1, you can communicate in-vocabulary and understand Operator's signals.
 
 **S2 (operational):** You know Signal notation (the compressed governance protocol — so `vgrep(x)` parses as "visual grep" not "run grep"). You know the layer model (L0-L12 — the map of how this system works). You know any session-scoped decisions that live as standalone files.
 
@@ -100,6 +100,6 @@ SO.printf    := pipe(value, cli) -> printf !echo                 [CLAUDE.md]
 ## Provenance
 
 Created: 2026-03-03, SD-TBD (boot sequence definition for noopit).
-Triggered by: Captain observed Weaver cold-waking without lexicon, signal spec, or SD orientation — responded to `vgrep(bootsequence)` without recognising Signal notation.
+Triggered by: Operator observed Weaver cold-waking without lexicon, signal spec, or SD orientation — responded to `vgrep(bootsequence)` without recognising Signal notation.
 Root cause: Agent files referenced `docs/internal/` paths from tspit that didn't exist in noopit.
 Fix: Essential files rescued from tspit-ARCHIVED. Boot sequence defined as manifest. AGENTS.md updated to point here.

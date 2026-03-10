@@ -1,12 +1,12 @@
 # QA Signoff — T-007 through T-022
 
-> Captain verification of bout engine, UI layer, and engagement features.
+> Operator verification of bout engine, UI layer, and engagement features.
 > Created: 2026-03-08 (T-007–T-016), extended 2026-03-09 (T-020–T-022 + darkcat fixes).
 > Covers: Phase 2+3 complete — core product loop with reactions, votes, leaderboard, sharing.
 > PR: #1 (phase2-ui → main)
 >
 > Machine-speed verification: 2026-03-09 by @Weaver — 107/107 items PASS.
-> Sections 15 + 16 (23 items) require Captain with dev server + browser.
+> Sections 15 + 16 (23 items) require Operator with dev server + browser.
 
 ## 1. Gate & Test Suite
 
@@ -151,35 +151,35 @@
 
 ## 15. End-to-End Flow (Manual — requires dev server)
 
-> **Captain only.** These items require `pnpm run dev` + browser.
+> **Operator only.** These items require `pnpm run dev` + browser.
 
-- [x] `pnpm run dev` starts without errors — **Captain verified**
-- [x] Navigate to http://localhost:3000/arena — preset cards render — **Captain verified**
-- [x] Each preset card shows: name, description, agent badges with colors, turn count, tier — **Captain verified**
-- [x] Topic input accepts text, placeholder says "Custom topic (optional)" — **Captain verified**
-- [x] Model dropdown shows "Haiku (fast)" selected, "Sonnet (coming soon)" disabled — **Captain verified**
-- [x] Click "Start Debate" → URL changes to `/bout/{nanoid}?presetId=...&model=claude-haiku` — **Captain verified (after model ID fix `73bcf15`)**
-- [x] Bout page shows streaming indicator — **Captain verified**
-- [x] SSE events stream in: message cards appear with colored borders, agent names, turn numbers — **Captain verified**
-- [x] Content appears incrementally (streaming text deltas visible) — **Captain verified**
-- [x] After all turns: "Debate complete" text appears — **Captain verified (after buffer flush fix `8146103` + placement fix `f4ede98`)**
-- [x] Page auto-scrolls as new messages arrive — **Captain verified: "scrolling improved" (after delta-scroll fix `f4ede98`)**
+- [x] `pnpm run dev` starts without errors — **Operator verified**
+- [x] Navigate to http://localhost:3000/arena — preset cards render — **Operator verified**
+- [x] Each preset card shows: name, description, agent badges with colors, turn count, tier — **Operator verified**
+- [x] Topic input accepts text, placeholder says "Custom topic (optional)" — **Operator verified**
+- [x] Model dropdown shows "Haiku (fast)" selected, "Sonnet (coming soon)" disabled — **Operator verified**
+- [x] Click "Start Debate" → URL changes to `/bout/{nanoid}?presetId=...&model=claude-haiku` — **Operator verified (after model ID fix `73bcf15`)**
+- [x] Bout page shows streaming indicator — **Operator verified**
+- [x] SSE events stream in: message cards appear with colored borders, agent names, turn numbers — **Operator verified**
+- [x] Content appears incrementally (streaming text deltas visible) — **Operator verified**
+- [x] After all turns: "Debate complete" text appears — **Operator verified (after buffer flush fix `8146103` + placement fix `f4ede98`)**
+- [x] Page auto-scrolls as new messages arrive — **Operator verified: "scrolling improved" (after delta-scroll fix `f4ede98`)**
 - [x] Reaction buttons visible on each message card — **N/A for streaming bouts: buttons render only with `reactionCounts` + `onReact` props. Arena does not pass these because bout persistence is deferred (T-013). Correct behaviour. DEFERRED to T-013.**
 - [ ] Heart/fire toggle works (click adds, click again removes) — **DEFERRED to T-013: requires bout persistence.**
 - [ ] Reaction counts update after toggle — **DEFERRED to T-013: same dependency.**
-- [x] Share panel appears after bout completion — **DEFERRED to T-013: `createShortLink` queries bouts table for `status=completed`. No persisted bout → API error → share panel shows error state. Captain confirmed: "no share panel but that can probably be bundled into T-013." Correct behaviour.**
+- [x] Share panel appears after bout completion — **DEFERRED to T-013: `createShortLink` queries bouts table for `status=completed`. No persisted bout → API error → share panel shows error state. Operator confirmed: "no share panel but that can probably be bundled into T-013." Correct behaviour.**
 - [ ] Share panel creates short link (loading → link available) — **DEFERRED to T-013: short-link API requires completed bout in DB.**
 - [ ] Copy Link button copies URL to clipboard — **DEFERRED to T-013: depends on short link existing.**
 - [ ] Social share buttons open correct URLs in new tabs (with noopener) — **DEFERRED to T-013: depends on short link existing.**
-- [x] Navigate to /leaderboard — table renders (may be empty with no votes) — **Captain verified: empty, expected. No bout persistence → no votes → empty leaderboard.**
+- [x] Navigate to /leaderboard — table renders (may be empty with no votes) — **Operator verified: empty, expected. No bout persistence → no votes → empty leaderboard.**
 
 ## 16. Error Handling (Manual — requires dev server)
 
-> **Captain only.** These items require `pnpm run dev` + browser/curl.
+> **Operator only.** These items require `pnpm run dev` + browser/curl.
 
-- [x] Navigate to `/bout/nonexistent-id` without searchParams → Arena renders in new-bout mode ("waiting to start") — **Captain verified**
-- [x] If ANTHROPIC_API_KEY is missing/invalid → error event appears in SSE → error message displayed — **Captain verified: mangled key → "No output generated. Check the stream for errors."**
-- [x] Submit empty boutId to /api/reactions → 400 validation error (not 500) — **Captain verified via curl: got `VALIDATION_ERROR` with `boutId: "boutId is required"`**
+- [x] Navigate to `/bout/nonexistent-id` without searchParams → Arena renders in new-bout mode ("waiting to start") — **Operator verified**
+- [x] If ANTHROPIC_API_KEY is missing/invalid → error event appears in SSE → error message displayed — **Operator verified: mangled key → "No output generated. Check the stream for errors."**
+- [x] Submit empty boutId to /api/reactions → 400 validation error (not 500) — **Operator verified via curl: got `VALIDATION_ERROR` with `boutId: "boutId is required"`**
 - [x] Submit vote on running bout → 400 "BOUT_NOT_COMPLETED" — **Auth-gated: Clerk middleware blocks unauthenticated requests (not in `isPublicRoute`). Route handler returns 401/400 correctly — verified in machine-speed code review (Section 10+11). Curl without session token returns Clerk 404. Correct by design.**
 - [x] Submit vote for agent not in bout → 400 "AGENT_NOT_IN_BOUT" — **Same auth gate. VoteValidationError codes verified in machine-speed review. Unit tests cover all 3 paths (bout-not-found, bout-not-completed, agent-not-in-bout).**
 
@@ -264,7 +264,7 @@ Machine verification: @Weaver, 2026-03-09
   1 stale item annotated (section 8, getCountsForTurn removed in B9)
   Gate: 145 pass, 9 skip (154 total), 15 test files
 
-Captain verification: 2026-03-09
+Operator verification: 2026-03-09
   Section 15: 11/19 verified, 5 deferred to T-013 (bout persistence), 3 N/A
   Section 16: 5/5 verified (reactions 400, votes auth-gated, API key error)
   Bugs found & fixed: stale MODEL_MAP (73bcf15), SSE buffer flush (8146103),

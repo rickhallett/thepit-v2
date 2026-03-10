@@ -48,7 +48,7 @@ Each term from the compressed lexicon (AGENTS.md v0.25) is mapped against nine s
 
 ---
 
-#### 3. watch — domain monitoring, captain's authority, delegatable
+#### 3. watch — domain monitoring, operator's authority, delegatable
 
 **SWE equivalents:**
 - **Code ownership / CODEOWNERS** (GitHub). Designated responsibility for a domain of code. Delegatable. Implies review authority.
@@ -63,7 +63,7 @@ Each term from the compressed lexicon (AGENTS.md v0.25) is mapped against nine s
 
 ---
 
-#### 4. officer_watch — watch + captain's delegated authority + SOs + escalate
+#### 4. officer_watch — watch + operator's delegated authority + SOs + escalate
 
 **SWE equivalents:**
 - **On-call with escalation policy** (SRE). On-call engineer operates within runbooks, escalates outside scope.
@@ -314,7 +314,7 @@ Each term from the compressed lexicon (AGENTS.md v0.25) is mapped against nine s
 
 ---
 
-#### 20. extra_rations — captain's commendation, rare, logged
+#### 20. extra_rations — operator's commendation, rare, logged
 
 **SWE equivalents:**
 - **Kudos / shout-outs** (team culture). Recognition of exceptional work.
@@ -483,7 +483,7 @@ Each term from the compressed lexicon (AGENTS.md v0.25) is mapped against nine s
 
 #### 33. below_decks — subagent execution, not main thread
 
-#### 34. main_thread — captain to agent direct, protected
+#### 34. main_thread — operator to agent direct, protected
 
 **SWE equivalents (grouped because they form a system):**
 - **Communication channels / forums** (SWE management). Teams naturally separate command channels (Slack #incidents), discussion channels (#architecture), and work channels (#dev-team-alpha).
@@ -1038,7 +1038,7 @@ A clean list grounded in established frameworks where possible, honestly novel w
 - **Muda (waste)** → distinguishing hull (value) from everything else (potential waste)
 - **Genchi genbutsu** → engineering problem (go to the source)
 
-9 of 50 concepts (18%) map directly to Lean/Toyota concepts. The Captain's intuition about strong Lean mappings was correct.
+9 of 50 concepts (18%) map directly to Lean/Toyota concepts. The Operator's intuition about strong Lean mappings was correct.
 
 The second strongest overlap is **SRE/DevOps** (quality gates, incident response, on-call, alert fatigue, drift, error budgets — approximately 8 concepts).
 

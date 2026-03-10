@@ -1,6 +1,6 @@
 # Manual Signoff Checklist — T-001 through T-005
 
-> Captain verification after next walkthrough attestation.
+> Operator verification after next walkthrough attestation.
 > Created: 2026-03-04, after T-005 landed (2622c65).
 
 ## 1. Build & Dev Server
@@ -76,7 +76,7 @@
 ## Signoff
 
 ```
-Captain: _______________
+Operator: _______________
 Date: _______________
 Findings: _______________
 ```

@@ -1,6 +1,6 @@
 # QA Signoff — T-001 through T-006
 
-> Captain verification of product foundation before bouts development.
+> Operator verification of product foundation before bouts development.
 > Created: 2026-03-04, after T-005 landed (2622c65).
 > Updated: 2026-03-08, T-006 added, signoff completed.
 
@@ -80,7 +80,7 @@
 ## Signoff
 
 ```
-Captain: Richard Hallett
+Operator: Richard Hallett
 Date: 2026-03-08
 Findings: None. Foundation verified. Clerk dev keys configured (.env.local).
            Ready for bouts development.

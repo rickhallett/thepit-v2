@@ -212,7 +212,7 @@ def entry_text(e):
 # ── pattern detectors ────────────────────────────────────────────
 # Each detector returns a list of (field, finding) tuples.
 # These are the algorithmically attackable heuristics.
-# They are imperfect. That's why the Captain confirms.
+# They are imperfect. That's why the Operator confirms.
 
 
 def detect_emdash(text, field):
@@ -259,7 +259,7 @@ def detect_nominalisation(text, field):
     hits = []
     sentences = re.split(r"(?<=[.!?])\s+", text.strip())
     actor_pattern = re.compile(
-        r"\b(I|you|we|they|he|she|who|someone|one|the captain|a human)\b", re.I
+        r"\b(I|you|we|they|he|she|who|someone|one|the operator|a human)\b", re.I
     )
     actorless_run = 0
     for s in sentences:

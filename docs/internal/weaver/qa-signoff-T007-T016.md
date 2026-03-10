@@ -1,6 +1,6 @@
 # QA Signoff — T-007 through T-016
 
-> Captain verification of bout engine and UI layer before engagement/credits development.
+> Operator verification of bout engine and UI layer before engagement/credits development.
 > Created: 2026-03-08, after T-016 landed.
 > Covers: Phase 2 complete — core product loop works end-to-end (credits disabled).
 
@@ -126,7 +126,7 @@
 ## Signoff
 
 ```
-Captain:
+Operator:
 Date:
 Findings:
 Test run:

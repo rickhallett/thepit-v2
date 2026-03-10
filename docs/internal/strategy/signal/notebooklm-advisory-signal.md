@@ -1,6 +1,6 @@
 # NotebookLM Advisory (Signal)
 
-> Prepared 2 March 2026. Captain only.
+> Prepared 2 March 2026. Operator only.
 
 ```signal
 -- WHAT NLM IS
@@ -32,7 +32,7 @@ copies := static | !track_changes | re_upload_on_update
 
 NB1 "The Story" := {
   purpose := internalise(one_page_story, narrative_arc) | "tell me about yourself"
-  sources := {plank_1, narrative_shape, narrative_layer.yaml, captains_log(23_fair_winds)}
+  sources := {plank_1, narrative_shape, narrative_layer.yaml, operators_log(23_fair_winds)}
   queries := {"three most dramatic turning points?", "highest narrative density arcs?",
               "90 seconds to explain — what should I say?"}
 }
@@ -119,7 +119,7 @@ EX4 "Fight Card Drill" := NB2 -> {
 }
 
 EX5 "Quote Retrieval" := NB1 -> {
-  nlm("most powerful captain quote per densest arc")
+  nlm("most powerful operator quote per densest arc")
   -> place_in_context? | nlm("what was happening when this was said?") WHEN !recalled
 }
 
@@ -149,5 +149,5 @@ RECOMMEND := start(free) -> upgrade(plus) WHEN hit_chat_limit(likely_day_1) -> c
 -- FIRST ACTION
 DO_NOW := upload(plank_1, narrative_shape) -> ask("what is this project about?")
   IF accurate -> proceed(full_architecture)
-  IF !accurate -> add_note("solo agentic engineering project, two phases, Captain = human, governance framework, 315 SDs")
+  IF !accurate -> add_note("solo agentic engineering project, two phases, Operator = human, governance framework, 315 SDs")
 ```

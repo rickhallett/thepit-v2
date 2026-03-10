@@ -207,11 +207,11 @@ def render_velocity_terminal(sig) -> None:
 def render_wellness_terminal(sig) -> None:
     print(_title("Wellness") + _muted(f"  {sig.date}"))
 
-    if sig.captains_log_present:
-        print(_accent("  ✓ Captain's log complete"))
+    if sig.operators_log_present:
+        print(_accent("  ✓ Operator's log complete"))
     else:
-        print(_warn("  ✗ Captain's log not found"))
-        print(f"    Expected: {_muted(sig.captains_log_path)}")
+        print(_warn("  ✗ Operator's log not found"))
+        print(f"    Expected: {_muted(sig.operators_log_path)}")
 
 
 def render_reserves_terminal(sig) -> None:
@@ -550,14 +550,14 @@ def usage() -> None:
     print("  pitkeel scope        scope drift within current session")
     print("  pitkeel velocity     commits per hour")
     print("  pitkeel context      context file depth distribution")
-    print("  pitkeel wellness     daily wellness checks (captain's log)")
+    print("  pitkeel wellness     daily wellness checks (operator's log)")
     print("  pitkeel reserves     time since last meditation/exercise")
     print("  pitkeel log-meditation  log meditation timestamp")
     print("  pitkeel log-exercise    log exercise timestamp")
     print("  pitkeel daemon start|stop|status  sleep daemon management")
     print("  pitkeel hook         hook output (no ANSI, for commit messages)")
     print("  pitkeel state-update --officer <name>  auto-update .keel-state")
-    print('  pitkeel north set "Get Hired"         set true_north (Captain-only)')
+    print('  pitkeel north set "Get Hired"         set true_north (Operator-only)')
     print("  pitkeel north get                     read true_north")
     print("  pitkeel version      print version")
 

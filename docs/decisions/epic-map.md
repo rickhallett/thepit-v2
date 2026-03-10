@@ -1,8 +1,8 @@
 # Epic Map — noopit Post-Retreat
 
 > **Date:** 2026-03-08
-> **Status:** Directions with conviction, not final specifications. Captain still clarifying.
-> **Decided by:** Captain (wardroom session, post-retreat)
+> **Status:** Directions with conviction, not final specifications. Operator still clarifying.
+> **Decided by:** Operator (wardroom session, post-retreat)
 
 ## True North
 
@@ -10,7 +10,7 @@
 NORTH := hired = proof > claim                                    [SD-309 LOCKED]
 RULE  := epics{3}.independent & prioritisable & auditable
 STATUS := directions.with(conviction) !final_specifications
-RULE   := captain.still_clarifying
+RULE   := operator.still_clarifying
 ```
 
 ## Epic Map
@@ -27,7 +27,7 @@ E1 := pitkeel.upgrade(human_protection)
   E1.2_session_noise := pitkeel.noise.progressive(session_length)
     DEF ultradian_cycle := ~90min | optimal_block
     DEF danger_threshold := 3h | cycles(2)
-    MECHANISM := captain.!notices(flow_state) -> threshold.invisible
+    MECHANISM := operator.!notices(flow_state) -> threshold.invisible
 
 -- E2: Portfolio (4 parts)
 E2 := portfolio.build
@@ -87,5 +87,5 @@ E3 := strategic_depth | longer_horizon
 | M9 | Open Brain scope | Prototype after deeper research. Analyst's task. |
 | M10 | Epic ordering | E1 → E2 → E3. Confirmed. |
 | M10-grace | Shutdown grace period | 10-minute warning + 60-second countdown. Protects in-flight git ops. |
-| M2-location | Reserves data location | `docs/captain/reserves.tsv`. Committed (personal area). |
+| M2-location | Reserves data location | `docs/operator/reserves.tsv`. Committed (personal area). |
 | M-daemon | Reserves checker | Background daemon ("sleep daemon"). Runs independently of agent sessions. |

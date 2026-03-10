@@ -14,7 +14,7 @@ Every post read like an agent wrote it and a human approved it.
 
 ## Source corpus
 
-~8,000 words extracted from captain's logs, session decisions, main thread transcripts, strategic challenge documents, and copy variant files. Every quote attributed, timestamped, and cross-referenced (see footnotes)
+~8,000 words extracted from operator's logs, session decisions, main thread transcripts, strategic challenge documents, and copy variant files. Every quote attributed, timestamped, and cross-referenced (see footnotes)
 
 ## What the analysis found: 8 voice themes
 
@@ -37,7 +37,7 @@ Profanity marks inflection points, where patience with abstraction runs out and 
 
 I undercut myself constantly, not for sympathy but as evidence of clear-eyed self-assessment. The self-deprecation is always followed by recommitting to the thing.
 
-> "I am about as real a captain as somebody in a Master & Commander style-tuned sailing simulator" → keeps the metaphor because it works
+> "I am about as real a operator as somebody in a Master & Commander style-tuned sailing simulator" → keeps the metaphor because it works
 > "I still sometimes felt like I must sound like a complete lunatic" → keeps explaining
 > "Maybe its just a story, not even really a thing" → ships it
 > "Getting hired would be nice, not gonna lie. But at this point, telling the truth is feeling more important." → proceeds to tell the truth

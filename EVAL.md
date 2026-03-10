@@ -27,17 +27,17 @@ This is a calibration run — a practitioner rebuilding a product with internali
 ## What counts as ambiguous
 
 1. **Partial product loop.** Core works but economy doesn't (or vice versa). This is a finding about complexity distribution.
-2. **Anti-patterns recur despite internalisation.** If slopodar-v2 entries match the original 18, the governance framework was doing more work than the Captain thought. This is valuable data, not failure.
+2. **Anti-patterns recur despite internalisation.** If slopodar-v2 entries match the original 18, the governance framework was doing more work than the Operator thought. This is valuable data, not failure.
 3. **Timeline exceeds 4 days.** Not failure — an honest timeline adjustment is better than a rushed product. But the reasons must be documented.
 4. **Cross-model tests catch things same-model tests wouldn't have.** This validates the methodology but doesn't speak to the main calibration question.
 
 ## Confounds (acknowledged, not controlled)
 
-1. **Experimenter learning.** The Captain has done this before. Every decision is informed by round 1. Speed improvement proves learning occurred, not that governance was the bottleneck.
+1. **Experimenter learning.** The Operator has done this before. Every decision is informed by round 1. Speed improvement proves learning occurred, not that governance was the bottleneck.
 2. **Model version.** Claude in March 2026 is not Claude in February 2026. Any performance difference could be model capability.
 3. **Specification familiarity.** "Same app spec" built the second time is a rebuild, not a replication. Design decisions are pre-explored.
 4. **Scope difference.** The MVP spec is a subset of the original. Direct LOC comparison is misleading.
-5. **Hawthorne effect.** Measuring changes behaviour. The Captain will code differently knowing every commit is evaluated.
+5. **Hawthorne effect.** Measuring changes behaviour. The Operator will code differently knowing every commit is evaluated.
 
 ## Metrics (collected, compared where possible)
 
@@ -54,10 +54,10 @@ This is a calibration run — a practitioner rebuilding a product with internali
 
 ### Manual (commit message tags)
 
-- `[H:steer]` — Captain redirected agent
-- `[H:correct]` — Captain corrected factual error
-- `[H:reject]` — Captain rejected output
-- `[H:approve]` — Captain accepted plan/output
+- `[H:steer]` — Operator redirected agent
+- `[H:correct]` — Operator corrected factual error
+- `[H:reject]` — Operator rejected output
+- `[H:approve]` — Operator accepted plan/output
 - `[H:reset]` — Context window reset
 - `[H:obstacle]` — Significant blocker
 - `[H:scope]` — Scope pressure (wanted to add something OOS)

@@ -409,21 +409,21 @@ class TestVelocity:
 
 class TestWellness:
     def test_missing_files_detected(self):
-        """Intent: when captainslog doesn't exist, it is flagged."""
+        """Intent: when operatorslog doesn't exist, it is flagged."""
         with tempfile.TemporaryDirectory() as tmpdir:
             now = datetime(2026, 2, 23, 4, 0, 0, tzinfo=timezone.utc)
             sig = analyse_wellness(now, tmpdir)
 
-            assert not sig.captains_log_present
+            assert not sig.operators_log_present
             assert sig.date == "2026-02-23"
 
     def test_present_files_detected(self):
-        """Intent: when captain's log exists, it is flagged as present."""
+        """Intent: when operator's log exists, it is flagged as present."""
         with tempfile.TemporaryDirectory() as tmpdir:
             now = datetime(2026, 2, 23, 4, 0, 0, tzinfo=timezone.utc)
 
             log_dir = os.path.join(
-                tmpdir, "docs", "internal", "captain", "captainslog", "2026", "02"
+                tmpdir, "docs", "internal", "operator", "operatorslog", "2026", "02"
             )
             os.makedirs(log_dir)
             with open(os.path.join(log_dir, "23.md"), "w") as f:
@@ -431,7 +431,7 @@ class TestWellness:
 
             sig = analyse_wellness(now, tmpdir)
 
-            assert sig.captains_log_present
+            assert sig.operators_log_present
 
 
 # ==========================================================================
@@ -655,8 +655,8 @@ class TestReservesTSV:
         from git_io import append_reserves_tsv, read_reserves_tsv
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Create the docs/captain directory structure
-            os.makedirs(os.path.join(tmpdir, "docs", "captain"), exist_ok=True)
+            # Create the docs/operator directory structure
+            os.makedirs(os.path.join(tmpdir, "docs", "operator"), exist_ok=True)
 
             # Append entries
             append_reserves_tsv(tmpdir, "meditation")
@@ -672,7 +672,7 @@ class TestReservesTSV:
         from git_io import read_reserves_tsv
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            tsv_dir = os.path.join(tmpdir, "docs", "captain")
+            tsv_dir = os.path.join(tmpdir, "docs", "operator")
             os.makedirs(tsv_dir, exist_ok=True)
             tsv_path = os.path.join(tsv_dir, "reserves.tsv")
 
@@ -692,10 +692,10 @@ class TestReservesTSV:
         from git_io import append_reserves_tsv
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            os.makedirs(os.path.join(tmpdir, "docs", "captain"), exist_ok=True)
+            os.makedirs(os.path.join(tmpdir, "docs", "operator"), exist_ok=True)
             append_reserves_tsv(tmpdir, "meditation")
 
-            tsv_path = os.path.join(tmpdir, "docs", "captain", "reserves.tsv")
+            tsv_path = os.path.join(tmpdir, "docs", "operator", "reserves.tsv")
             with open(tsv_path) as f:
                 lines = f.readlines()
 
@@ -708,7 +708,7 @@ class TestReservesTSV:
         from git_io import read_reserves_tsv
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            tsv_dir = os.path.join(tmpdir, "docs", "captain")
+            tsv_dir = os.path.join(tmpdir, "docs", "operator")
             os.makedirs(tsv_dir, exist_ok=True)
             tsv_path = os.path.join(tsv_dir, "reserves.tsv")
 
@@ -737,7 +737,7 @@ class TestReservesTSV:
         from git_io import append_reserves_tsv
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            os.makedirs(os.path.join(tmpdir, "docs", "captain"), exist_ok=True)
+            os.makedirs(os.path.join(tmpdir, "docs", "operator"), exist_ok=True)
             with pytest.raises(ValueError, match="Unknown reserve type"):
                 append_reserves_tsv(tmpdir, "yoga")
 

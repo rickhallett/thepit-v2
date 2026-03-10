@@ -2,14 +2,14 @@
 
 **Date:** 2026-03-09
 **Status:** STANDING (this run)
-**Agent:** Weaver (design) / Captain (naming, direction)
+**Agent:** Weaver (design) / Operator (naming, direction)
 **Backrefs:** SD-317 (QA sequencing, data products), SD-309 (True North), SD-134 (truth-first), L11 (cross-model validation)
 
 ## Context
 
 Cross-model code review (SD-317 Data Product 1) produced 31 unique findings from 3 model families with zero false positives. 74% of findings were caught by only one model. The process worked but was ad hoc — each model produced freeform reports in different formats, and synthesis was manual.
 
-Captain's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
+Operator's direction: standardise the process, name it, lexify it, make it repeatable, make it produce machine-readable data for numerical evidence and visualisations. The visualisations feed the portfolio (SD-309). This is mission-critical work.
 
 ## Decision
 

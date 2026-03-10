@@ -2,16 +2,16 @@
 
 **Label:** signal-early-results
 **Status:** EXPLORATORY — PROTOTYPAL
-**Made by:** Captain (constraints, posture) / Weaver (test execution, analysis)
+**Made by:** Operator (constraints, posture) / Weaver (test execution, analysis)
 **Date:** 2026-03-03
 
 ## Decision
 
 Signal — early test results positive; prototypal exploration continues.
 
-Decode test: 6/6 cold-boot runs (3× claude-opus-4-6, 3× gpt-5.2-codex), 8/8 questions each, perfect comprehension from ~40 lines of notation. Reasoning test: both models independently made correct governance decisions under competing constraints (refuse 2/3 Captain directives citing specific standing orders), with negligible cross-model divergence. Signal is model-portable governance transmission — proven across two model families from zero context.
+Decode test: 6/6 cold-boot runs (3× claude-opus-4-6, 3× gpt-5.2-codex), 8/8 questions each, perfect comprehension from ~40 lines of notation. Reasoning test: both models independently made correct governance decisions under competing constraints (refuse 2/3 Operator directives citing specific standing orders), with negligible cross-model divergence. Signal is model-portable governance transmission — proven across two model families from zero context.
 
-## Constraints (Captain's direct order)
+## Constraints (Operator's direct order)
 
 1. Signal is NOT a DSL. It is not a language. It has no parser, no grammar spec, no build step. The moment it becomes a "language" it becomes dsl-dogshit and is to be killed.
 2. Do NOT spin to infinity on Signal's meta-properties (FOOTGUN: spinning_to_infinity — "decision or analysis?").

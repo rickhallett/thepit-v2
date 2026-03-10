@@ -4,7 +4,7 @@
 # dependencies = ["httpx"]
 # ///
 """
-Voice log — record, transcribe, collate, and manage Captain's audio logs.
+Voice log — record, transcribe, collate, and manage Operator's audio logs.
 
 Usage:
     uv run scripts/voice-log.py                    # record + auto-transcribe
@@ -18,9 +18,9 @@ Usage:
     uv run scripts/voice-log.py --gc --confirm     # delete .wav files that have been transcribed
 
 Naming convention:
-    docs/captain/voice/{YYYY-MM-DD}/{HH-MM-SS}.wav          — raw audio
-    docs/captain/voice/{YYYY-MM-DD}/{HH-MM-SS}.transcript   — plain text transcript
-    docs/captain/voice/{YYYY-MM-DD}/digest.md                — collated daily digest
+    docs/operator/voice/{YYYY-MM-DD}/{HH-MM-SS}.wav          — raw audio
+    docs/operator/voice/{YYYY-MM-DD}/{HH-MM-SS}.transcript   — plain text transcript
+    docs/operator/voice/{YYYY-MM-DD}/digest.md                — collated daily digest
 
 GC policy: .wav files are eligible for deletion once a .transcript file exists alongside them.
 """
@@ -36,7 +36,7 @@ from pathlib import Path
 
 import httpx
 
-HULL_ROOT = Path(__file__).resolve().parent.parent / "docs" / "captain" / "voice"
+HULL_ROOT = Path(__file__).resolve().parent.parent / "docs" / "operator" / "voice"
 DEVICE = "hw:0,0"  # TONOR TC30 — card 0, device 0
 FORMAT = "S16_LE"
 RATE = "44100"

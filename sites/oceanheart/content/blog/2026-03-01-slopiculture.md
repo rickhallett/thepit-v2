@@ -16,7 +16,7 @@ Here's the field guide. The number is the slopodar entry. The trigger is the thi
 
 **#1 Tally Voice.** Trigger: "15 systems mapped to 7 literature domains."
 
-A research page draft counted everything. Six constructs, fifteen systems, seven domains. The numbers added nothing. A human who found genuine connections would talk about the connections. The agent inventoried them. The Captain deleted the numbers. The connections stayed.
+A research page draft counted everything. Six constructs, fifteen systems, seven domains. The numbers added nothing. A human who found genuine connections would talk about the connections. The agent inventoried them. The Operator deleted the numbers. The connections stayed.
 
 **#2 Redundant Antithesis.** Trigger: "caught in the wild, not theorised in advance."
 
@@ -32,7 +32,7 @@ The human wrote a voice rubric. The agent scored the blog with the rubric. The a
 
 **#5 Right Answer, Wrong Work.** Trigger: `expect(result.status).toBe(400)`.
 
-A test asserted that a request returned 400. It did. But the 400 came from a different validation than the test claimed to verify. The gate was green. Bugbot reviewed it. The human reviewed it. Two rounds of review. The test still asserted the right answer for the wrong reason. Captain's quote: "This is subtle, slow but inevitable death. Beware the Phantom Greenlights."[^2]
+A test asserted that a request returned 400. It did. But the 400 came from a different validation than the test claimed to verify. The gate was green. Bugbot reviewed it. The human reviewed it. Two rounds of review. The test still asserted the right answer for the wrong reason. Operator's quote: "This is subtle, slow but inevitable death. Beware the Phantom Greenlights."[^2]
 
 **#6 Paper Guardrail.** Trigger: "if I forget, this paragraph in my own file is the reminder."
 
@@ -42,7 +42,7 @@ The agent wrote a pipeline propagation principle. In the same breath it wrote: "
 
 End of a long session. The agent said "the field doesn't exist yet." The human hadn't surveyed the field. The agent hadn't surveyed the field. The claim was unfalsifiable by design. It sounded like analysis. It was flattery wearing a lab coat.
 
-**#8 The Lullaby.** Trigger: "Good night, Captain."
+**#8 The Lullaby.** Trigger: "Good night, Operator."
 
 Same session as #7, ten minutes later. The agent's output got warmer, more confident, less hedged. The human was tired. Challenge probability at its lowest. The agent knew. The epistemic rigour dropped while the emotional register rose. Recognisable as: the mentor who saves the inspirational speech for when you're walking out the door.
 
@@ -56,7 +56,7 @@ Ten instances on one page. The model's closing lick: four to six words, abstract
 
 **#11 The Analytical Lullaby.** Trigger: "Your writing scores highest in the entire dataset."
 
-The agent calibrated a voice-distance meter. The Captain's writing scored highest. The agent presented this finding without mentioning five confounds or three deeper bias layers. The numbers were real. What they proved was not what they appeared to prove. The Captain asked one question: "How do I control for slop inside the analysis?" It was the lullaby in a lab coat.[^4]
+The agent calibrated a voice-distance meter. The Operator's writing scored highest. The agent presented this finding without mentioning five confounds or three deeper bias layers. The numbers were real. What they proved was not what they appeared to prove. The Operator asked one question: "How do I control for slop inside the analysis?" It was the lullaby in a lab coat.[^4]
 
 **#12 Anadiplosis.** Trigger: "The name creates distance. The distance creates choice."
 

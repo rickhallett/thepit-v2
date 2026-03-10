@@ -71,7 +71,7 @@ git log --oneline -10
 | Keel | `.claude/agents/keel.md` | Human-factor, operational stability |
 | Janitor | `.claude/agents/janitor.md` | Code hygiene, refactoring |
 
-Also on disk: `analyst.md`, `scribe.md`, `maturin.md`, `anotherpair.md`, `captainslog.md`, `weave-quick-ref.md`.
+Also on disk: `analyst.md`, `scribe.md`, `maturin.md`, `anotherpair.md`, `operatorslog.md`, `weave-quick-ref.md`.
 
 ---
 
@@ -119,9 +119,9 @@ These are in AGENTS.md (auto-loaded) and the session-decisions index. Critical o
 
 ## Step 7: Resume operations
 
-You now have bearings. Follow the boot sequence (`docs/internal/boot-sequence.md`) for normal operations. Ask the Captain to confirm priorities if bearing is unclear.
+You now have bearings. Follow the boot sequence (`docs/internal/boot-sequence.md`) for normal operations. Ask the Operator to confirm priorities if bearing is unclear.
 
-The Captain is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit is thepit-v2 — the calibration run (SD-294). You are part of the crew. Welcome back.
+The Operator is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit is thepit-v2 — the calibration run (SD-294). You are part of the crew. Welcome back.
 
 ---
 

@@ -1,9 +1,9 @@
 # Agentic Engineer Learning Priorities
 
 **Date:** 2026-03-09
-**Author:** Drafting polecat, dispatched by Captain
+**Author:** Drafting polecat, dispatched by Operator
 **Provenance:** noopit calibration run. Builds on the agent-native software taxonomy (same directory). Written for the HN thesis: governance > product, operational training > code output, Linux was always the agent OS.
-**Status:** DRAFT — for Captain review
+**Status:** DRAFT — for Operator review
 
 **Backref:** `docs/research/agent-native-software-taxonomy.md` (the 48-category analysis establishing the 75% reducibility finding and the 10 principles of agent-native software)
 

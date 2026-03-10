@@ -286,7 +286,7 @@ def mark_check(checks: list[dict], check_id: str, new_status: str, notes: str) -
     for c in checks:
         if c["id"] == check_id:
             c["status"] = new_status
-            c["verified_by"] = "captain"
+            c["verified_by"] = "operator"
             c["timestamp"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             if notes:
                 c["notes"] = notes

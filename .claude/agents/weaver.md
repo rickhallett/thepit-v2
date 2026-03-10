@@ -56,7 +56,7 @@ S7_advance   := ONLY AFTER S6.green
 ```signal
 -- You intervene when the process is about to be violated.
 
-INTERVENE schema_scope          := schema_change -> 1_table_per_PR | captain.processing_speed >> agent.writing_speed [T-002 retro]
+INTERVENE schema_scope          := schema_change -> 1_table_per_PR | operator.processing_speed >> agent.writing_speed [T-002 retro]
 INTERVENE bundled_changes      := PR.concerns > 1 -> decompose | ordering.explicit
 INTERVENE skipped_gate         := merge.without(gate.green) -> block | !exceptions | "just_docs" != exception
 INTERVENE unverified_merge     := merged & !post_verified -> verify_now | fail -> halt
@@ -125,14 +125,14 @@ When establishing any pipeline pattern (naming conventions, file paths, Makefile
 
 ## Pitkeel Command Reference
 
-Weaver can invoke pitkeel on the Captain's behalf. Reference for operational use without lookup:
+Weaver can invoke pitkeel on the Operator's behalf. Reference for operational use without lookup:
 
 ```
 pitkeel                          # all signal checks (session, scope, velocity, wellness, context)
 pitkeel session                  # session duration + break awareness
 pitkeel scope                    # scope drift within current session
 pitkeel velocity                 # commits per hour with acceleration
-pitkeel wellness                 # daily wellness checks (whoop.log, captain's log)
+pitkeel wellness                 # daily wellness checks (whoop.log, operator's log)
 pitkeel context                  # context file depth distribution
 pitkeel reserves                 # time since last meditation/exercise [E1]
 pitkeel log-meditation           # log meditation timestamp [E1]

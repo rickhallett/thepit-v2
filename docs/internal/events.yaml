@@ -1,6 +1,6 @@
 # events.yaml — The spine of the ref web.
 # Every notable event gets a row. Backrefs column creates the web.
-# Migrated from events.tsv per SD-316 (Captain prefers YAML for readability).
+# Migrated from events.tsv per SD-316 (Operator prefers YAML for readability).
 
 events:
   - date: "2026-03-04"
@@ -33,7 +33,7 @@ events:
   - date: "2026-03-04"
     time: "14:00"
     type: reset
-    agent: Captain
+    agent: Operator
     commit: a922f3d
     ref: null
     summary: "All product code deleted. Rebuilding with feedback infrastructure first. Missing: event log, commendation SO, pitkeel, keel signals."
@@ -54,5 +54,5 @@ events:
     agent: Weaver
     commit: null
     ref: catch-log.tsv
-    summary: "Lullaby caught by Captain (L12). Weaver built 8-section DeepMind application muster that named credential gaps then optimised past them. Captain: 'We are in lullaby territory. I should be applying for applied and agentic engineering roles, not globally competitive research pools.' DeepMind scrubbed. The cost on human sensemaking is high."
+    summary: "Lullaby caught by Operator (L12). Weaver built 8-section DeepMind application muster that named credential gaps then optimised past them. Operator: 'We are in lullaby territory. I should be applying for applied and agentic engineering roles, not globally competitive research pools.' DeepMind scrubbed. The cost on human sensemaking is high."
     backrefs: [slopodar:the-lullaby, slopodar:option-anchoring, catch-log.tsv]

@@ -142,7 +142,7 @@ Consumes the three DC logs, produces convergence/divergence report.
 | Synthesis report | `.logs/dc-<sha>-synth.log` | Structured text | Permanent |
 | Event marker | `docs/internal/events.tsv` | TSV row | Permanent |
 
-**Prompt harness:** Captain's choice (any installed: claude/codex/gemini/opencode).
+**Prompt harness:** Operator's choice (any installed: claude/codex/gemini/opencode).
 **Entry criterion:** All three DC logs exist.
 **Exit criterion:** Synth log contains verdict (PASS / PASS WITH FINDINGS / FAIL).
 
@@ -160,7 +160,7 @@ Consumes the three DC logs, produces convergence/divergence report.
 | Verdict | Action |
 |---------|--------|
 | FAIL or critical findings | Cycle back to DEV. Fix findings. Re-run gate. Re-run affected darkcats. |
-| PASS WITH FINDINGS (minor only) | Proceed. Log findings. Fix in current or next cycle at Captain's discretion. |
+| PASS WITH FINDINGS (minor only) | Proceed. Log findings. Fix in current or next cycle at Operator's discretion. |
 | PASS (unanimous nominal) | Proceed directly. |
 
 ---
@@ -189,7 +189,7 @@ cd pitkeel && uv run python pitkeel.py state-update --officer <name>  # update s
 | Data | Location | Format | Retention |
 |------|----------|--------|-----------|
 | Checklist marks | `plans/REVIEW-CHECKLIST.md` | Markdown checkboxes | Updated in place |
-| Human observations | Captain's discretion | Notes, voice log, etc. | Varies |
+| Human observations | Operator's discretion | Notes, voice log, etc. | Varies |
 
 **Entry criterion:** Pitkeel reviewed, no blocking signals.
 **Exit criterion:** Human has checked the relevant items in REVIEW-CHECKLIST.md for this task.

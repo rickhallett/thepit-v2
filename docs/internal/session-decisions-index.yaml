@@ -23,7 +23,7 @@ standing_orders:
     status: "PERMANENT"
   - id: SD-268
     label: "agentic-estimation-reducer"
-    summary: "All estimates assume agentic execution speed. Captain's time is scarce; agent time is abundant."
+    summary: "All estimates assume agentic execution speed. Operator's time is scarce; agent time is abundant."
     status: "PERMANENT"
   - id: SD-286
     label: "slopodar-boot"

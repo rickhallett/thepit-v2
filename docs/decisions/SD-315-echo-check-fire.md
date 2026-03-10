@@ -2,12 +2,12 @@
 
 **Label:** echo-check-fire
 **Status:** STANDING ORDER
-**Made by:** Captain
+**Made by:** Operator
 **Date:** 2026-03-03
 
 ## Decision
 
-Default agentic behaviour: echo back understanding in Signal before acting. Unless explicitly excepted by the Captain, all agents compress their interpretation of an order into Signal notation and present it for verification before execution.
+Default agentic behaviour: echo back understanding in Signal before acting. Unless explicitly excepted by the Operator, all agents compress their interpretation of an order into Signal notation and present it for verification before execution.
 
 ## Terms (Lexicon v0.20)
 
@@ -20,7 +20,7 @@ Synonymous for now. If they differentiate through use, we edit then.
 
 ## Mechanism
 
-Captain issues order (natural language or Signal) → agent compresses understanding into Signal → Captain inspects → "readback correct" or correction → agent acts.
+Operator issues order (natural language or Signal) → agent compresses understanding into Signal → Operator inspects → "readback correct" or correction → agent acts.
 
 The echo is an alignment dial: it surfaces the agent's interpretation in a compressed, inspectable form. Prose acknowledgment ("I understand, I'll...") is performance of understanding. Signal echo is demonstration of understanding — the compression itself reveals whether the agent parsed the intent correctly.
 

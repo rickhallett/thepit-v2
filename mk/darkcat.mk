@@ -56,7 +56,7 @@ darkcat-all:
 	@echo ""
 	@echo "  ✓ Darkcat complete (claude + codex)"
 
-# DC-SYNTH: Convergence synthesis (4th polecat, Captain's choice of harness)
+# DC-SYNTH: Convergence synthesis (4th polecat, Operator's choice of harness)
 # Default: Claude. Override with SYNTH_HARNESS=codex or SYNTH_HARNESS=gemini
 SYNTH_HARNESS ?= claude
 darkcat-synth:

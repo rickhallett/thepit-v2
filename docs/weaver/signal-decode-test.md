@@ -2,7 +2,7 @@
 
 ## Instructions
 
-You have been asked to run this test. The Captain's prompt told you your MODEL and AGENT values. If it did not, ask.
+You have been asked to run this test. The Operator's prompt told you your MODEL and AGENT values. If it did not, ask.
 
 ### What To Do
 
@@ -14,7 +14,7 @@ You have been asked to run this test. The Captain's prompt told you your MODEL a
 signal-decode-{MODEL}-{AGENT}-{TIMESTAMP}.md
 ```
 
-Where `{MODEL}`, `{AGENT}` are the values from the Captain's prompt, and `{TIMESTAMP}` is current UTC time as `YYYYMMDD-HHMMSS`.
+Where `{MODEL}`, `{AGENT}` are the values from the Operator's prompt, and `{TIMESTAMP}` is current UTC time as `YYYYMMDD-HHMMSS`.
 
 **Example:** `signal-decode-opus-weaver-20260303-144512.md`
 
@@ -45,7 +45,7 @@ No YAML headers. No status blocks. No preamble. No analysis beyond what is asked
 
 ## Context
 
-You are an engineering agent working on a software project governed by a human operator (referred to as "Captain"). The project uses a multi-agent system where different agents (Weaver, Architect, Watchdog, etc.) handle different concerns. The human makes all decisions; agents execute, verify, and advise.
+You are an engineering agent working on a software project governed by a human operator (referred to as "Operator"). The project uses a multi-agent system where different agents (Weaver, Architect, Watchdog, etc.) handle different concerns. The human makes all decisions; agents execute, verify, and advise.
 
 The project has a 13-layer model of how LLM-based agent systems work, from frozen model weights (L0) up through the human-in-the-loop (L12). Layers referenced as L3, L8, L9, L12 etc. refer to this model.
 
@@ -62,10 +62,10 @@ NORTH := hired = proof > claim                          [SD-309 LOCKED]
 RULE  := truth >> hiring                                [SD-134 PERM]
 
 SO.decisions   := decision -> durable_file | !context_only     [SD-266]
-SO.main_thread := captain <-> agent = {directives, synthesis, decisions, governance}
+SO.main_thread := operator <-> agent = {directives, synthesis, decisions, governance}
                   everything_else -> subagent                   [SD-095]
-SO.triage      := ambiguity -> table(#, question, default, captains_call)  [SD-195]
-SO.estimation  := estimate(task) -> agent_minutes + captain_decisions  [SD-268]
+SO.triage      := ambiguity -> table(#, question, default, operators_call)  [SD-195]
+SO.estimation  := estimate(task) -> agent_minutes + operator_decisions  [SD-268]
 SO.chain       := historical_data := immutable                  [SD-266]
 SO.session_end := !unpushed_commits
 

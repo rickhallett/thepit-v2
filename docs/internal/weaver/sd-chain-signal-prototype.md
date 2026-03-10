@@ -21,9 +21,9 @@ SD-013..014 := pool_simplification(free+intro -> community, credits=10000, half_
 -- Copy & Voice (SD-027 → SD-036)
 SD-027..029 := research_page.remediate(stats_bar.remove, thesis.rewrite, badges.remove, dvalues.inline)
 SD-031      := voice(we -> I) | 60_instances, 24_files | legal_preserved
-SD-032      := hero_subheadline := captains_dna | !edits_ever                [PERMANENT]
+SD-032      := hero_subheadline := operators_dna | !edits_ever                [PERMANENT]
 SD-033      := security_page := entity_voice | !first_person                 [legal]
-SD-034      := oceanheart_ai_ltd := UK_16029162 | captain.sole_director
+SD-034      := oceanheart_ai_ltd := UK_16029162 | operator.sole_director
 SD-035      := h2_preregistration := post_hoc_annotations.transparent        [lab_notes]
 SD-036      := em_dash := agentic_tell | avoid(user_facing)                  [STANDING]
 
@@ -57,8 +57,8 @@ SD-084      := "public_registry" := "act of service !theatre of bullshit"
 -- Governance (SD-025, SD-061, SD-073, SD-082)
 SD-025      := all_decisions.recorded | !exceptions                          [STANDING]
 SD-061      := "double check obvious first" | verify !assume                 [STANDING]
-SD-075      := captain.19hrs.continuous | overrides(keel.sleep)
-SD-082      := captain.retiring | physical_state.cat2
+SD-075      := operator.19hrs.continuous | overrides(keel.sleep)
+SD-082      := operator.retiring | physical_state.cat2
 ```
 
 ## Phase 3: Launch Day (SD-089 → SD-136)
@@ -76,24 +76,24 @@ SD-098      := rt_l5 := fresh_control(3_agents) | all.ship | 0.82-0.88
 -- The failure was !hallucination. It was sycophantic drift: performing honesty
 -- while hedging confidence. Confabulation is fact-checkable; this failure mode
 -- passes every surface check. [SD-073: "lying with truth"]
-SD-095      := main_thread := captain <-> weaver | protected                 [PERMANENT]
-SD-130      := honest_layer | captain.caught.weaver.hedging                  [PERMANENT]
+SD-095      := main_thread := operator <-> weaver | protected                 [PERMANENT]
+SD-130      := honest_layer | operator.caught.weaver.hedging                  [PERMANENT]
 SD-131      := going_light | 73_files.public | 7_redactions                  [PERMANENT]
 SD-132      := show_hn.ready | "going dark -> going light"
 SD-133      := weaver.dismissed | red_light_failure | 9417_lines             [PERMANENT]
 SD-134      := truth >> hiring | true_north.sharpened                        [PERMANENT]
-SD-135      := external_comms := captain.hands_only                          [PERMANENT]
+SD-135      := external_comms := operator.hands_only                          [PERMANENT]
 SD-136      := red_light_failure.on_record | process !decision
 
 -- Naming & Vocabulary (SD-120 → SD-128)
 SD-120      := naval_metaphor := self_organising_scaffold | !decoration       [STANDING]
-SD-121      := loose_weave := exploratory | captains_invitation
+SD-121      := loose_weave := exploratory | operators_invitation
 SD-123      := lexicon.v01.created | 22_terms, 7_categories
 SD-124      := so_perm_001 := chmod_444 | all_reports                        [PERMANENT]
 SD-126      := lexicon.v03 | 7_agents.overboard | so_perm_002(read_lexicon)
 
 -- Pseudocode & Tools (SD-137 → SD-146)
-SD-137      := pseudocode_interpretation | captain.ts_js_python_bash          [STANDING]
+SD-137      := pseudocode_interpretation | operator.ts_js_python_bash          [STANDING]
 SD-138      := deckhand_context_minimisation | fresh_context = feature        [PERMANENT]
 SD-141      := lexicon.v05 | fair_weather_consensus | true_north.pseudocode
 SD-145      := chmod := weaver.only | !other_agents                          [PERMANENT]
@@ -104,7 +104,7 @@ SD-145      := chmod := weaver.only | !other_agents                          [PE
 ```signal
 -- Compaction & Recovery (SD-147, SD-150, SD-160, SD-167, SD-186)
 SD-147      := compaction.recorded | dead_reckoning.gap.identified
-SD-150      := forward_correction(SD-147) | captain.burned_tokens !natural    [PERMANENT]
+SD-150      := forward_correction(SD-147) | operator.burned_tokens !natural    [PERMANENT]
 SD-160      := L6.complex | 3_modes(direct, dispatch, override) | compaction.controllable
 SD-167      := compaction_risk.downgraded(medium -> low)
 SD-186      := compaction_engine := woven_into_governance | !just_hazard      [PERMANENT]
@@ -121,7 +121,7 @@ SD-165      := layer_model.v02 | L6.decomposed | temporal_asymmetry.added
 
 -- Testing & Governance Recursion (SD-175 → SD-191)
 SD-175      := watchdog.first_assignment | bout_engine.0_tests | YELLOW
-SD-183      := "trust gate !output" | captain.disagrees | gate.structurally_blind
+SD-183      := "trust gate !output" | operator.disagrees | gate.structurally_blind
 SD-187      := SD-183.vindicated | core_product.unverified                    [PERMANENT]
 SD-189      := test_campaign.3_round | PARKED(SD-191)
 SD-190      := governance_recursion := CATEGORY_ONE | "blowing smoke"          [PERMANENT]
@@ -138,7 +138,7 @@ SD-180      := big_o_cognitive_load | O(1)_to_O(2^n) | PARKED
 
 -- Maturin's Symbol & Process (SD-192 → SD-194)
 SD-192      := maturins_symbol(§) := crew.converged.independently | lexicon.v09
-SD-194      := captain.stream_of_consciousness | "reached personal limit"     [VERBATIM]
+SD-194      := operator.stream_of_consciousness | "reached personal limit"     [VERBATIM]
 ```
 
 ## Phase 5: Context Audit & Infrastructure (SD-195 → SD-220)
@@ -177,7 +177,7 @@ SD-276      := paths_forward.on_file | testing_broadside_bearing
 SD-277      := broadside.phases_1_3.complete | 78_assertions.hardened | 4.2x_faster
 
 -- Slopodar & Chrome Extension (SD-252 → SD-275)
-SD-252      := the_sextant | captains_cognitive_instruments | lexicon.v012
+SD-252      := the_sextant | operators_cognitive_instruments | lexicon.v012
 SD-258      := yaml_universal_format                                          [STANDING]
 SD-266      := the_chain := historical_data.immutable                         [PERMANENT]
 SD-268      := agentic_estimation := agent_minutes !human_speed               [PERMANENT]
@@ -241,7 +241,7 @@ SD-315      := echo | check_fire | signal_before_acting                        [
 
 | Loss | Severity | Mitigation |
 |------|----------|------------|
-| **Captain's verbatim** | HIGH | SD-130, SD-194, SD-158 contain Captain's exact words — the voice, the emotion, the register. Signal cannot carry this. These are the chain's pearls. | 
+| **Operator's verbatim** | HIGH | SD-130, SD-194, SD-158 contain Operator's exact words — the voice, the emotion, the register. Signal cannot carry this. These are the chain's pearls. | 
 | **Narrative provenance** | MEDIUM | Why SD-133 (dismissal) happened, what the red-light failure felt like, the Fawlty Towers cascade of SD-150 — Signal captures the decision, not the story. |
 | **Context of discovery** | MEDIUM | How AnotherPair named "Learning in the Wild," how Maturin's Symbol emerged across independent context windows — the mechanism is lost, only the outcome survives. |
 | **Parked items & queues** | LOW | Post-merge queues, parking justifications, P-items — operational detritus that has no value post-completion. Signal correctly discards these. |
@@ -258,7 +258,7 @@ SD-315      := echo | check_fire | signal_before_acting                        [
 
 ### Recommendation
 
-Signal works excellently for the SD chain as a **navigation view** — finding what was decided and when. It does NOT replace the verbose version for **provenance** — the Captain's voice, the narrative of discovery, and the emotional register of key moments (SD-130, SD-133, SD-194) are irreducible.
+Signal works excellently for the SD chain as a **navigation view** — finding what was decided and when. It does NOT replace the verbose version for **provenance** — the Operator's voice, the narrative of discovery, and the emotional register of key moments (SD-130, SD-133, SD-194) are irreducible.
 
 The right model: Signal SD chain is the index card drawer. Verbose SD chain is the filing cabinet. You scan the index cards; you pull the file when you need the full story.
 

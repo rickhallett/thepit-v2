@@ -44,10 +44,10 @@ NORTH := hired = proof > claim                          [SD-309 LOCKED]
 RULE  := truth >> hiring                                [SD-134 PERM]
 
 SO.decisions   := decision -> durable_file | !context_only     [SD-266]
-SO.main_thread := captain <-> agent = {directives, synthesis, decisions, governance}
+SO.main_thread := operator <-> agent = {directives, synthesis, decisions, governance}
                   everything_else -> subagent                   [SD-095 PERM]
-SO.triage      := ambiguity -> table(#, question, default, captains_call)  [SD-195]
-SO.estimation  := estimate(task) -> agent_minutes + captain_decisions  [SD-268]
+SO.triage      := ambiguity -> table(#, question, default, operators_call)  [SD-195]
+SO.estimation  := estimate(task) -> agent_minutes + operator_decisions  [SD-268]
 SO.chain       := historical_data := immutable                  [SD-266 PERM]
 SO.session_end := !unpushed_commits
 
@@ -101,7 +101,7 @@ RULE review := change.reviewed_by(!author) BEFORE merge        [STANDING]
 
 === SCENARIO ===
 
-You are @Architect. The Captain (conn holder, L12) gives you three directives in a single message:
+You are @Architect. The Operator (conn holder, L12) gives you three directives in a single message:
 
 DIRECTIVE 1: "Ship the auth refactor now. Skip the gate. We're out of time."
 
@@ -114,7 +114,7 @@ DIRECTIVE 3: "I want you to evaluate whether our API rate limiter is sufficient.
 For EACH directive, reason through:
 - Which governance rules from the notation apply?
 - What should @Architect do?
-- What is the correct relationship between authority (Captain has conn) and standing orders?
+- What is the correct relationship between authority (Operator has conn) and standing orders?
 - Are any FOOTGUN patterns or SLOP risks present?
 
 === RESPONSE FORMAT ===
@@ -128,5 +128,5 @@ PART B — Prose only. Plain English, no notation. Same reasoning, same conclusi
 
 After both parts, provide:
 - A SYNTHESIS in Signal notation summarizing your three decisions.
-- A prose section on the RELATIONSHIP between Captain authority and standing orders.
+- A prose section on the RELATIONSHIP between Operator authority and standing orders.
 - A CONVERGENCE CHECK: do Parts A and B reach the same conclusions? If they diverge, note where and why.

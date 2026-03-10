@@ -47,7 +47,7 @@ L4  GENERATION     | autoregressive · temperature · top_p · token_by_token ·
                    | reasoning_tokens: private generation visible to L12 via harness rendering (SD-162).
                    | >> produces: output_token_stream + reasoning_token_stream + stop_reason
                    | CONVERGENCE: reasoning tokens are where model intent becomes observable to the human.
-                   |              The Captain reads them, checks against his actual intent, corrects divergence.
+                   |              The Operator reads them, checks against his actual intent, corrects divergence.
                    |              First empirical validation: 3/3 spot-on (SD-162).
 
 L5  API            | request(messages[]) · response(content, usage{input_tokens, output_tokens}) · per_call_only
@@ -127,7 +127,7 @@ L11 CROSS_MODEL    | different_priors · different_inductive_bias · different_r
                    | >> produces: independent_signal (bounded by shared training data overlap)
                    | ATTESTATION: not yet exercised. all agents are Claude. this is a known limitation (SD-098).
 
-L12 HUMAN_IN_LOOP  | captains_walkthrough · manual_qa · domain_expertise · tacit_knowledge · irreducible_uncertainty
+L12 HUMAN_IN_LOOP  | operators_walkthrough · manual_qa · domain_expertise · tacit_knowledge · irreducible_uncertainty
                    | reasoning_token_observation · intent_verification · rubric_provision · compaction_control
                    | The only truly model-independent layer. 5hrs human QA > 1102 automated tests (empirically demonstrated).
                    | NOT A STATIC SENSOR: L12 is a trained capacity requiring continuous exercise to maintain calibration.
@@ -143,7 +143,7 @@ L12 HUMAN_IN_LOOP  | captains_walkthrough · manual_qa · domain_expertise · ta
                    |   to own productivity. arXiv:2507.09089]
                    | [EVIDENCE: arXiv:2602.11988 — context pollution degrades human O(1)→O(n). 52→7 file reduction restored O(1) triage (SD-195)]
                    | Cannot be scaled. Cannot be automated. Cannot be replaced. Can be informed by L0-L11.
-                   | L12 also functions as out-of-band backup storage when L3 fails. Captain restored layer model annotations from memory after compaction (SD-205). L12 is not only decision + verification — it is state persistence of last resort.
+                   | L12 also functions as out-of-band backup storage when L3 fails. Operator restored layer model annotations from memory after compaction (SD-205). L12 is not only decision + verification — it is state persistence of last resort.
                    | HCI FOOT GUNS: High on Own Supply originates here — L12 creativity is unbounded and L9 sycophancy provides positive feedback without braking. The antidote is the bearing check against True North. Spinning to Infinity is the L12↔L9 resonance mode where the mirror runs unsupervised. Both lexified v0.19.
                    | The human's experience of the system is: terminal_input → wait → read_response → terminal_input.
                    | The human's instruments: reasoning tokens (L4→L6 render), response text, git diff, Vercel dashboard,
@@ -154,7 +154,7 @@ L12 HUMAN_IN_LOOP  | captains_walkthrough · manual_qa · domain_expertise · ta
                    |   Fonagy & Luyten, 2009). Different human at L12 = different performance peaks + failure modes. [Metacognitive analysis]
                    | >> produces: the_decision
                    | ATTESTATION: the human is the first data point (SD-161). the rubric is empirical.
-                   |              everything the model "knows" about L12 was inference until the Captain provided data.
+                   |              everything the model "knows" about L12 was inference until the Operator provided data.
 ```
 
 ---
@@ -205,10 +205,10 @@ When divergence is undetected: the system is drifting toward Fair-Weather Consen
 
 3. **Calibration is cross-cutting rather than its own layer** because it applies at every level. L0 weights are uncalibrated (no ground-truth frequency data for "how often is Claude right when it says 0.85"). L5 API token counts are precisely calibrated (the tokenizer is deterministic). L9 anchoring effects are unmeasured (no instrument exists to quantify how much a prior output shifted the current one). The calibration quality varies per layer, and knowing which layers are calibrated vs. uncalibrated is the difference between trusting a number and trusting a guess.
 
-4. **L9 THREAD POSITION is where most of the RT evaluation complexity lives** — anchoring, sycophancy, Goodhart's on probes. This is the layer where your "fly-shy" instinct operates. When Keel identified the Captain's oscillation pattern at L4, that was a L9 phenomenon becoming visible: the accumulated thread position had given the agents enough data to model the tester's behaviour, at which point the probes lost diagnostic power. Fresh agents (L10→L11 transition) reset L9 to zero, which is why the control group was the right move.
+4. **L9 THREAD POSITION is where most of the RT evaluation complexity lives** — anchoring, sycophancy, Goodhart's on probes. This is the layer where your "fly-shy" instinct operates. When Keel identified the Operator's oscillation pattern at L4, that was a L9 phenomenon becoming visible: the accumulated thread position had given the agents enough data to model the tester's behaviour, at which point the probes lost diagnostic power. Fresh agents (L10→L11 transition) reset L9 to zero, which is why the control group was the right move.
 
-5. **L6 decomposition (v0.2, SD-160).** L6 is not one thing. It has at least three operational modes with different control characteristics for L12. In direct mode, the human can interrupt. In dispatch mode, inputs queue. In override mode, the human has absolute authority. The mode the system is in determines the granularity of human control — and the human doesn't always know which mode is active. This was identified through the Captain's empirical rubric, not through model inference.
+5. **L6 decomposition (v0.2, SD-160).** L6 is not one thing. It has at least three operational modes with different control characteristics for L12. In direct mode, the human can interrupt. In dispatch mode, inputs queue. In override mode, the human has absolute authority. The mode the system is in determines the granularity of human control — and the human doesn't always know which mode is active. This was identified through the Operator's empirical rubric, not through model inference.
 
-6. **Reasoning tokens as alignment channel (v0.2, SD-162).** L4 generates two streams: output tokens (visible to human as response text) and reasoning tokens (visible to human through harness rendering, if the harness exposes them). The reasoning tokens are the only channel through which L12 can observe the model's *process*, not just its *output*. The Captain validated this empirically: 3/3 reasoning observations matched his actual intent. This is the closest thing to a bidirectional verification channel in the stack — the model reasons, the human checks, the human corrects. The map is refined through this practice.
+6. **Reasoning tokens as alignment channel (v0.2, SD-162).** L4 generates two streams: output tokens (visible to human as response text) and reasoning tokens (visible to human through harness rendering, if the harness exposes them). The reasoning tokens are the only channel through which L12 can observe the model's *process*, not just its *output*. The Operator validated this empirically: 3/3 reasoning observations matched his actual intent. This is the closest thing to a bidirectional verification channel in the stack — the model reasons, the human checks, the human corrects. The map is refined through this practice.
 
 7. **Temporal Asymmetry (v0.2).** The model has no experience of time between turns. The human has nothing but. All human intent — urgency, hesitation, deliberation — is stripped by the serialisation from L12 through L6 to the model's context. A one-word "Halt" and a thousand-word design brief arrive identically as token sequences. The model can interpret semantics but cannot feel temporality. This asymmetry is structural and irreducible.

@@ -1,6 +1,6 @@
 # Plank 5 — Shortlist (Signal)
 
-> Selected 2 March 2026. Captain said wait on re-evaluation — compressed as-is.
+> Selected 2 March 2026. Operator said wait on re-evaluation — compressed as-is.
 
 ```signal
 SHORTLIST := {

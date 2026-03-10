@@ -14,8 +14,8 @@
 | # | Model | Review type | File | Date |
 |---|-------|-------------|------|------|
 | 1 | Claude (opus-4) | 3 parallel review agents via Weaver | `code-review-2026-03-09.md` | 2026-03-09 |
-| 2 | Gemini 3.1 | Cross-model darkcat (Captain-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
-| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Captain-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
+| 2 | Gemini 3.1 | Cross-model darkcat (Operator-commissioned) | `weaver-code-review-gemini31.md` | 2026-03-09 |
+| 3 | Codex 52 (OpenCode) | Cross-model darkcat (Operator-commissioned) | `code-review-codex-52.md` | 2026-03-09 |
 
 ## Convergence Matrix
 
@@ -218,4 +218,4 @@ No false positives identified in any of the three reviews. All 31 unique finding
 
 ### Next step (SD-317 sequence)
 
-→ BATCH FIX all confirmed issues → RE-GATE → CAPTAIN WALKTHROUGH (Data Product 3: Human Delta)
+→ BATCH FIX all confirmed issues → RE-GATE → OPERATOR WALKTHROUGH (Data Product 3: Human Delta)

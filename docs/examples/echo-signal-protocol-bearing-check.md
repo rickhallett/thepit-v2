@@ -5,22 +5,22 @@
 
 ## What this shows
 
-The echo→signal protocol creates a mutually understood, machine-auditable contract between Captain and agent before work begins. The Captain issues an order in natural language; the agent compresses it into Signal notation and echoes it back. Both parties now have a shared, unambiguous target. The overhead is one exchange. The error surface collapses.
+The echo→signal protocol creates a mutually understood, machine-auditable contract between Operator and agent before work begins. The Operator issues an order in natural language; the agent compresses it into Signal notation and echoes it back. Both parties now have a shared, unambiguous target. The overhead is one exchange. The error surface collapses.
 
 This example captures the transition from bearing check (drift review) into phase-level work dispatch. It's a good specimen because:
 
-1. **Defined, mutually understood targets.** The echo compresses the Captain's intent into verifiable checkboxes.
+1. **Defined, mutually understood targets.** The echo compresses the Operator's intent into verifiable checkboxes.
 2. **Little room for error overhead.** Signal notation removes the ambiguity that natural language allows.
 3. **Excellent audit/provenance practice.** The move into updating PLAN.md indexes progress at a high level with commit refs.
 4. **Disciplined sequencing.** Plan → Makefile → governance codification → dispatch. Not "do everything at once."
 
 ## The exchange
 
-### Captain's order (natural language)
+### Operator's order (natural language)
 
 > plan, makefile, then bouts. also I think we should include what we just did (spec/plan/eval drift review) into the larger macro workflow as a unit of repeatable governance
 >
-> vgrep(workflow) -> high level captain overview
+> vgrep(workflow) -> high level operator overview
 
 ### Agent's echo (Signal compression)
 
@@ -37,7 +37,7 @@ last_known_position: drift review complete, all instruments calibrated
 ```signal
 ORDER := update(PLAN.md) -> modularise(Makefile) -> bouts
 ALSO  := codify(drift_review) -> repeatable_governance_unit
-ALSO  := vgrep(workflow) -> high_level_captain_overview
+ALSO  := vgrep(workflow) -> high_level_operator_overview
 SEQUENCE := plan -> makefile -> governance_unit -> workflow_vgrep -> dispatch(bouts)
 ```
 
@@ -48,7 +48,7 @@ SEQUENCE := plan -> makefile -> governance_unit -> workflow_vgrep -> dispatch(bo
 [ ] Fix REVIEW-CHECKLIST.md bigint mode note
 [ ] Modularise Makefile into 3 includes (mk/polecats.mk, mk/darkcat.mk, mk/gauntlet.mk)
 [ ] Codify drift review as repeatable governance unit in AGENTS.md
-[ ] vgrep(workflow) — high-level captain overview of macro workflow
+[ ] vgrep(workflow) — high-level operator overview of macro workflow
 [ ] Dispatch bouts to @Architect (PR1 then PR2)
 ```
 
@@ -68,10 +68,10 @@ The echo protocol is not overhead. It is the mechanism by which:
 
 - **Scope is locked.** The agent can't drift because the Signal notation is its own constraint.
 - **Progress is auditable.** Each todo item maps to a verifiable action.
-- **The Captain reviews intent, not execution.** One glance at the echo confirms alignment. No need to steer mid-flight.
+- **The Operator reviews intent, not execution.** One glance at the echo confirms alignment. No need to steer mid-flight.
 - **Errors are caught at the cheapest possible point.** A misunderstood order caught in the echo costs one exchange. A misunderstood order caught after implementation costs a reset.
 
-The compression ratio matters too. The Captain's order was 2 sentences + 1 vgrep instruction. The echo expanded it into 6 specific action items with correct sequencing. The expansion is where misunderstanding would hide — and the echo makes it visible before work begins.
+The compression ratio matters too. The Operator's order was 2 sentences + 1 vgrep instruction. The echo expanded it into 6 specific action items with correct sequencing. The expansion is where misunderstanding would hide — and the echo makes it visible before work begins.
 
 ## References
 

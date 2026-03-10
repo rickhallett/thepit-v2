@@ -2,7 +2,7 @@
 
 > Dispatchable prompt. Pass to a cross-model agent (GPT-4o, Gemini, Grok) or a fresh-context Claude instance.
 > Purpose: L11 model triangulation — different priors reveal framing errors that internal review misses.
-> Captain triggers on his mark.
+> Operator triggers on his mark.
 
 ---
 

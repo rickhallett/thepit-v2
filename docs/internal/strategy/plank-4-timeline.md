@@ -10,7 +10,7 @@
 - 6 of 26 product tasks landed (T-001 through T-006)
 - Governance apparatus is the primary output of the calibration run
 - Strategy planks v1 archived as potential lullaby artifacts
-- Captain on zen retreat from 1700 today through end of March 7
+- Operator on zen retreat from 1700 today through end of March 7
 
 ## Revised Phases
 

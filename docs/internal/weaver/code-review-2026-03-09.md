@@ -69,7 +69,7 @@ Both were written by different polecats with no cross-reference.
 - T-018 (manually fixed earlier) was a 3rd failure — polecat-rate: ~3/16 = 19% defect rate
 - All defects are in the "Looks Right Trap" / "Paper Guardrail" class — syntactically valid, gate-passing, semantically incomplete
 
-## Recommendation for Captain's Walkthrough
+## Recommendation for Operator's Walkthrough
 
 The 2 failures are:
 1. **P4-CR01**: Fix before production. The transaction gap is a data integrity risk.

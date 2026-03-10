@@ -2,7 +2,7 @@
 
 > Repeatable pipeline for bulk research dispatch across transcript sources.
 > Each transcript is processed by parallel subagents (architect + analyst).
-> Weaver aggregates and checks for compression loss before Captain review.
+> Weaver aggregates and checks for compression loss before Operator review.
 > 
 > To re-run: dispatch subagents per transcript following the pipeline sequence below.
 > Each step depends on the previous step's output.
@@ -45,8 +45,8 @@ P4_SUMMARY :=
 WEAVER_PASS :=
   input    := foreach(transcript) -> {P4_SUMMARY, P2.exec_summary, P3.exec_summary}
   task     := read(exec_summaries) -> check(compression_loss, against=full_reports)
-  output   := distillation.md -> captain
-  rule     := flag(compression_loss) | weave(cross_transcript_themes) | muster(captain)
+  output   := distillation.md -> operator
+  rule     := flag(compression_loss) | weave(cross_transcript_themes) | muster(operator)
 ```
 
 ## Transcripts (current inventory)
@@ -71,5 +71,5 @@ All outputs written to `docs/research/analysis/{transcript-slug}/`
 
 ## Provenance
 
-Created: 2026-03-04, Weaver, by Captain's order.
+Created: 2026-03-04, Weaver, by Operator's order.
 Purpose: Encode external research insights before phase 2 product build.

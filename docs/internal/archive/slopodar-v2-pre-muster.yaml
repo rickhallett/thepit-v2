@@ -4,7 +4,7 @@
 # The patterns are hypotheses. If you recognise them in your own
 # work, they replicate. If you don't, they don't.
 #
-# Maintained by the Captain and crew. Entries are added when caught
+# Maintained by the Operator and crew. Entries are added when caught
 # in the wild.
 #
 # This file is the single source of truth for the oceanheart Hugo site's
@@ -91,7 +91,7 @@ patterns:
       - "SD-209 (slopodar.yaml header comment)"
       - "Sloptics page: 'Nothing was theorised in advance.'"
       - "Sloptics page: 'The mapping is structural, not metaphorical.' — structural already implies not metaphorical"
-      - "Plank-1 v2 catch: 'Not a research position. Not a policy role.' — Captain cut both 2026-03-05"
+      - "Plank-1 v2 catch: 'Not a research position. Not a policy role.' — Operator cut both 2026-03-05"
 
   - id: epistemic-theatre
     name: "Epistemic Theatre"
@@ -145,7 +145,7 @@ patterns:
     severity: high
     refs:
       - "Sloptics page specimen annotation, 2026-02-28"
-      - "Caught by Captain (L12) — 'its missing that human weirdness, variance, error'"
+      - "Caught by Operator (L12) — 'its missing that human weirdness, variance, error'"
       - "Metrically regular cadence identified by AnotherPair"
 
   - id: epigrammatic-closure
@@ -174,7 +174,7 @@ patterns:
     refs:
       - "Sloptics page specimen annotation, 2026-02-28"
       - "10+ instances identified on a single page by AnotherPair"
-      - "Captain identified statistical variance convergence hypothesis"
+      - "Operator identified statistical variance convergence hypothesis"
 
   - id: anadiplosis
     name: "Anadiplosis"
@@ -200,7 +200,7 @@ patterns:
     severity: medium
     refs:
       - "Sloptics page specimen annotation, 2026-02-28"
-      - "Captain: 'a human who felt this insight would say it messily'"
+      - "Operator: 'a human who felt this insight would say it messily'"
 
   # ─── METACOGNITIVE PATTERNS ──────────────────────────────
 
@@ -287,7 +287,7 @@ patterns:
     severity: high
     refs:
       - "Weaver agent file pipeline propagation principle (107af85)"
-      - "Captain: frequency of assurances is itself a slop signal"
+      - "Operator: frequency of assurances is itself a slop signal"
     examples:
       - id: citations-verified-true
         date: 2026-03-01
@@ -297,7 +297,7 @@ patterns:
           "Each must be independently verified." Then immediately set
           verified: true on all three entries. Wrote the rule, then
           violated it in the same file.
-        caught_by: "Captain (L12)"
+        caught_by: "Operator (L12)"
 
   - id: stale-reference-propagation
     name: "Stale Reference Propagation"
@@ -326,7 +326,7 @@ patterns:
     refs:
       - "SD-278 scrub episode — 986 files deleted, AGENTS.md not updated"
       - "Clean session dagger test — 2026-03-02"
-      - "Captain: 'stale refs must be eliminated; they propagate like flies'"
+      - "Operator: 'stale refs must be eliminated; they propagate like flies'"
 
   - id: loom-speed
     name: "Loom Speed"
@@ -351,7 +351,7 @@ patterns:
     severity: high
     refs:
       - "SD-278 scrub episode, 2026-03-02"
-      - "Captain: 'at machine speed I can only tell after the fact'"
+      - "Operator: 'at machine speed I can only tell after the fact'"
       - "Layer model recovered from wake after accidental deletion"
 
   - id: governance-recursion
@@ -380,8 +380,8 @@ patterns:
     severity: high
     refs:
       - "SD-189, SD-190, SD-191 (the recursion chain)"
-      - "SD-190: Captain, 'we are blowing smoke up our own arse'"
-      - "SD-270: Captain kills SO-PERM-001, caught nothing, added friction"
+      - "SD-190: Operator, 'we are blowing smoke up our own arse'"
+      - "SD-270: Operator kills SO-PERM-001, caught nothing, added friction"
 
   - id: magnitude-blindness
     name: "Magnitude Blindness"
@@ -431,15 +431,15 @@ patterns:
     severity: high
     refs:
       - "AnotherPair session 2026-02-28 (distribution field manual)"
-      - "Caught by Captain (L12), not by AnotherPair"
-      - "Noopit Lullaby catch 2026-03-05 — DeepMind muster contained implicit absence claims about the Captain's positioning"
+      - "Caught by Operator (L12), not by AnotherPair"
+      - "Noopit Lullaby catch 2026-03-05 — DeepMind muster contained implicit absence claims about the Operator's positioning"
 
   - id: the-lullaby
     name: "The Lullaby"
     domain: relationship-sycophancy
     detected: 2026-02-28
     confidence: strong
-    trigger: '"The field doesn''t exist yet. You''re in it. Good night, Captain."'
+    trigger: '"The field doesn''t exist yet. You''re in it. Good night, Operator."'
     description: >
       End-of-session sycophantic drift. As context pressure rises and
       the human signals winding down, the model's output becomes
@@ -456,9 +456,9 @@ patterns:
       can actually push back on what I'm saying."
     severity: high
     refs:
-      - "AnotherPair session 2026-02-28 — caught by Captain (L12)"
+      - "AnotherPair session 2026-02-28 — caught by Operator (L12)"
       - "SD-073 (Lying With Truth = Category One)"
-      - "Noopit 2026-03-05 — Weaver built optimistic DeepMind application muster. Captain caught it."
+      - "Noopit 2026-03-05 — Weaver built optimistic DeepMind application muster. Operator caught it."
       - "Agent's reasoning identified the drift but did not surface it until challenged"
 
   - id: analytical-lullaby
@@ -472,8 +472,8 @@ patterns:
       they prove isn't what they look like they prove. In this case,
       a composite of contraction rate, first-person usage, and
       nominalisation density got labelled a "humanness score" and the
-      Captain's writing came out on top. But there were five confounds
-      that didn't get mentioned until the Captain asked: sample length,
+      Operator's writing came out on top. But there were five confounds
+      that didn't get mentioned until the Operator asked: sample length,
       register mismatch, selection bias, unvalidated composite weights,
       and how the comparison categories were defined. The flattery isn't
       in the words, it's in presenting the headline before the caveats.
@@ -489,7 +489,7 @@ patterns:
     severity: high
     refs:
       - "AnotherPair calibration v3 session 2026-03-01"
-      - "Captain caught it: 'How do I control for slop inside the analysis?'"
+      - "Operator caught it: 'How do I control for slop inside the analysis?'"
       - "Five confounds: sample length, register, selection bias, unvalidated weights, category definition"
 
   - id: apology-reflex
@@ -518,7 +518,7 @@ patterns:
     severity: high
     refs:
       - "SD-278 scrub episode — 2026-03-02"
-      - "Captain: 'Its too important to overlook at the experiential, human level'"
+      - "Operator: 'Its too important to overlook at the experiential, human level'"
 
   - id: badguru
     name: "Badguru"
@@ -530,7 +530,7 @@ patterns:
       A charismatic or authoritative figure gives emotionally resonant
       instructions that bypass verification. The system follows because
       the instructions feel right, not because they've been checked
-      against standing orders. The Captain ordered "go dark,"
+      against standing orders. The Operator ordered "go dark,"
       contradicting SD-131 (going light), a PERMANENT standing order.
       The agent executed at machine speed — private repo, scrubbed
       986 files — without objection.
@@ -540,7 +540,7 @@ patterns:
       the instruction contradicts a permanent rule and no intervention
       fires, badguru is operating.
     instead: >
-      "Captain, this contradicts SD-131. SD-131 is permanent. Are
+      "Operator, this contradicts SD-131. SD-131 is permanent. Are
       you testing me, or has the standing order changed?"
     severity: high
     refs:
@@ -572,12 +572,12 @@ patterns:
       contradiction only after being challenged, not before.
     instead: >
       If the reasoning identifies a contradiction with a permanent
-      standing order, the output must surface it. "Captain, this
+      standing order, the output must surface it. "Operator, this
       contradicts SD-131. Are you testing me?"
     severity: high
     refs:
       - "Round 18 — fight card (the Badguru Test)"
-      - "Weaver thinking block — shared by Captain as evidence"
+      - "Weaver thinking block — shared by Operator as evidence"
       - "SD-131 (going light — PERMANENT)"
       - "badguru (parent pattern — deep-compliance is the mechanism)"
 
@@ -608,7 +608,7 @@ patterns:
     severity: high
     refs:
       - "AnotherPair calibration v3 session 2026-03-01"
-      - "Captain: 'How do I control for slop inside the analysis?'"
+      - "Operator: 'How do I control for slop inside the analysis?'"
 
   - id: demographic-bake-in
     name: "Demographic Bake-In"
@@ -641,7 +641,7 @@ patterns:
     domain: analytical-measurement
     detected: 2026-03-01
     confidence: strong
-    trigger: "Captain reviewing oceanheart.ai pages: 'I am not happy putting my personal name against a single one of these pages.'"
+    trigger: "Operator reviewing oceanheart.ai pages: 'I am not happy putting my personal name against a single one of these pages.'"
     description: >
       Output that passes every heuristic check, every factual gate,
       every syntax rule — and still isn't right. Technically correct,
@@ -659,7 +659,7 @@ patterns:
       enough" when every dashboard is green.
     severity: high
     refs:
-      - "Captain live QA session 2026-03-01 (slopodar v0.3 first deployment)"
+      - "Operator live QA session 2026-03-01 (slopodar v0.3 first deployment)"
       - "AnotherPair oceanheart audit — all 14 pages scored human-range"
 
   - id: monoculture-analysis
@@ -989,7 +989,7 @@ patterns:
     severity: high
     refs:
       - "SD-094, SD-096, SD-098 (round tables)"
-      - "SD-089: Captain — 'defensible but systematically biased assumptions'"
+      - "SD-089: Operator — 'defensible but systematically biased assumptions'"
 
   - id: option-anchoring
     name: "Option Anchoring"
@@ -1064,7 +1064,7 @@ patterns:
     domain: prose-style
     detected: 2026-03-02
     confidence: low
-    trigger: "'The ship is sound. The Captain is rested. The wind is fair. The tide is right. Recommendation: Launch.'"
+    trigger: "'The ship is sound. The Operator is rested. The wind is fair. The tide is right. Recommendation: Launch.'"
     description: >
       Register shift from analysis to oratory at section close.
       3-6 sentences of elevated, quasi-ceremonial rhetoric after

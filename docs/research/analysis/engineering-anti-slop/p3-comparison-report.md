@@ -135,7 +135,7 @@ The layer model explicitly addresses this at L9 (thread position creates self-re
 
 **Transcript:** No discussion of the risk that governance processes become self-referential and substitute for actual work.
 
-**Our framework:** Governance Recursion (slopodar) — "189 SDs, 13 agents, a Lexicon — and bout-engine.ts (1,221 lines, the core product) had zero tests." The Captain named it: "at a deeper level we are blowing smoke up our own arse."
+**Our framework:** Governance Recursion (slopodar) — "189 SDs, 13 agents, a Lexicon — and bout-engine.ts (1,221 lines, the core product) had zero tests." The Operator named it: "at a deeper level we are blowing smoke up our own arse."
 
 **Assessment:** The transcript is at early enough maturity that this hasn't arisen. For any framework that adopts extensive rules files and documentation (as the transcript recommends), governance recursion is a downstream risk that should be anticipated.
 

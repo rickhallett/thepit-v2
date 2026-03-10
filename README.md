@@ -27,7 +27,7 @@ git add → make gauntlet → sudo walkthrough → git commit
 - **Gate** — typecheck + lint + test. Automated, non-negotiable.
 - **Darkcat** — adversarial code review by isolated Claude and OpenAI (Codex) instances, each reviewing the staged diff independently. Each produces a JSON verdict with tree-hash verification. The reviewers did not write the code. (Gemini deferred — pipe mode unreliable.)
 - **Pitkeel** — session analysis (scope drift, velocity, fatigue signals). Python, runs locally.
-- **Walkthrough** — requires `sudo` (OS password prompt). The one step an agent cannot perform. Records the Captain's username in the attestation.
+- **Walkthrough** — requires `sudo` (OS password prompt). The one step an agent cannot perform. Records the Operator's username in the attestation.
 
 A pre-commit hook verifies all attestations exist and match the current tree hash. If any step is missing or stale, the commit is blocked.
 

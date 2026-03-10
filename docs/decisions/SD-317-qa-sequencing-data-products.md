@@ -9,7 +9,7 @@
 
 Full code review complete on all polecat-written code (T-007 through T-025). 30 code-review checks executed by 3 parallel review agents (Claude). 28 pass, 2 fail, 12 Watchdog taxonomy hits. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects).
 
-Two additional cross-model reviews (non-Claude) commissioned by Captain, in flight at time of decision.
+Two additional cross-model reviews (non-Claude) commissioned by Operator, in flight at time of decision.
 
 Question: what is the optimal ordering of fix vs QA for maximum governance value?
 
@@ -23,7 +23,7 @@ SEQUENCE :=
   SYNTH   triangulate(claude_review, review_2, review_3) -> durable_file
   FIX     batch(confirmed_issues) -> per_branch
   GATE    re_gate(all_branches) -> update_checklist
-  WALK    captain.walkthrough(fixed_code) -> mark(human_checks)
+  WALK    operator.walkthrough(fixed_code) -> mark(human_checks)
   COMPARE human_findings vs model_findings -> governance_signal
 ```
 
@@ -34,7 +34,7 @@ Three independent reviews of the same code snapshot — Claude + two cross-model
 All confirmed issues fixed in one batch after all reviews land. Clean diff between pre-fix and post-fix. No iterative patching that muddies the before/after comparison. Measures: how many of the model-identified issues were real, how many were false positives, what the fix cost was.
 
 ### Data Product 3: Human Delta
-Captain's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Captain catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
+Operator's walkthrough happens on fixed code, so taste-time isn't wasted confirming issues 3 models already found. What the Operator catches that all 3 models missed is the irreducible human layer — the most interesting governance signal for the HCI study. Measures: the gap between automated+model verification and human judgment. This is the data that matters for the Anthropic red teaming case.
 
 ## Rationale
 

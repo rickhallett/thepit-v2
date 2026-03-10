@@ -7,7 +7,7 @@
 sources.searched := {company_websites, arXiv_papers, anthropic_blog, metr_team_page, apollo_team_page,
                      openai_safety_page, prep_framework_v2, deepmind_responsibility_page}
 sources.NOT      := {linkedin(blocked), twitter(auth), google_scholar}
-HONEST           := cannot_access(linkedin, twitter, conference_dbs) | captain.manual_search.required
+HONEST           := cannot_access(linkedin, twitter, conference_dbs) | operator.manual_search.required
 
 -- ANTHROPIC: VERIFIED PEOPLE
 

@@ -86,7 +86,7 @@ This has no direct analog in our framework but is interesting as a meta-level ob
 
 ### 3.4 The Constitutional Competition Thesis
 
-Amodei's "loop 2" — different companies having different constitutions, with external observers comparing and critiquing them — is a governance mechanism we haven't considered. Our governance is single-loop by design (Captain → agents → Captain). The idea that governance improves through competition between governance frameworks, rather than through internal iteration alone, is worth considering.
+Amodei's "loop 2" — different companies having different constitutions, with external observers comparing and critiquing them — is a governance mechanism we haven't considered. Our governance is single-loop by design (Operator → agents → Operator). The idea that governance improves through competition between governance frameworks, rather than through internal iteration alone, is worth considering.
 
 ---
 

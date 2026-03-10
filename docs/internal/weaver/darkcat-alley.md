@@ -236,7 +236,7 @@ insight: "Can you trust a model's findings? (Preliminary: yes — 0% FP across 3
 |---|-------------|--------|---------------|
 | DP-1 | Cross-Model Triangulation Report | Darkcat Alley pre-QA | "We ran 3 independent model reviews and here's what they found" |
 | DP-2 | Fix Quality Assessment | Alley delta (pre vs post) | "Here's what we fixed and what survived" |
-| DP-3 | Human Delta | Captain walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
+| DP-3 | Human Delta | Operator walkthrough vs all model findings | "Here's what humans catch that 3 models miss" |
 | DP-4 | Cost-Benefit Analysis | Marginal value curve | "Here's where diminishing returns kicks in for cross-model review" |
 | DP-5 | Model Blind Spot Map | Watchdog category distribution | "Different models have characteristic, predictable blind spots" |
 | DP-6 | Severity Calibration Study | Inter-rater agreement on converged findings | "Models agree on what's critical but diverge on what's low-severity" |

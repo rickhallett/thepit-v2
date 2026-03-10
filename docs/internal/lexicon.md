@@ -1,7 +1,7 @@
 # The Lexicon — v0.26 (3rd Distillation)
 
 Back-reference: SD-120 (naval metaphor as scaffold), SD-123 (v0.1), SD-309 (true north locked), SD-315 (readback).
-Status: APPROVED by Captain. Read-only by convention. Edits bump version number.
+Status: APPROVED by Operator. Read-only by convention. Edits bump version number.
 Provenance: v0.1–v0.25 grown organically from *Master and Commander* (2003, Weir) through the tspit pilot study and noopit calibration run. v0.26 distilled 2026-03-10 via independent cross-triangulation: Architect (naval→Linux mapping) + Analyst (naval→SWE mapping). Both analyses found ~60% of terms map to established frameworks. This version grounds the working vocabulary in those frameworks without replacing it. The novel contributions (~18%) are marked explicitly.
 
 > The naval metaphor was scaffolding. The principles underneath are substrate-neutral.
@@ -11,7 +11,7 @@ Provenance: v0.1–v0.25 grown organically from *Master and Commander* (2003, We
 
 ## YAML Status Header
 
-Every address to the Captain opens with this. Machine-readable. Glanceable.
+Every address to the Operator opens with this. Machine-readable. Glanceable.
 
 ```yaml
 watch_officer: <agent>
@@ -43,7 +43,7 @@ Format: **Term** — definition. *Established parallel.* `Origin.`
 *Established: Kubernetes controller reconciliation loop. Code ownership (GitHub CODEOWNERS). On-call (SRE).*
 `Origin: SD-120. Renamed v0.26. Note: the naval "watch" bundled monitoring + RBAC + domain scope; Linux separates these cleanly.`
 
-**Delegated Operator** — Agent holding a controller with captain's delegated authority. Operates within standing policies, records everything, escalates outside scope. Formerly "officer of the watch."
+**Delegated Operator** — Agent holding a controller with operator's delegated authority. Operates within standing policies, records everything, escalates outside scope. Formerly "officer of the watch."
 *Established: RBAC + Linux capabilities + escalation policy (SRE).*
 `Origin: SD-112 pattern. Renamed v0.26.`
 
@@ -123,11 +123,11 @@ Format: **Term** — definition. *Established parallel.* `Origin.`
 
 ### Communication & Record
 
-**Readback** — Default agentic behaviour: compress understanding of an order into Signal notation before acting. The readback surfaces the agent's interpretation in a compressed, inspectable form. Captain verifies or corrects. Formerly "echo / check fire."
+**Readback** — Default agentic behaviour: compress understanding of an order into Signal notation before acting. The readback surfaces the agent's interpretation in a compressed, inspectable form. Operator verifies or corrects. Formerly "echo / check fire."
 *Established: Readback (CRM — Crew Resource Management, Helmreich 1999). Extensively studied in aviation and medicine. The practice is identical: instruction → readback → verify → act. CRM provides 40+ years of empirical validation for why this works.*
 `Origin: SD-315 (echo/check fire as standing order). Renamed v0.26.`
 
-**Muster** — Present items for O(1) binary decision. Numbered table, one row per item, defaults column, Captain marks each. The format converts cognitive load from O(n) reading to O(1) approve/reject per row.
+**Muster** — Present items for O(1) binary decision. Numbered table, one row per item, defaults column, Operator marks each. The format converts cognitive load from O(n) reading to O(1) approve/reject per row.
 *Established: Decision matrix / triage table (management). Pick list (UX). The O(1) property is the novel contribution — standard decision matrices don't optimise for review speed.*
 `Origin: SD-202. Kept v0.26 — distinctive and established in project use.`
 
@@ -139,7 +139,7 @@ Format: **Term** — definition. *Established parallel.* `Origin.`
 *Established: Unix background process (`&`, `nohup`). Subprocess.*
 `Origin: SD-120. Renamed v0.26.`
 
-**Sync + Graceful Shutdown** — Force compaction of the context window. Captain's order when all durable writes are confirmed. Everything not on file is lost; everything on file survives. Formerly "clear the decks."
+**Sync + Graceful Shutdown** — Force compaction of the context window. Operator's order when all durable writes are confirmed. Everything not on file is lost; everything on file survives. Formerly "clear the decks."
 *Established: `sync(2)` — has been doing this since 1971. SIGTERM handlers. Graceful shutdown (k8s).*
 `Origin: SD-267. Renamed v0.26.`
 
@@ -161,7 +161,7 @@ Format: **Term** — definition. *Established parallel.* `Origin.`
 | Mode | Communication Mode | Tempo | When |
 |------|--------------------|-------|------|
 | **tight** | Formal | Sustainable pace | Default. Execution, verification. |
-| **loose** | Exploration | Sustainable pace | By Captain's invitation. Exploratory. |
+| **loose** | Exploration | Sustainable pace | By Operator's invitation. Exploratory. |
 | **extra-tight** | Formal | SEV-1 | Emergency. Literal execution only. |
 
 *Novel: No Linux or SWE equivalent for communication register modes that combine verbosity + authority + creative latitude. Both analyses: KEEP.*
@@ -255,7 +255,7 @@ Format: **Term** — definition. *Established parallel.* `Origin.`
 
 ### Mathematical & Economic Heuristics (NEW in v0.26)
 
-Concepts for rapid communication of intent regarding complex ideas. Requested by Captain 2026-03-10.
+Concepts for rapid communication of intent regarding complex ideas. Requested by Operator 2026-03-10.
 
 **Diminishing Marginal Returns** — Each additional unit of effort yields less additional value. ∂yield/∂effort → 0. Recognise this curve; when you're on it, pivot.
 *Source: Marshall 1890. Application: ROI gate on review cycles — the first adversarial review round catches structural defects; subsequent rounds catch diminishing returns.*
@@ -283,7 +283,7 @@ Concepts for rapid communication of intent regarding complex ideas. Requested by
 
 ### Established Frameworks — For Reference (NEW in v0.26)
 
-Frameworks that map strongly to this project's governance patterns. Cited for credibility and depth, not adopted wholesale. Captain takes on advisement pending deeper familiarity.
+Frameworks that map strongly to this project's governance patterns. Cited for credibility and depth, not adopted wholesale. Operator takes on advisement pending deeper familiarity.
 
 **Bainbridge's Ironies of Automation (1983)** — The foundational observation: (1) the more advanced the automation, the more crucial the human's contribution, and the more skilled the human needs to be; (2) automation of easy tasks leaves the human with only the hard tasks; (3) the human's skills atrophy through disuse, precisely when they're most needed. Directly applicable to cognitive deskilling foot gun. The METR RCT (2025) is a replication.
 *Source: Bainbridge, L. (1983). "Ironies of Automation." Automatica, 19(6), 775-779.*
@@ -292,7 +292,7 @@ Frameworks that map strongly to this project's governance patterns. Cited for cr
 *Source: Helmreich, R.L. (1999). Various CRM publications. Also: aviation medicine, surgical safety checklists (Gawande 2009).*
 
 **Lean / Toyota Production System** — Multiple concepts from this project map to Toyota: quality gate → poka-yoke, stop the line → andon cord, HOTL → jidoka, context quality loop → kaizen, pull-based review → kanban, value stream → value stream, effort backpressure → WIP limits. The convergence is probably because both naval command and Toyota manufacturing solve the same fundamental problem: coordinating human-machine systems under uncertainty with irreversible consequences.
-*Source: Ohno (1988), Shingo (1986), Womack & Jones (1996). Cited for reference; not adopted as framework. Captain takes on advisement.*
+*Source: Ohno (1988), Shingo (1986), Womack & Jones (1996). Cited for reference; not adopted as framework. Operator takes on advisement.*
 
 **Swiss Cheese Model (Reason 1990)** — Layered defence where each layer has holes, but the layers are arranged so no single failure passes through all. The verification pipeline IS a Swiss Cheese Model.
 *Source: Reason, J. (1990). "Human Error." Cambridge University Press.*
@@ -338,7 +338,7 @@ The **slopodar** (anti-pattern taxonomy, `docs/internal/slopodar.yaml`) contains
 
 | Version | Date | Change | SD |
 |---------|------|--------|----|
-| v0.1 | 2026-02-24 | Initial lexicon. Captain's selections from taxonomy. | SD-123 |
+| v0.1 | 2026-02-24 | Initial lexicon. Operator's selections from taxonomy. | SD-123 |
 | v0.2 | 2026-02-24 | `north` → `true_north`. `tacking` added. | SD-125 |
 | v0.3 | 2026-02-24 | `mirror` semantics. "All hands" standardised. | SD-126 |
 | v0.4 | 2026-02-25 | true_north sharpened: truth first. | SD-134 |

@@ -99,7 +99,7 @@ def commits_since_base() -> int | None:
 
 def reserves_tsv_path(root: str) -> str:
     """Return the path to the reserves TSV file."""
-    return os.path.join(root, "docs", "captain", "reserves.tsv")
+    return os.path.join(root, "docs", "operator", "reserves.tsv")
 
 
 def read_reserves_tsv(root: str) -> list[ReserveEntry]:

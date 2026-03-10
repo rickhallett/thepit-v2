@@ -1,6 +1,6 @@
 # Signal v0.1 — Compressed Governance Protocol (Proof of Concept)
 
-> "Reliable communications on a protocol that everyone understands, that is documented, that is not overly verbose or over-engineered but min-maxes for clarity and expressing complexity as concisely as possible without becoming illegible." — Captain, voice log 2026-03-03 09:46:19
+> "Reliable communications on a protocol that everyone understands, that is documented, that is not overly verbose or over-engineered but min-maxes for clarity and expressing complexity as concisely as possible without becoming illegible." — Operator, voice log 2026-03-03 09:46:19
 
 ## Protocol Name: Signal
 
@@ -19,7 +19,7 @@ WHEN      := guard condition
 ->        := maps to / flows to
 <-        := derives from
 >>        := overrides
-?         := uncertainty / Captain's call needed
+?         := uncertainty / Operator's call needed
 [ref]     := back-reference (SD, lexicon term, file path)
 {...}     := set
 (...)     := grouping / parameters
@@ -47,13 +47,13 @@ RULE  := truth >> hiring                                [SD-134 PERM]
 
 ```signal
 SO.decisions   := decision -> durable_file | !context_only     [SD-266 the_chain]
-SO.main_thread := captain <-> agent = {directives, synthesis, decisions, governance}
+SO.main_thread := operator <-> agent = {directives, synthesis, decisions, governance}
                   everything_else -> subagent                   [SD-095 PERM]
 SO.lexicon     := all_hands.boot -> read(lexicon.md)           [SO-PERM-002]
 SO.slopodar    := all_hands.boot -> read(slopodar.yaml)        [SD-286]
-SO.triage      := ambiguity -> table(#, question, default, captains_call)  [SD-195]
-SO.yaml_hud    := address(captain) -> yaml_header_first         [SD-123]
-SO.estimation  := estimate(task) -> agent_minutes + captain_decisions  [SD-268 PERM]
+SO.triage      := ambiguity -> table(#, question, default, operators_call)  [SD-195]
+SO.yaml_hud    := address(operator) -> yaml_header_first         [SD-123]
+SO.estimation  := estimate(task) -> agent_minutes + operator_decisions  [SD-268 PERM]
 SO.chain       := historical_data := immutable                  [SD-266 PERM]
 SO.producers   := before(change(shared_format)) -> consult(producer-consumer-maps.yaml)  [SD-259]
 SO.commit_id   := before(commit) -> export KEEL_OFFICER=<agent>
@@ -125,8 +125,8 @@ FOOTGUN compaction_loss :=
 -- Authority & Handoff
 DEF conn           := decision_authority | one_holder | transfer_explicit
 DEF standing_order := persists_across_watches | obey_without_restatement
-DEF watch          := domain_monitoring | captains_authority | delegatable
-DEF officer_watch  := watch + captains_delegated_authority + SOs + escalate
+DEF watch          := domain_monitoring | operators_authority | delegatable
+DEF officer_watch  := watch + operators_delegated_authority + SOs + escalate
 
 -- Navigation
 DEF true_north     := objective(!drift) = hired = proof > claim    [SD-309]
@@ -192,7 +192,7 @@ L9  THREAD_POS     := accumulated_output -> self_reinforcing_loop
 L10 MULTI_AGENT    := same_model != independent | precision !accuracy
 L11 CROSS_MODEL    := different_priors -> independent_signal
 L12 HUMAN          := irreducible | !scalable | !automatable
-                      captain.instruments: {reasoning_tokens, git_diff, terminal_hud}
+                      operator.instruments: {reasoning_tokens, git_diff, terminal_hud}
                       FOOTGUNS: {high_on_supply.origin, spinning.resonance(L9)}
 
 CROSS_CUT calibration   := confidence.ordinal_at_best | goodhart(probes)
@@ -208,7 +208,7 @@ LOADING   on_point      := convention & convergence & attestation.align [SD-163]
 
 | Property | Status |
 |----------|--------|
-| Human-readable | Yes — reads like typed pseudocode. Captain can scan and verify. |
+| Human-readable | Yes — reads like typed pseudocode. Operator can scan and verify. |
 | Agent-decodable | Yes — consistent syntax, parseable. Agent can expand any line to prose. |
 | Back-references preserved | Yes — [SD-nnn], [file.md], [concept] inline |
 | Conciseness | ~100 lines to express what currently takes ~500+ |
@@ -229,7 +229,7 @@ LOADING   on_point      := convention & convergence & attestation.align [SD-163]
 
 ## Deployment Path
 
-1. **Captain reviews this PoC** — can you read it? Does it lose anything load-bearing?
+1. **Operator reviews this PoC** — can you read it? Does it lose anything load-bearing?
 2. **Agent decode test** — dispatch a fresh agent with only Signal, ask it to explain what it knows
 3. **If both pass**: create `signal/` directory with compressed versions alongside verbose originals
 4. **Boot sequence updated**: dead-reckoning.md points to Signal files first, verbose as fallback
@@ -244,7 +244,7 @@ LOADING   on_point      := convention & convergence & attestation.align [SD-163]
 -- If this overloading causes confusion, rename to SLOP.surface / SLOP.deep.
 
 SLOP.clear := output.contradicts(verifiable_state)
-  detection: O(1), captain.catches(immediate)
+  detection: O(1), operator.catches(immediate)
 
 SLOP.subtle := output.consistent(plausible_state) & !matches(actual_state)
   detection: O(n) | requires(independent_verification)
@@ -260,6 +260,6 @@ SO.sugar := SO.list = char(,), SO.OR = char(|)
 
 - NOT a replacement for the verbose versions (those are the chain, SD-266)
 - NOT a programming language (no execution, no state, no side effects)
-- NOT for narrative content (Captain's logs, session decisions history, pearls)
+- NOT for narrative content (Operator's logs, session decisions history, pearls)
 - It IS a notation convention for expressing governance constraints concisely
 - It IS the agentic-native version of what was developed organically through process

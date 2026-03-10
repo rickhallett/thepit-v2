@@ -33,7 +33,7 @@ The governance systems I built for the project keep turning up in places I didn'
 
 Hutchins' foundational work in distributed cognition (*Cognition in the Wild*, 1995) was literally a study of naval navigation teams aboard the USS Palau. What he found was that cognition is not contained in individual heads but distributed across people, tools, and representations.
 
-The project's naval metaphor (Captain, Helm, Weaver, conn, quarterdeck) is structurally aligned with the foundational research on how distributed cognitive systems actually work.
+The project's naval metaphor (Operator, Helm, Weaver, conn, quarterdeck) is structurally aligned with the foundational research on how distributed cognitive systems actually work.
 
 ---
 

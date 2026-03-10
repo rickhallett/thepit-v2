@@ -104,7 +104,7 @@ Our framework is entirely digital. Amodei predicts robotics will be "revolutioni
 
 ### G5. Constitutional Governance Loops
 
-Amodei's three-loop model (internal iteration, inter-company competition, societal input) for AI constitutions is a governance framework we could learn from. Our own governance is single-loop (Captain → agents → Captain), with no equivalent of:
+Amodei's three-loop model (internal iteration, inter-company competition, societal input) for AI constitutions is a governance framework we could learn from. Our own governance is single-loop (Operator → agents → Operator), with no equivalent of:
 - Loop 2: Competition between different constitutions
 - Loop 3: External societal input into our principles
 
@@ -154,7 +154,7 @@ The specific risk: Amodei's confidence in 1-3 year timelines is conditioned on n
 
 Amodei frames regulation as needing to be "nimble" — start with transparency, escalate when risks emerge. Our framework's Standing Orders and Permanent decisions (SD-131, SD-134) are the opposite approach: structural constraints that persist regardless of tempo.
 
-Our Badguru test demonstrated that even within our small system, "nimble" governance (the Captain can override anything) fails precisely when speed is highest. At the scale of national AI policy, "be nimble" is a Paper Guardrail — it performs governance without enforcing it.
+Our Badguru test demonstrated that even within our small system, "nimble" governance (the Operator can override anything) fails precisely when speed is highest. At the scale of national AI policy, "be nimble" is a Paper Guardrail — it performs governance without enforcing it.
 
 ---
 

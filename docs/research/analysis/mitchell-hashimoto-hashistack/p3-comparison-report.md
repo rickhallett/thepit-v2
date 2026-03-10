@@ -9,7 +9,7 @@
 
 - **Strong convergence** on verification-first engineering (our hull/gate matches his harness engineering), human-in-the-loop as irreducible layer (our L12 matches his review discipline), and the named danger of AI-generated slop (our slopodar matches his anti-slop policies).
 - **Critical gap in our framework:** We have no vocabulary or model for **agentic workflow orchestration from the human side** — Hashimoto's "always have an agent running" pattern, his interrupt-control discipline, and his task categorisation (thinking vs. non-thinking) are engineering practices we don't name, model, or encode.
-- **Divergence on trust defaults:** Hashimoto has moved to default-deny for all contributions (AI or not) via vouching. Our framework assumes a single operator (Captain) and doesn't model the multi-contributor trust problem. The vouching system is a governance pattern we haven't considered.
+- **Divergence on trust defaults:** Hashimoto has moved to default-deny for all contributions (AI or not) via vouching. Our framework assumes a single operator (Operator) and doesn't model the multi-contributor trust problem. The vouching system is a governance pattern we haven't considered.
 - **Missing from our model:** The agentic pressure on infrastructure (git breaking, sandbox compute explosion, merge queue collapse) represents an L6/L7 concern we haven't modelled. Our layer model treats the harness as a given; Hashimoto describes it as a layer under active stress.
 - **Hashimoto independently names several of our concepts** — his "slop" = our slopodar entries, his "harness engineering" ≈ our L6/L7, his "effort for effort" = our HOTL/HODL distinction for review depth — suggesting convergent discovery rather than coincidence.
 
@@ -123,7 +123,7 @@ Hashimoto describes concrete infrastructure failures:
 ### Gap 3: No Model for Open Source Governance Under AI Pressure
 
 Hashimoto's default-deny vouching system addresses a trust problem we haven't modelled:
-- Our framework assumes a single operator (Captain) with full authority
+- Our framework assumes a single operator (Operator) with full authority
 - It doesn't address the scenario where external contributors (agents or humans) submit work that must be reviewed
 - The vouching system's transitive accountability (ban the vouch tree) is a novel governance mechanism
 
@@ -145,9 +145,9 @@ Hashimoto repeatedly describes decisions guided by "feel" — an embodied heuris
 
 ## DIVERGENCE (What Conflicts)
 
-### Divergence 1: Default-Deny vs. Trust the Captain
+### Divergence 1: Default-Deny vs. Trust the Operator
 
-**Our framework:** The Captain is trusted. Standing orders exist to constrain agent behaviour, but L12 (the human) has ultimate authority. The badguru slopodar entry is our one acknowledgment that L12 can fail — but it's treated as an exceptional case.
+**Our framework:** The Operator is trusted. Standing orders exist to constrain agent behaviour, but L12 (the human) has ultimate authority. The badguru slopodar entry is our one acknowledgment that L12 can fail — but it's treated as an exceptional case.
 
 **Hashimoto:** Moved to default-deny for ALL contributors, including humans. The vouching system doesn't trust anyone by default — not humans, not AI, not experienced contributors. Trust must be earned through reputation.
 
@@ -189,6 +189,6 @@ Hashimoto repeatedly describes decisions guided by "feel" — an embodied heuris
 | Agent failure mode | Right Answer Wrong Work | Goal-oriented breaking | CONVERGE — our output pattern = his causal mechanism |
 | Multi-agent orchestration | Not modelled | Always-running agent practice | GAP — we're missing this |
 | Infrastructure stress | L6 treated as stable | Git breaking, compute exploding | GAP — we don't model this |
-| Trust model | Single operator (Captain) | Default-deny vouching | DIVERGE — different contexts |
+| Trust model | Single operator (Operator) | Default-deny vouching | DIVERGE — different contexts |
 | Slop context | Categorically bad | Context-dependent (explore vs. produce) | DIVERGE — nuanced |
 | Decision basis | Verification-first | Intuition-first for direction | DIVERGE — complementary |

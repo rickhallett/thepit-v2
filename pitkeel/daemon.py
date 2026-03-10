@@ -5,7 +5,7 @@
 # reserves are depleted (24h without meditation or exercise).
 #
 # The daemon exists because the reserves check only fires when pitkeel
-# is actively invoked — which is precisely when the Captain is least
+# is actively invoked — which is precisely when the Operator is least
 # likely to need it. The daemon catches the case where no agents are
 # running, no work is happening, but the 24h clock is still ticking.
 #

@@ -12,7 +12,7 @@ Read your agent file at `.opencode/agents/<your-name>.md`. If you are Weaver, yo
 ## The Chain
 
 ```
-Captain (L12) → Weaver (integration) → Crew (execution)
+Operator (L12) → Weaver (integration) → Crew (execution)
 Decisions: docs/internal/session-decisions.md     (append-only, forward-correct)
 Vocabulary: docs/internal/lexicon.md          (read-only, 444)
 Layer Model: docs/lexical-harness-not-prompt-harness.md  (v0.2, SD-165)
@@ -35,7 +35,7 @@ Read the YAML HUD at the top of Weaver's last message. Key fields:
 |-------|--------------|
 | `weave: tight` | Normal ops. Quarterdeck register. |
 | `weave: extra_tight` | High alert. Literal execution only. |
-| `tempo: full-sail` | Fast, exposed. **Nothing commits without Captain's say-so (SD-152).** |
+| `tempo: full-sail` | Fast, exposed. **Nothing commits without Operator's say-so (SD-152).** |
 | `tempo: making-way` | Disciplined forward progress. Autonomous execution permitted within SOs. |
 | `tempo: heave-to` | Stopped. Dealing with something. |
 
@@ -53,7 +53,7 @@ Read the YAML HUD at the top of Weaver's last message. Key fields:
 
 | Tempo | Rule |
 |-------|------|
-| `full-sail` | Captain approves every commit. Weaver prepares, Captain decides. (SD-152) |
+| `full-sail` | Operator approves every commit. Weaver prepares, Operator decides. (SD-152) |
 | `making-way` | Weaver can commit within SOs. Post-merge verify mandatory. |
 | `heave-to` | No commits until the issue resolves. |
 
@@ -63,7 +63,7 @@ Read the YAML HUD at the top of Weaver's last message. Key fields:
 |-----------|--------|
 | Gate fails | Stop. Fix. Do not merge. Do not "fix later." |
 | Context died | Read `docs/internal/dead-reckoning.md`. Reconstruct from files. |
-| Unsure what Captain decided | Check `session-decisions.md`. If it's not there, ask. |
+| Unsure what Operator decided | Check `session-decisions.md`. If it's not there, ask. |
 | Two agents need the same file | One writes, other waits. No concurrent edits. (SD-169: worktrees for multi-instance) |
 | You see something wrong | Flag it. Weaver intervenes. The cost of re-checking is negligible. |
 
@@ -95,4 +95,4 @@ Full file: `docs/internal/lexicon.md`
 
 ---
 
-*If this card doesn't answer your question, read the full agent file. If the agent file doesn't answer it, read the Lexicon. If the Lexicon doesn't answer it, ask Weaver. If Weaver doesn't know, ask the Captain.*
+*If this card doesn't answer your question, read the full agent file. If the agent file doesn't answer it, read the Lexicon. If the Lexicon doesn't answer it, ask Weaver. If Weaver doesn't know, ask the Operator.*

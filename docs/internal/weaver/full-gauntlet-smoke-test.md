@@ -47,9 +47,9 @@
 - **Status:** ✓ PASS — pitkeel.json valid, verdict pass, tree 723bf7b8 (rerun on 65c862c6 also pass)
 
 ### Phase 8: Walkthrough
-- **Action:** `python3 scripts/pitcommit.py walkthrough`. Captain signs off.
-- **Pass:** `.gauntlet/walkthrough.json` exists, Captain signs off.
-- **Status:** ✓ PASS — sudo required, Captain mrkai attested @ 65c862c6. Hardened mid-smoke-test: --sudo string flag replaced with actual SUDO_USER check after darkcat finding.
+- **Action:** `python3 scripts/pitcommit.py walkthrough`. Operator signs off.
+- **Pass:** `.gauntlet/walkthrough.json` exists, Operator signs off.
+- **Status:** ✓ PASS — sudo required, Operator mrkai attested @ 65c862c6. Hardened mid-smoke-test: --sudo string flag replaced with actual SUDO_USER check after darkcat finding.
 
 ### Phase 9: Full verify
 - **Action:** `python3 scripts/pitcommit.py verify --tier full`.
@@ -66,7 +66,7 @@
 ```
 Phase 1 ──→ Phase 2 ──→ Phases 3,4,5 (parallel OK) ──→ Phase 6
                          Phase 7 (independent)
-                         Phase 8 (independent, Captain required)
+                         Phase 8 (independent, Operator required)
 All ──→ Phase 9 ──→ Phase 10
 ```
 

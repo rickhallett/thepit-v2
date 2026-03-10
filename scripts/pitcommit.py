@@ -463,7 +463,7 @@ def cmd_tier(args):
 def cmd_walkthrough(args):
     """Handle: sudo python3 scripts/pitcommit.py walkthrough [--tree HASH]
 
-    Requires actual sudo (SUDO_USER must be set). This is the Captain's
+    Requires actual sudo (SUDO_USER must be set). This is the Operator's
     attestation — the one step that says a human reviewed the changes.
     An agent cannot provide the sudo password; this is the enforcement.
 
@@ -474,7 +474,7 @@ def cmd_walkthrough(args):
 
     sudo_user = os.environ.get("SUDO_USER")
     if not sudo_user:
-        print("Walkthrough requires sudo (Captain's attestation).", file=sys.stderr)
+        print("Walkthrough requires sudo (Operator's attestation).", file=sys.stderr)
         print("", file=sys.stderr)
         print("  Usage: sudo python3 scripts/pitcommit.py walkthrough", file=sys.stderr)
         print("", file=sys.stderr)
@@ -485,9 +485,9 @@ def cmd_walkthrough(args):
         print("Cannot compute tree hash", file=sys.stderr)
         sys.exit(1)
 
-    # Show what's being attested so the Captain sees it.
+    # Show what's being attested so the Operator sees it.
     print(f"Tree: {tree_hash[:12]}")
-    print(f"Captain: {sudo_user}")
+    print(f"Operator: {sudo_user}")
     print()
     result = subprocess.run(
         ["git", "diff", "--cached", "--stat"],

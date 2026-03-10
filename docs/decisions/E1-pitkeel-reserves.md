@@ -3,8 +3,8 @@
 > **Epic:** E1 (Pitkeel Human Protection Upgrade)
 > **Status:** Implemented
 > **Date:** 2026-03-08
-> **Decided by:** Captain (wardroom session, post-retreat)
-> **Governs:** pitkeel/, docs/captain/, .claude/agents/keel.md
+> **Decided by:** Operator (wardroom session, post-retreat)
+> **Governs:** pitkeel/, docs/operator/, .claude/agents/keel.md
 
 ## Rationale
 
@@ -12,16 +12,16 @@
 L12.degrades -> all_layers.degrade
 phases{1,2}.productive & unsustainable.human_cost
 CONNECTS := {cognitive_deskilling, hot_context_pressure}       [SD-312]
-MECHANISM := captain.!notices(flow_state) -> threshold.invisible
+MECHANISM := operator.!notices(flow_state) -> threshold.invisible
 ```
 
 Phase 1 and Phase 2 were extraordinarily productive but carried an unsustainable human cost. The human is the irreducible layer in the system. If L12 degrades, everything downstream degrades. This epic operationalises that lesson.
 
 ## Components
 
-### 1. Reserves Tracking (`docs/captain/reserves.tsv`)
+### 1. Reserves Tracking (`docs/operator/reserves.tsv`)
 
-Append-only TSV in the captain's personal area (committed — personal area is already marked).
+Append-only TSV in the operator's personal area (committed — personal area is already marked).
 
 | Column | Type | Description |
 |--------|------|-------------|
@@ -69,7 +69,7 @@ This supplements existing fatigue detection in `analysis.py` (which starts at "m
 
 ### 4. Sleep Daemon
 
-Background process that checks reserves state periodically. **This is the enforcement mechanism.** Without it, the reserves check only fires when pitkeel is actively invoked — which is precisely when the Captain is least likely to need it (he's already at the terminal, already in the system). The daemon catches the case where no agents are running and no work is happening, but the 24h clock is still ticking.
+Background process that checks reserves state periodically. **This is the enforcement mechanism.** Without it, the reserves check only fires when pitkeel is actively invoked — which is precisely when the Operator is least likely to need it (he's already at the terminal, already in the system). The daemon catches the case where no agents are running and no work is happening, but the 24h clock is still ticking.
 
 ```signal
 DEF sleep_daemon := background_process | checks(reserves) | interval(15min)
@@ -84,7 +84,7 @@ RULE := shutdown.literal(OS) | visceral.by_design
 | Name | `pitkeel-sleep-daemon` (or `sleepd`) |
 | Invocation | `pitkeel daemon start` / `pitkeel daemon stop` / `pitkeel daemon status` |
 | Check interval | Every 15 minutes |
-| Data source | `docs/captain/reserves.tsv` |
+| Data source | `docs/operator/reserves.tsv` |
 | Warning delivery | Desktop notification (notify-send) + terminal bell |
 | Shutdown sequence | See below |
 
@@ -131,7 +131,7 @@ pitkeel.mk
 
 ## Implementation Plan
 
-All changes are within `pitkeel/` (Python, uv [SD-310]) and `docs/captain/`.
+All changes are within `pitkeel/` (Python, uv [SD-310]) and `docs/operator/`.
 
 | Step | Files | Description |
 |------|-------|-------------|
@@ -142,7 +142,7 @@ All changes are within `pitkeel/` (Python, uv [SD-310]) and `docs/captain/`.
 | 5 | `pitkeel/daemon.py` | New file: sleep daemon with 15-min check loop, notification, shutdown |
 | 6 | `pitkeel/pitkeel.py` | Add `daemon start/stop/status` subcommands |
 | 7 | `pitkeel/test_analysis.py` | Tests for `analyse_reserves()` and session noise thresholds |
-| 8 | `docs/captain/reserves.tsv` | Create empty TSV with header row |
+| 8 | `docs/operator/reserves.tsv` | Create empty TSV with header row |
 | 9 | `.gitignore` | Add `pitkeel.mk` |
 | 10 | `.claude/agents/keel.md` | Document reserves system existence |
 

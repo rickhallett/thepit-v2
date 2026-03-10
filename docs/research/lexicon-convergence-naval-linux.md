@@ -55,7 +55,7 @@ The naval term bundles two things: (1) exclusive ownership of a resource (a mute
 
 The naval term is exactly declarative configuration. The "obeyed without re-stating" clause is what makes systemd unit files systemd unit files — the init system reads them at boot and enforces them without human re-invocation.
 
-The one nuance: standing orders carry *authority* (they come from the Captain and override lower-rank decisions). This maps to policy enforcement with priority ordering — systemd's `override.conf` mechanism, or OPA's policy hierarchy.
+The one nuance: standing orders carry *authority* (they come from the Operator and override lower-rank decisions). This maps to policy enforcement with priority ordering — systemd's `override.conf` mechanism, or OPA's policy hierarchy.
 
 **Recommendation:** ADOPT `persistent policy` or `declarative config`. Every engineer already knows what `/etc/sysctl.conf` does. "Standing order" is a more dramatic way of saying "config that persists."
 
@@ -63,13 +63,13 @@ The one nuance: standing orders carry *authority* (they come from the Captain an
 
 #### 3. watch
 
-**Naval definition:** Responsibility for monitoring a domain. Implies captain's authority within SOs. Delegatable.
+**Naval definition:** Responsibility for monitoring a domain. Implies operator's authority within SOs. Delegatable.
 
 **Linux equivalent:** **Watchdog timer** (`/dev/watchdog`, `systemd-watchdog`, hardware watchdog). Also: **inotify** / **fanotify** (filesystem monitoring). Also: **Prometheus alerting rules** / **Kubernetes controller watch** (the `Watch` verb in the Kubernetes API is literally this). Also: **`monit`**, **`supervisord`**, **Nagios/Zabbix service check**.
 
 **Confidence:** HIGH
 
-**Gap analysis:** The Kubernetes API has a `Watch` verb that does exactly this: a controller watches a set of resources and acts on changes within its delegated scope. The `Watch` request returns events when resources change. The controller operates within its RBAC permissions (= "captain's authority within SOs"). A Kubernetes controller is literally a watch: it monitors a domain, has delegated authority to act within that domain, and escalates (logs errors, emits events) when something falls outside its scope.
+**Gap analysis:** The Kubernetes API has a `Watch` verb that does exactly this: a controller watches a set of resources and acts on changes within its delegated scope. The `Watch` request returns events when resources change. The controller operates within its RBAC permissions (= "operator's authority within SOs"). A Kubernetes controller is literally a watch: it monitors a domain, has delegated authority to act within that domain, and escalates (logs errors, emits events) when something falls outside its scope.
 
 The difference: the naval "watch" includes the human holding it. A Kubernetes controller watch is automated. But the structural concept is identical.
 
@@ -79,7 +79,7 @@ The difference: the naval "watch" includes the human holding it. A Kubernetes co
 
 #### 4. officer_watch
 
-**Naval definition:** Watch + captain's delegated authority + SOs + escalate.
+**Naval definition:** Watch + operator's delegated authority + SOs + escalate.
 
 **Linux equivalent:** **Kubernetes controller with RBAC** — a controller that has a `ClusterRole` granting specific permissions, operates within those permissions, and escalates (emits Events, writes to status conditions) when it encounters situations outside its authority. Also: **systemd service with `CapabilityBoundingSet`** — a daemon that runs with specific Linux capabilities (`cap_net_bind_service`, etc.) and cannot exceed them. Also: **sudoers with command restrictions** — `user ALL=(ALL) /usr/bin/systemctl restart nginx` grants delegated authority for a specific action.
 
@@ -323,7 +323,7 @@ But "muster" names a *communication protocol between human and agent*, not a sys
 
 #### 19. extra_rations
 
-**Naval definition:** Captain's commendation. Rare. Logged.
+**Naval definition:** Operator's commendation. Rare. Logged.
 
 **Linux equivalent:** No direct equivalent. Partial: **commit trailers** (`Reviewed-by:`, `Tested-by:` in Git — formal attribution logged in the permanent record). Also: **GitHub "LGTM"** conventions.
 
@@ -331,7 +331,7 @@ But "muster" names a *communication protocol between human and agent*, not a sys
 
 **Gap analysis:** This is a social/management concept: positive feedback, logged for the record. Linux doesn't model positive feedback because processes don't need encouragement. In an agentic system, the question is whether agent commendations have any effect on agent behaviour — and in a polecat model (fresh context, no memory), they don't. The commendation is for the *human's* record, not the agent's.
 
-**Recommendation:** RETIRE from the technical lexicon. This is a project management convention, not a systems concept. If it serves a human purpose (Captain's morale/tracking), keep it as a project convention outside the technical lexicon.
+**Recommendation:** RETIRE from the technical lexicon. This is a project management convention, not a systems concept. If it serves a human purpose (Operator's morale/tracking), keep it as a project convention outside the technical lexicon.
 
 ---
 
@@ -463,7 +463,7 @@ The quarterdeck/wardroom distinction is a human communication concept: "are we g
 
 #### 28. main_thread
 
-**Naval definition:** Captain ↔ Agent direct. Protected from context compaction.
+**Naval definition:** Operator ↔ Agent direct. Protected from context compaction.
 
 **Linux equivalent:** **Main thread** — this IS the Linux term. `pthread_main_np()`, process thread 0, the foreground process group. Also: **stdin/stdout** — the primary I/O channels. Also: **Kubernetes primary container** (vs sidecar containers).
 

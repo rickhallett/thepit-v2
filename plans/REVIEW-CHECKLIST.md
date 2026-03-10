@@ -1,6 +1,6 @@
-# Captain's Review Checklist
+# Operator's Review Checklist
 
-> Gate checks syntax. Captain checks substance.
+> Gate checks syntax. Operator checks substance.
 > Walk through after each task. Tick what you verify. Note what you find.
 > This is the provenance trail — evidence that a human looked, not just a machine passed.
 
@@ -177,7 +177,7 @@
 ## 🚧 CONVERGENCE POINT — Task 13
 
 > This is where bout pipeline and credit pipeline merge.
-> HODL: Captain reviews this task closely. Cross-domain integration.
+> HODL: Operator reviews this task closely. Cross-domain integration.
 
 ### 13 — Bout Persistence + Credits
 
@@ -235,7 +235,7 @@
 ### 🏁 MID-BUILD SMOKE TEST
 
 > After task 16: the core loop should work end-to-end without credits.
-> Captain manually tests: arena page → pick preset → watch bout stream → see completed transcript.
+> Operator manually tests: arena page → pick preset → watch bout stream → see completed transcript.
 > If this doesn't work, stop and fix before proceeding.
 
 - [ ] Arena page loads, presets visible

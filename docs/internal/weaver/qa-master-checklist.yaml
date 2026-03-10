@@ -4,13 +4,13 @@
 #   1. Merge order: phase2-ui → phase4-economy → phase5-discovery → deploy
 #   2. Per-phase: automated(gate) → code_review(stain) → human(walkthrough) → signoff
 #   3. Human verification focused on taste-required items: UX flow, feel, security
-#   4. Automated checks pre-populate before Captain's walkthrough
+#   4. Automated checks pre-populate before Operator's walkthrough
 #   5. Query via: bin/qa-progress [--phase X] [--category Y] [--status Z] [--blocking]
 #   6. Mark via:  bin/qa-progress mark <id> pass|fail|skip "notes"
 #
 # Categories:
 #   automated     — gate can verify (typecheck, lint, test)
-#   code-review   — reading the diff (agent-assisted, Captain confirms)
+#   code-review   — reading the diff (agent-assisted, Operator confirms)
 #   human-flow    — walk through a user journey end-to-end
 #   human-visual  — eyes on screen (layout, rendering, responsive)
 #   human-taste   — judgment call (quality, feel, "not wrong" territory)
@@ -44,7 +44,7 @@ checks:
     category: automated
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:57:22Z"
     notes: "Fixed: eslint globals added (d2eb0e4). typecheck:ok lint:ok test:ok (142 pass, 9 skip)"
 
@@ -55,7 +55,7 @@ checks:
     category: automated
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:56:04Z"
     notes: "actual: 151 (142 pass + 9 skip)"
 
@@ -66,7 +66,7 @@ checks:
     category: automated
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:56:04Z"
     notes: "15 test files, all foundation tests present and passing"
 
@@ -78,7 +78,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:09:44Z"
     notes: "PARTIAL: Zod validates model enum, presetId checked downstream. Gap: topic allows empty string (missing .min(1)), no test for model rejection path"
 
@@ -89,7 +89,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:09:44Z"
     notes: "PARTIAL: catches prompt injection (8 patterns) + hate speech (5 keywords) + special chars. No SQL/XSS patterns but mitigated by ORM+React. Docstring overstates exploit coverage"
 
@@ -100,7 +100,7 @@ checks:
     category: code-review
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:09:44Z"
     notes: "Clean: agents[turnIndex % agents.length], MAX_TURNS enforced by for-loop, well-tested with 2/3 agent scenarios"
 
@@ -111,7 +111,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:09:44Z"
     notes: "Events: data-turn/text-start/text-delta/text-end/done/error. Ordering enforced structurally via sequential callback wiring. Full sequence test with 10 events"
 
@@ -122,7 +122,7 @@ checks:
     category: code-review
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:09:44Z"
     notes: "try/catch in finally block prevents TypeError on double-close. Explicit test for cancel-then-resolve path"
 
@@ -133,7 +133,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:09:44Z"
     notes: "Buffer-based parsing with lastIndexOf(newline-newline). Explicit chunk-split test at char pos 40"
 
@@ -144,7 +144,7 @@ checks:
     category: code-review
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:01Z"
     notes: "AbortController created, stored in ref, signal passed to fetch, abort on unmount+restart, AbortError caught gracefully"
 
@@ -156,7 +156,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:01Z"
     notes: "Toggle: select-then-delete/insert + UNIQUE constraint backup. FINDING: INSERT lacks onConflictDoNothing — concurrent toggles throw DB error vs graceful handling (cf votes.ts which does it right)"
 
@@ -167,7 +167,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:01Z"
     notes: "sha256(ip).slice(0,16) with anon: prefix. No raw IP stored. No salt — reversible via rainbow table for IPv4 but acceptable for dedup"
 
@@ -178,7 +178,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:01Z"
     notes: "UNIQUE(boutId,userId) in schema + onConflictDoNothing in code. Returns alreadyVoted:true on conflict. 409 response. Correct pattern"
 
@@ -189,7 +189,7 @@ checks:
     category: code-review
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:01Z"
     notes: "week/month/all ranges. Positional ranking (not dense — ties get different ranks). Top-50 limit. FINDING: no tie-breaking for equal-vote bouts, in-memory aggregation"
 
@@ -200,7 +200,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:01Z"
     notes: "check-existing → insert-on-conflict-do-nothing → re-read. Double UNIQUE on boutId and slug. Idempotent and race-safe"
 
@@ -271,7 +271,7 @@ checks:
     timestamp: null
     notes: null
 
-  # ── Human: Taste (Captain's highest value) ───────────────
+  # ── Human: Taste (Operator's highest value) ───────────────
   - id: P23-T01
     phase: phase2-ui
     tasks: [T-008, T-015]
@@ -363,7 +363,7 @@ checks:
     category: automated
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:56:10Z"
     notes: "typecheck:ok lint:ok test:ok (223 pass, 35 skip)"
 
@@ -374,7 +374,7 @@ checks:
     category: automated
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:56:11Z"
     notes: "actual: 258 (223 pass + 35 skip)"
 
@@ -385,7 +385,7 @@ checks:
     category: automated
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:56:11Z"
     notes: "All 35 skipped tests are DB-dependent, skip gracefully"
 
@@ -397,7 +397,7 @@ checks:
     category: code-review
     blocking: true
     status: fail
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:16Z"
     notes: "TWO separate queries (UPDATE balance + INSERT transaction) NOT in a DB transaction. reference_id stored but NO UNIQUE constraint — idempotency is application-level SELECT only. Phantom ledger risk"
 
@@ -408,7 +408,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:16Z"
     notes: "Single UPDATE with WHERE balance >= amount. Correct atomic pattern, no TOCTOU. Concurrent preauth test verifies exactly one wins"
 
@@ -419,7 +419,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:16Z"
     notes: "Three paths: overpay refund, underpay charge (capped at available), exact match. GREATEST(0,...) floor prevents overdraft on TOCTOU in underpay path"
 
@@ -430,7 +430,7 @@ checks:
     category: code-review
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:16Z"
     notes: "Decay formula correct (0.5^(elapsed/halflife)). Atomic UPDATE with inline LEAST. FINDING: post-UPDATE back-calculation fragile, intro-pool only module with mocked-only tests"
 
@@ -441,7 +441,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:16Z"
     notes: "preauth → stream → settle/refund lifecycle correct. Client disconnect triggers refund via aborted flag. LLM calls continue (documented cost leak)"
 
@@ -452,7 +452,7 @@ checks:
     category: code-review
     blocking: false
     status: fail
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:16Z"
     notes: "req.signal never extracted or passed. ReadableStream cancel() sets aborted=true but no signal propagation to LLM calls. Documented known limitation — cost leak not correctness bug"
 
@@ -464,7 +464,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:30Z"
     notes: "free=0, pass=30000micro(300credits), lab=60000micro(600credits). Matches SPEC exactly. 1 credit = 100 micro confirmed in catalog.ts"
 
@@ -475,7 +475,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:31Z"
     notes: "anon:2/hr, free:5/hr, pass:15/hr, lab:Infinity. All 3600000ms windows. Matches SPEC exactly"
 
@@ -486,7 +486,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:31Z"
     notes: "All 6 handlers idempotent: 4 credit handlers use hasProcessedReference, 2 tier-only handlers are inherently idempotent. FINDING: reference_id has no UNIQUE constraint — paper guardrail"
 
@@ -497,7 +497,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:31Z"
     notes: "incrementalGrant = newGrant - oldGrant, skips if negative (downgrade). referenceId includes tier name for re-upgrade support"
 
@@ -508,7 +508,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:31Z"
     notes: "Credit packs: session.metadata.userId+creditsMicro matches webhook. Subscriptions: subscription_data.metadata.userId matches. String/parseInt conversion fragile but functional"
 
@@ -519,7 +519,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:31Z"
     notes: "UI: guarded by SUBSCRIPTIONS_ENABLED && userId. Server actions: throw if flag off. Both layers enforce"
 
@@ -616,7 +616,7 @@ checks:
     category: automated
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:56:16Z"
     notes: "typecheck:ok lint:ok test:ok (150 pass, 14 skip)"
 
@@ -627,7 +627,7 @@ checks:
     category: automated
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T09:56:16Z"
     notes: "actual: 164 (150 pass + 14 skip)"
 
@@ -639,7 +639,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:44Z"
     notes: "SHA-256 deterministic. Structured fields sorted alphabetically for stable JSON. FINDING: empty string systemPrompt silently falls to structured path (untested), name excluded from hash when systemPrompt set"
 
@@ -650,7 +650,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:44Z"
     notes: "name: .min(1).max(80). All other fields max-constrained. FINDING: systemPrompt has NO max length — defense-in-depth gap for LLM prompt field"
 
@@ -661,7 +661,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:44Z"
     notes: "requireAuth() with 401 on AuthenticationError. Matches project-wide Clerk pattern"
 
@@ -672,7 +672,7 @@ checks:
     category: code-review
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:44Z"
     notes: "10/hr per userId via in-memory sliding window. FINDING: resets on cold start (serverless), per-instance not global"
 
@@ -684,7 +684,7 @@ checks:
     category: code-review
     blocking: true
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:44Z"
     notes: "8-char → resolveShortLink, 21-char → direct, else → null → notFound(). Length discrimination correct"
 
@@ -695,7 +695,7 @@ checks:
     category: code-review
     blocking: false
     status: pass
-    verified_by: captain
+    verified_by: operator
     timestamp: "2026-03-09T10:10:44Z"
     notes: "generateMetadata exports OG title/description/type + twitter card. Sourced from bout record + shareLine. FINDING: no OG image, text-only social previews"
 

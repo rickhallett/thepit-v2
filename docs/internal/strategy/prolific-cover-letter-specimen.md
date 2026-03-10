@@ -1,7 +1,7 @@
 # Prolific Cover Letter — Specimen
 
 > Filed 2026-03-05. Example of less-sloppy output for provenance and calibration.
-> Captain's assessment: "less sloppy than average output."
+> Operator's assessment: "less sloppy than average output."
 
 ## The Letter
 

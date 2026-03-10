@@ -1,7 +1,7 @@
 # Weaver Distillation — Cross-Transcript Research Synthesis
 
 > Aggregation pass: read all P2/P3/P4 exec summaries, checked against full reports for compression loss.
-> Purpose: surface the distilled findings for Captain's D1/D2/D3+ sorting.
+> Purpose: surface the distilled findings for Operator's D1/D2/D3+ sorting.
 > Date: 2026-03-04
 
 ---
@@ -71,9 +71,9 @@ The anti-slop transcript and the Hashimoto transcript represent the current prac
 
 ## Muster: What to Encode Before Phase 2
 
-Captain's decision required. Each row is one binary call.
+Operator's decision required. Each row is one binary call.
 
-| # | Item | Default | Captain's Call |
+| # | Item | Default | Operator's Call |
 |---|---|---|---|
 | 1 | **Add Cognitive Deskilling foot gun** — "extended delegation → skill atrophy → verification capacity degrades. BRAKE: periodic deep engagement." Strongest cross-transcript finding. The foot gun that compounds all others. | ENCODE | |
 | 2 | **Enrich L12 in layer model** — L12 is not a static sensor, it is a trained capacity requiring exercise. Add METR RCT as evidence (19% slower, 40pt perception-reality gap). | ENCODE | |
@@ -92,7 +92,7 @@ Captain's decision required. Each row is one binary call.
 
 ---
 
-## Observations for the Captain
+## Observations for the Operator
 
 1. **The strongest single finding is Cognitive Deskilling.** Three transcripts converge on it independently. It is the only proposed encoding that addresses a long-term structural risk rather than a session-scoped failure mode. It is the foot gun that makes all other foot guns more dangerous over time.
 

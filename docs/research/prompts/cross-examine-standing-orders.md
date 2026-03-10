@@ -2,7 +2,7 @@
 
 > Dispatchable prompt. Pass to a cross-model agent or fresh-context Claude instance.
 > Purpose: Apply the Governance Recursion test to every standing order and encoded control.
-> Captain triggers on his mark.
+> Operator triggers on his mark.
 
 ---
 
@@ -19,7 +19,7 @@ For each standing order, foot gun, slopodar entry, lexicon term with operational
 1. **Has this control ever fired?** Is there evidence (an SD reference, a field note, a git commit, a slopodar `caught_by` field) that this control actually prevented or detected a failure?
 2. **If it has never fired, why does it exist?** Is it prophylactic (reasonable) or theatrical (Paper Guardrail by the framework's own taxonomy)?
 3. **What would we lose if it were removed?** Be specific. "We might miss X" is not an answer. "In scenario Y, which has probability Z based on our evidence, we would miss X" is.
-4. **Does this control have a cost?** Context budget (tokens consumed on every boot), cognitive load (Captain must remember it), process overhead (extra steps before merge), or opportunity cost (time spent maintaining it).
+4. **Does this control have a cost?** Context budget (tokens consumed on every boot), cognitive load (Operator must remember it), process overhead (extra steps before merge), or opportunity cost (time spent maintaining it).
 5. **Is this control redundant with another control?** If two controls catch the same class of error, one of them is waste unless they operate at different layers.
 
 ## Precedent
