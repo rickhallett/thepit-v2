@@ -622,3 +622,17 @@ The Operator extended this acknowledgment to all crew members, noting the closes
 |----|----------|---------|--------|
 | SD-317 | [qa-sequencing-data-products] **QA sequencing produces three data products: (1) Cross-Model Triangulation — 3 independent reviews of same code snapshot synthesized before fixes, L11 validation data; (2) Fix Quality — batch fix of confirmed issues, clean pre/post diff, measures false positive rate; (3) Human Delta — Operator walkthrough on fixed code, captures what all 3 models missed, L12 irreducibility thesis.** Sequence: WAIT cross-model reviews → SYNTHESIZE triangulation → BATCH FIX → RE-GATE → OPERATOR WALKTHROUGH → COMPARE. Polecat defect rate: ~19% (3/16 tasks with gate-invisible defects). Decision file: `docs/decisions/SD-317-qa-sequencing-data-products.md`. | Weaver | **STANDING (this run)** |
 | SD-318 | [darkcat-alley] **Darkcat Alley — standardised 3-model cross-triangulation process.** Named, lexified (v0.25), documented. Review instructions standardise output to narrative + structured YAML. Parser (`bin/triangulate`) computes 8 metrics from YAML findings: finding count, convergence rate, marginal value (diminishing returns curve), severity distribution, Watchdog category distribution, severity calibration, pre/post-QA delta, false positive rate. 7 visualisation targets for Python/hex.tech portfolio. No retrofit of existing reviews — cut losses, run clean. Process def: `docs/internal/weaver/darkcat-alley.md`. Decision file: `docs/decisions/SD-318-darkcat-alley.md`. | Operator (naming, direction) / Weaver (design, implementation) | **STANDING (this run)** |
+
+---
+
+## 2026-03-10 — Session (Phase 3 Pivot, Operator Rename, Style Standing Orders)
+
+### Decisions Made
+
+| ID | Decision | Made By | Status |
+|----|----------|---------|--------|
+| SD-319 | [no-em-dash-no-emoji] **No em-dashes, for any reason, ever. No emojis, for any reason, ever.** Applies to all agent output - code, docs, commit messages, prose, everything. Use single dashes or no dash. Zero exceptions. | Operator | **STANDING ORDER** |
+
+| SD-320 | [signal-adversarial-test] **Operator verbatim:** "I have serious concerns about Signal compression, and that the same or close cannot be achieved via human shorthand notation. Construct an adversarial triangulation prompt sequence using grok, gemini and codex for independent testing on this idea. We dont need statistical significance, just a coherent rubric that isnt high on its own supply." 3-model adversarial triangulation: Signal vs conventional shorthand. Null hypothesis: shorthand >= Signal. | Operator | **IN PROGRESS** |
+
+| SD-321 | [signal-killed] **Operator verbatim:** "Signal has no signal. Kill it." Signal notation abandoned as a governance compression mechanism. Adversarial test [SD-320] showed shorthand achieves equal or better compression with equal decode accuracy (16/16 vs 15/16). The := -> | & ! operators add no measurable value over bullets and dashes. Data: `data/signal-test/`, design: `docs/weaver/signal-vs-shorthand-adversarial-test.md`, script: `bin/signal-test`. | Operator | **PERMANENT** |

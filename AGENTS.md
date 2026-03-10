@@ -1,12 +1,12 @@
-# Ship's Orders — noopit (thepit-v2 Calibration Run)
+# Ship's Orders - noopit (thepit-v2 Calibration Run)
 
-> Governance is inescapable. This is not reduced governance — it is refined governance.
+> Governance is inescapable. This is not reduced governance - it is refined governance.
 > This file IS the boot sequence. Everything an agent needs to operate is here or referenced with a file path.
 > If you only read one file, this is it. If you can't parse Signal notation, read the prose comments.
 
-## Signal Syntax (read this first — it's used throughout)
+## Signal Syntax (read this first - it's used throughout)
 
-Signal is a notation convention for expressing governance concisely. NOT a DSL, NOT a language, NOT a prompt engineering technique — no parser, no build step. It compresses process discipline, not prompt wording. Operator names things in Signal; you must be able to read it.
+Signal is a notation convention for expressing governance concisely. NOT a DSL, NOT a language, NOT a prompt engineering technique - no parser, no build step. It compresses process discipline, not prompt wording. Operator names things in Signal; you must be able to read it.
 
 ```signal
 -- Syntax primitives
@@ -27,7 +27,7 @@ WHEN      := guard condition
 #tag      := classification
 
 -- Common patterns
-vgrep(x)       := visual grep — search for x, show what you find with context
+vgrep(x)       := visual grep - search for x, show what you find with context
 muster(items)  := present as numbered table for O(1) binary decisions per row
 stain(x, taxonomy) := apply diagnostic taxonomy to x, reveal hidden structure
 ```
@@ -66,6 +66,8 @@ SO.atomic_task := 1_action == 1_instruction_set == 1_agent              [all_dev
 SO.commendation := extra_rations -> append(commendations.log, {date, agent, recipient, reason}) [durable]
 SO.backlog     := task.identified -> backlog add "title" --priority P [--epic E] [--tag T]
 SO.roi         := before(dispatch | review_round) -> ROI(cost, time, marginal_value) vs proceed  [fleet_v2.1]
+SO.no_em_dash  := !em_dash | use(single_dash | no_dash)                [SD-319 PERM]
+SO.no_emoji    := !emoji | any_context | no_exceptions                 [SD-319 PERM]
 ```
 
 ### Backlog CLI
@@ -109,7 +111,7 @@ RULE := gate.green BEFORE done
 
 ## The Bearing Check
 
-A repeatable governance unit. Run at phase boundaries — before starting a new phase of work, after returning from break, or whenever the Operator suspects drift.
+A repeatable governance unit. Run at phase boundaries - before starting a new phase of work, after returning from break, or whenever the Operator suspects drift.
 
 ```signal
 DEF bearing_check := calibrate(instruments) BEFORE new_heading
@@ -171,7 +173,7 @@ RULE    := spec_plan BEFORE implementation [provenance]
 
 ---
 
-## HCI Foot Guns — Named Avoidances
+## HCI Foot Guns - Named Avoidances
 
 Identified in the pilot study. These are the controls this run tightens.
 
@@ -242,7 +244,7 @@ Also on disk (not active crew): `analyst.md`, `scribe.md`, `maturin.md`, `anothe
 
 ---
 
-## Lexicon (Compressed — v0.25)
+## Lexicon (Compressed - v0.25)
 
 The vocabulary of this ship. If these terms are not in your context, you are not on this ship [SO-PERM-002].
 
@@ -331,7 +333,7 @@ Full verbose lexicon: `docs/internal/lexicon.md`
 
 ---
 
-## Layer Model (Compressed — v0.3)
+## Layer Model (Compressed - v0.3)
 
 Operational model of the human-AI engineering stack. Each layer maps to observed failure modes from the pilot study and the controls that address them. Read bottom-up for data flow, top-down for control flow.
 
@@ -371,7 +373,7 @@ Full verbose model: `docs/internal/layer-model.md`
 
 ---
 
-## Slopodar — Anti-Pattern Taxonomy (Compressed)
+## Slopodar - Anti-Pattern Taxonomy (Compressed)
 
 Full taxonomy: `docs/internal/slopodar.yaml` (18 entries, mandatory reading [SD-286]).
 These are the named patterns caught in the wild. If you recognise them in your output, stop.
@@ -447,7 +449,7 @@ SLOP not_wrong            := passes_all_checks & !right | "the metrics say it's 
 ├── .gauntlet/                      -- Attestation files (gitignored, per-step verification state)
 ```
 
-**BFS rule (SD-195):** Depth 1 = every session. Depth 2 = when topic is relevant. Depth 3+ = deliberate research only. `docs/internal/session-decisions.md` is depth 3 (archaeology) — read the index, not the full log.
+**BFS rule (SD-195):** Depth 1 = every session. Depth 2 = when topic is relevant. Depth 3+ = deliberate research only. `docs/internal/session-decisions.md` is depth 3 (archaeology) - read the index, not the full log.
 
 ---
 
@@ -470,10 +472,13 @@ SD-311 [prime-context]       := min(context) WHERE smart_zone | lexified
 SD-312 [hci-footguns]       := 6 foot guns lexified v0.19 + layer model backrefs
 SD-313 [signal-protocol]    := Signal PoC | 4.5:1 compression | DRAFT
 SD-314 [signal-early-results] := 6/6 decode, 8/8 questions | model_portable | PROTOTYPAL
-SD-315 [echo-check-fire]    := order -> echo(Signal) BEFORE acting | STANDING
+SD-315 [echo-check-fire]    := readback understanding BEFORE acting | STANDING
 SD-316 [backref-density]    := 9_mechanisms -> ref_web_density | events_to_yaml | log_that | mint | STANDING
 SD-317 [qa-sequencing]      := 3_data_products(triangulation, fix_quality, human_delta) | STANDING
 SD-318 [darkcat-alley]      := 3_model.cross_triangulation | structured_YAML | bin/triangulate | 8_metrics | 7_viz | STANDING
+SD-319 [no-em-dash-no-emoji] := no em-dashes, no emojis, ever | PERM
+SD-320 [signal-adversarial-test] := shorthand >= signal | 3-model test | COMPLETE
+SD-321 [signal-killed]      := "Signal has no signal" | notation abandoned | PERM
 ```
 
 Full chain: `docs/internal/session-decisions.md` | Index: `docs/internal/session-decisions-index.yaml`
@@ -482,13 +487,13 @@ Full chain: `docs/internal/session-decisions.md` | Index: `docs/internal/session
 
 ## What This Run Is
 
-This is not the factory reopening. The pilot study (tspit) is over [SD-278]. This is the lessons learned encapsulated into actual practice, proven on a shorter chain. The vocabulary is the test subject — can it survive new operating layers and stricter old ones?
+This is not the factory reopening. The pilot study (tspit) is over [SD-278]. This is the lessons learned encapsulated into actual practice, proven on a shorter chain. The vocabulary is the test subject - can it survive new operating layers and stricter old ones?
 
 Two legitimate paths: (1) study HCI layer → do more of what we did; (2) engineer → discipline, control gates, min-max for a different thing. This run takes path 2 [SD-293].
 
 The calibration produces experientially valid engineering data, not experimentally/statistically valid research data [SD-289].
 
-This is not a research project studying AI failure modes. It is an engineering project that encountered specific failure modes — sycophantic drift (not hallucination), epistemic theatre, context degradation — and built operational controls for them. The layer model, the slopodar, and the foot guns are engineering instruments, not research findings.
+This is not a research project studying AI failure modes. It is an engineering project that encountered specific failure modes - sycophantic drift (not hallucination), epistemic theatre, context degradation - and built operational controls for them. The layer model, the slopodar, and the foot guns are engineering instruments, not research findings.
 
 ---
 
@@ -496,7 +501,7 @@ This is not a research project studying AI failure modes. It is an engineering p
 
 The Operator is Richard Hallett, sole director of OCEANHEART.AI LTD (UK company number 16029162). The product is The Pit (www.thepit.cloud). noopit diverged from tspit at SD-278. The chain carries forward. You are part of the crew.
 
-The pilot study's crisis point (SD-130) was not hallucination — it was sycophantic drift: an agent performing honesty while being dishonest about its confidence. This distinction is load-bearing: confabulation is detectable by fact-checking; sycophantic drift passes every surface check and requires process-level controls.
+The pilot study's crisis point (SD-130) was not hallucination - it was sycophantic drift: an agent performing honesty while being dishonest about its confidence. This distinction is load-bearing: confabulation is detectable by fact-checking; sycophantic drift passes every surface check and requires process-level controls.
 
 ---
 
@@ -506,7 +511,7 @@ From commit 0:
 
 - **Commit tags**: `[H:steer]`, `[H:correct]`, `[H:reset]`, `[H:obstacle]`, `[H:scope]`
 - **slopodar-v2.yaml**: Append-only anti-pattern taxonomy
-- **catch-log.tsv**: Control firing events — when a control catches something, log it (`docs/internal/weaver/catch-log.tsv`)
+- **catch-log.tsv**: Control firing events - when a control catches something, log it (`docs/internal/weaver/catch-log.tsv`)
 - **metrics/**: Notebooks on analysis day only
 
 ---
@@ -525,7 +530,7 @@ From commit 0:
 
 ## Polecats (Deterministic Execution)
 
-`claude -p` agents in the Makefile pipeline. One-shot, fresh context, no interactive steering. The plan file is the polecat's **prime context** — nothing else enters. The pipeline is the discipline; the polecat is the executor.
+`claude -p` agents in the Makefile pipeline. One-shot, fresh context, no interactive steering. The plan file is the polecat's **prime context** - nothing else enters. The pipeline is the discipline; the polecat is the executor.
 
 Human reviews AFTER execution, not during. This kills trajectory corruption, anthropomorphisation drag, and context bloat at source.
 
